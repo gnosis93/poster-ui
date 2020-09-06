@@ -15,6 +15,11 @@ export class PostsService {
     return this.$postsSubject.asObservable();
   }
 
+  public get Delete(){
+    this.electron.ipcRenderer.send('deletePostByName');
+    return this.$postsSubject.asObservable();
+  }
+
 
   constructor(
     private electron: ElectronService,
@@ -28,5 +33,10 @@ export class PostsService {
         // this.posts = Array.from(message);
     });
 
+    this.electron.ipcRenderer.addListener('deletePostByName',(sender,message)=>{
+      console.log('response ',sender,message);
+      this.$postsSubject.next(message);
+      // this.posts = Array.from(message);
+  });
   }
 }

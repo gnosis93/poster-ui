@@ -67,6 +67,11 @@ ipcMain.addListener('getPostByName', async (event, args) => {
   event.sender.send('getPostByName', result);
 });
 
+ipcMain.addListener('deletePostByName', async (event, args) => {
+  let result = PostsHelper.deletePostByName(args);
+  event.sender.send('deletePostByName', result);
+});
+
 ipcMain.addListener('getConfig',async (event,args) => {
   let config = ConfigHelper.getConfig();
   event.sender.send('getConfig', config);

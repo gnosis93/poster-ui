@@ -123,6 +123,20 @@ export class HomeComponent implements OnInit {
 
   }
 
+  async onDeleteClick(post:Post|null){
+    if(!post || !post.name || post.name.length == 0){
+      return;
+    }
+    //TODO: confirmation here
+    this.showProgressSpinner();
+    this.postsService.Delete.subscribe((posts)=>{
+      this.posts = posts;
+      if(this.loadingDialogRef){
+        this.loadingDialogRef.close();
+      }
+    })
+  }
+
   async onConfigClick(){
     const dialogConfig = new MatDialogConfig();
 
