@@ -18,7 +18,7 @@
   
   <div class="row" *ngIf="post && post.images">
     <div class="col-3" *ngFor="let image of post.images">
-      <img width="450" height="350" [src]="image" alt="">
+      <img width="450" height="350" [src]="'file://' + image" alt="">
     </div>
   </div>
   
