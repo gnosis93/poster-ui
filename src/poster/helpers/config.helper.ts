@@ -19,8 +19,6 @@ export class ConfigHelper{
             return false;
         }
 
-
-
         let jsonFileTemplate = `
         {
             "facebook_email":"",
