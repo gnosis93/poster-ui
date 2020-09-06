@@ -2,6 +2,7 @@ import { Component, OnInit, NgZone, ElementRef } from '@angular/core';
 import { ElectronService } from 'app/core/services';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ipcMain } from 'electron';
+import { ConfigService } from 'app/shared/services/config.service';
 
 @Component({
   selector: 'app-config-dialog',
@@ -13,23 +14,17 @@ export class ConfigDialogComponent implements OnInit {
   public config:any;
 
   constructor(
-    private electron: ElectronService,
-    private zone:NgZone,
+    private configService:ConfigService,
     private dialogRef:MatDialogRef<ConfigDialogComponent>
   ) { }
 
   ngOnInit(): void {
-    this.electron.ipcRenderer.send('getConfig');
-    this.electron.ipcRenderer.addListener('getConfig',(e,args)=>{
-      this.config = args;
-      console.log(this.config);
-    });
+   this.configService.getConfig().subscribe((config)=>this.config = config);
   }
 
   public addFaceBookPage(urlToAddElement){
     this.config.facebook_pages.push(urlToAddElement.value);
     urlToAddElement.value = ""
-
   }
 
   public addFaceBookGroup(urlToAddElement){
@@ -42,10 +37,8 @@ export class ConfigDialogComponent implements OnInit {
   }
 
   save(){
-    let configStr = JSON.stringify(this.config)
-    this.electron.ipcRenderer.send('saveConfig',configStr)
-    console.log(configStr);
+    this.configService.saveConfig(this.config);//TODO: consider subscribe and add loader
     this.dialogRef.close();
-  
+
   }
 }
