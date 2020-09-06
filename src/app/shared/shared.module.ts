@@ -11,10 +11,15 @@ import { MaterialModule } from './material.module';
 import { ProgressSpinnerDialogComponent } from './components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { ConfigDialogComponent } from './components/config-dialog/config-dialog.component';
 import {PostsService} from './services/posts.service';
+import {ImportService} from './services/import.service';
+import {ConfigService} from './services/config.service';
+
 
 @NgModule({
   providers:[
-    PostsService
+    PostsService,
+    ConfigService,
+    ImportService
   ],
 
   declarations: [
