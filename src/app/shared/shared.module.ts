@@ -10,29 +10,37 @@ import { FormsModule } from '@angular/forms';
 import { MaterialModule } from './material.module';
 import { ProgressSpinnerDialogComponent } from './components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { ConfigDialogComponent } from './components/config-dialog/config-dialog.component';
+import {PostsService} from './services/posts.service';
 
 @NgModule({
+  providers:[
+    PostsService
+  ],
+
   declarations: [
-    PageNotFoundComponent, 
+    PageNotFoundComponent,
     WebviewDirective,
     ProgressSpinnerDialogComponent,
-    ConfigDialogComponent
+    ConfigDialogComponent,
   ],
+
   imports: [
     CommonModule,
-    TranslateModule, 
-    FormsModule, 
+    TranslateModule,
+    FormsModule,
     MaterialModule,
     BrowserAnimationsModule
   ],
+
   exports: [
-    TranslateModule, 
-    WebviewDirective, 
-    FormsModule, 
+    TranslateModule,
+    WebviewDirective,
+    FormsModule,
     ProgressSpinnerDialogComponent,
     MaterialModule,
     BrowserAnimationsModule,
     ConfigDialogComponent
   ]
+
 })
 export class SharedModule {}

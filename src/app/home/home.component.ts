@@ -6,6 +6,7 @@ import { MatDialogRef, MatDialog, MatDialogConfig } from '@angular/material/dial
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { Observable } from 'rxjs';
 import {ConfigDialogComponent} from '../shared/components/config-dialog/config-dialog.component';
+import { PostsService } from 'app/shared/services/posts.service';
 
 @Component({
   selector: 'app-home',
@@ -15,29 +16,31 @@ import {ConfigDialogComponent} from '../shared/components/config-dialog/config-d
 export class HomeComponent implements OnInit {
 
   public posts:Post[];
-  private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null; 
+  private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
 
   constructor(
     private router: Router,
     private electron: ElectronService,
     private dialog: MatDialog,
-    private zone:NgZone
+    private zone:NgZone,
+    private postsService:PostsService
   ) { }
 
   ngOnInit(): void {
     this.getPosts();
 
-    this.electron.ipcRenderer.addListener('getPosts',(sender,message)=>{
-      this.zone.run(()=>{
-        console.log('response ',sender,message);
-        this.posts = Array.from(message);
-        if(this.loadingDialogRef){
-          this.loadingDialogRef.close();
-        }
-        // this.cdRef.detectChanges();
-      });
-      
-    });
+    // this.electron.ipcRenderer.addListener('getPosts',(sender,message)=>{
+    //   this.zone.run(()=>{
+    //     console.log('response ',sender,message);
+    //     this.posts = Array.from(message);
+    //     if(this.loadingDialogRef){
+    //       this.loadingDialogRef.close();
+    //     }
+    //     // this.cdRef.detectChanges();
+    //   });
+
+    // });
+
 
 
     this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
@@ -52,7 +55,7 @@ export class HomeComponent implements OnInit {
         this.getPosts();
         // this.testFunc()
      });
-      
+
     });
 
   }
@@ -60,12 +63,19 @@ export class HomeComponent implements OnInit {
 
 
   getPosts(){
+    this.showProgressSpinner();
+    this.postsService.Posts.subscribe((posts)=>{
+      this.posts = posts;
+      if(this.loadingDialogRef){
+        this.loadingDialogRef.close();
+      }
+    })
     // this.posts = [
     //   {
     //     "content": "POST sadsadm",
     //     "dirPath": "/home/aaron/posts/post-1",
     //     "images":[
-         
+
     //     ],
     //     "name": "post 1"
     //   },
@@ -73,7 +83,7 @@ export class HomeComponent implements OnInit {
     //     "content": "POST sadsadm",
     //     "dirPath": "/home/aaron/posts/post-1",
     //     "images":[
-         
+
     //     ],
     //     "name": "ASA post 1"
     //   },
@@ -81,7 +91,7 @@ export class HomeComponent implements OnInit {
     //     "content": "POST sadsadm",
     //     "dirPath": "/home/aaron/posts/post-1",
     //     "images":[
-         
+
     //     ],
     //     "name": "aaa OOOost-1"
     //   },
@@ -89,7 +99,7 @@ export class HomeComponent implements OnInit {
     //     "content": "POST sadsadm",
     //     "dirPath": "/home/aaron/posts/post-1",
     //     "images":[
-         
+
     //     ],
     //     "name": "AA post-1"
     //   },
@@ -97,15 +107,14 @@ export class HomeComponent implements OnInit {
     //     "content": "POST sadsadm",
     //     "dirPath": "/home/aaron/posts/post-1",
     //     "images":[
-         
+
     //     ],
     //     "name": "post-1"
     //   }
     // ]
     // this.cdRef.detectChanges();
 
-    this.showProgressSpinner();
-    this.electron.ipcRenderer.send('getPosts');
+
   }
 
   async onImportClick(){
@@ -127,7 +136,7 @@ export class HomeComponent implements OnInit {
   }
 
   async onPostClick(post:Post|null){
-    if(!post || !post.name || post.name.length == 0){      
+    if(!post || !post.name || post.name.length == 0){
       return;
     }
     this.router.navigateByUrl('/detail/'+post.name);
@@ -146,7 +155,7 @@ export class HomeComponent implements OnInit {
     };
 
     this.loadingDialogRef = this.dialog.open(ProgressSpinnerDialogComponent, dialogConfig);
-    return this.loadingDialogRef ; 
+    return this.loadingDialogRef ;
   }
 
 
