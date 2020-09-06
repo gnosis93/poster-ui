@@ -29,20 +29,6 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.getPosts();
 
-    // this.electron.ipcRenderer.addListener('getPosts',(sender,message)=>{
-    //   this.zone.run(()=>{
-    //     console.log('response ',sender,message);
-    //     this.posts = Array.from(message);
-    //     if(this.loadingDialogRef){
-    //       this.loadingDialogRef.close();
-    //     }
-    //     // this.cdRef.detectChanges();
-    //   });
-
-    // });
-
-
-
     this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
       // console.log('response ',sender,message);
       // this.posts = message;

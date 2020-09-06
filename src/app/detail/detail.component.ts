@@ -4,6 +4,7 @@ import { ElectronService } from 'app/core/services';
 import { Post } from 'poster/models/post.interface';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
+import { PostsService } from 'app/shared/services/posts.service';
 
 @Component({
   selector: 'app-detail',
@@ -14,14 +15,13 @@ export class DetailComponent implements OnInit {
 
   public post:Post|null = null;
 
-  private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null; 
+  private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
 
   constructor(
-    private route:ActivatedRoute,    
-    private electron: ElectronService,
-    private zone:NgZone,
+    private route:ActivatedRoute,
     private router:Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private postsService:PostsService
   ) {}
 
   ngOnInit(): void {
@@ -35,31 +35,31 @@ export class DetailComponent implements OnInit {
       }
     })
 
-    this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
-      this.zone.run(()=>{
-        if(this.loadingDialogRef){
-          this.loadingDialogRef.close();
-        }
-        this.post = message;
-        console.log(this.post);
-      })
-    });
 
-    this.electron.ipcRenderer.addListener('submitPostToFacebookPages',(sender,message)=>{
+    this.postsService.postToFacebookPages(null).subscribe((result)=>{
       if(this.loadingDialogRef){
         this.loadingDialogRef.close();
       }
+      if(result === false){
+        alert('An error has occurred while posting this post');
+      }
     });
+
   }
-  
+
   public onPostClick(){
     this.showProgressSpinner();
-    this.electron.ipcRenderer.send('submitPostToFacebookPages',this.post);
+    this.postsService.postToFacebookPages(this.post);
   }
 
   private getPost(postName:string){
     this.showProgressSpinner();
-    return this.electron.ipcRenderer.send('getPostByName',postName);
+    this.postsService.getPostByName(postName).subscribe((post)=>{
+      this.post = post;
+      if(this.loadingDialogRef){
+        this.loadingDialogRef.close();
+      }
+    })
     // getPostByName
   }
 
