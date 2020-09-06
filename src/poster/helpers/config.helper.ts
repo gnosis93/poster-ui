@@ -14,10 +14,12 @@ export class ConfigHelper{
     public static createConfigFile(){
         let  configFilePath = ConfigHelper.getConfigFilePath();
         let fileExists = fs.existsSync(configFilePath);
-      
+
         if(fileExists){
             return false;
         }
+
+
 
         let jsonFileTemplate = `
         {
@@ -36,9 +38,12 @@ export class ConfigHelper{
         fs.writeFileSync(configFilePath, newConfigContent);
         return true;
     }
-    
+
     private static getConfigFilePath(){
         let postDirPath = ConfigHelper.getPostsDir();
+        if(fs.existsSync( postDirPath ) === false){
+          fs.mkdirSync(postDirPath);
+        }
         let configFilePath = path.join(postDirPath,'config.json');
         return configFilePath;
     }
