@@ -104,23 +104,27 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   // console.log('detail clicked 2')
   let config = ConfigHelper.getConfig();
   console.log(config);
-  let poster = new FacebookPagePoster(
-    config.facebook_pages,
-    {
-      username: config.facebook_email,
-      password: config.facebook_password
-    },
-    post.images,
-    post.content
-  );
 
+  let result = true;
   try {
+    let poster = new FacebookPagePoster(
+      config.facebook_pages,
+      {
+        username: config.facebook_email,
+        password: config.facebook_password
+      },
+      post.images,
+      post.content
+    );
+
     await poster.run();
+
   } catch (e) {
+    result = false;
     console.error(e);
   }
 
-  return event.sender.send('submitPostToFacebookPages', true);
+  return event.sender.send('submitPostToFacebookPages', result);
 
 });
 

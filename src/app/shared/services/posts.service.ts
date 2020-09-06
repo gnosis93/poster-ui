@@ -9,24 +9,52 @@ import { Post } from 'poster/models/post.interface';
 export class PostsService {
 
   private $postsSubject:Subject<Post[]>;
-
-  public get Posts(){
-    this.electron.ipcRenderer.send('getPosts');
-    return this.$postsSubject.asObservable();
-  }
+  private $postSubject:Subject<Post>;
+  private $postToFacebookPagesSubject:Subject<boolean>;
 
 
   constructor(
     private electron: ElectronService,
   ) {
 
-    this.$postsSubject = new Subject<Post[]>();
+    this.$postsSubject                = new Subject<Post[]>();
+    this.$postSubject                 = new Subject<Post>();
+    this.$postToFacebookPagesSubject  = new Subject<boolean>();
+
+    this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
+      this.$postSubject.next(message);
+    });
 
     this.electron.ipcRenderer.addListener('getPosts',(sender,message)=>{
-        console.log('response ',sender,message);
         this.$postsSubject.next(message);
-        // this.posts = Array.from(message);
+    });
+
+    this.electron.ipcRenderer.addListener('submitPostToFacebookPages',(sender,message)=>{
+      this.$postToFacebookPagesSubject.next(message);
     });
 
   }
+
+
+  public get Posts(){
+    this.electron.ipcRenderer.send('getPosts');
+    return this.$postsSubject.asObservable();
+  }
+
+  public getPostByName(postName:string | null){
+    if(postName != null){
+      this.electron.ipcRenderer.send('getPostByName',postName);
+    }
+    return this.$postSubject.asObservable();
+  }
+
+
+  public postToFacebookPages(post:Post | null){
+    if(post != null){
+      this.electron.ipcRenderer.send('submitPostToFacebookPages',post);
+    }
+    return this.$postToFacebookPagesSubject.asObservable();
+  }
+
+
 }
