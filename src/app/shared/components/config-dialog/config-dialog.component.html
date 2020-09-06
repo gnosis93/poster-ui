@@ -1,0 +1,65 @@
+<h1 mat-dialog-title>Config Options</h1>
+<hr/>
+<mat-dialog-content>
+    <form *ngIf="config">
+        <h5>Facebook Credentials</h5>
+        <br>
+        <div class="form-group">
+            <label for="email">Email address:</label>
+            <input type="email" [(ngModel)]="config.facebook_email"  name="facebook_email" class="form-control" id="email">
+        </div>
+        <div class="form-group">
+            <label for="pwd">Password:</label>
+            <input type="password" [(ngModel)]="config.facebook_password" name="facebook_password" class="form-control" id="pwd">
+        </div>
+
+        
+        <div class="row">
+            <div class="col-12">
+                <label><strong>Facebook Pages</strong></label>
+                <ul>
+                    <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}}</li>
+                </ul>
+            </div>
+            <div class="col-10">
+                <input class="form-control" #txtNewFBPageURL type="text"/>
+            </div>
+            <div class="col-2">
+                <button (click)="addFaceBookPage(txtNewFBPageURL)" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+        
+        <br/>
+       
+        <div class="row">
+            <div class="col-12">
+                <label><strong>Facebook Groups</strong></label>
+                <ul>
+                    <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}}</li>
+                </ul>
+            </div>
+            <div class="col-10">
+                <input  class="form-control" #txtNewFBGroupURL  type="text"/>
+            </div>
+            <div class="col-2">
+                <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+
+    </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+    <div class="row">
+        <div class="col-12">
+            <hr>
+        </div>
+        <div class="col-12">
+            <div class="float-right">
+                <button class="btn mat-raised-button" (click)="close()">Close</button> &nbsp;&nbsp;
+                <button class="btn mat-raised-button mat-primary" (click)="save()">Save</button>
+            </div>
+        </div>
+    </div>
+   
+</mat-dialog-actions>

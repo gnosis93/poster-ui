@@ -1,0 +1,27 @@
+<div class="container-fluid" *ngIf="post">
+  
+  <h1 class="title">
+   {{post.name}}
+  </h1>
+
+  <a routerLink="/" style="margin-top:-20px;" class="float-right">{{ 'PAGES.DETAIL.BACK_TO_HOME' | translate }}</a>
+
+  <hr/>
+
+  <div class="row">
+    <div class="col-12">
+      <label>Post Content</label><br>
+      <textarea class="form-control" rows="10" cols="100" matInput placeholder="Post Text" [(ngModel)]="post.content"></textarea>
+    </div>
+      
+  </div>
+  
+  <div class="row" *ngIf="post && post.images">
+    <div class="col-3" *ngFor="let image of post.images">
+      <img width="450" height="350" [src]="image" alt="">
+    </div>
+  </div>
+  
+
+  <button (click)="onPostClick()" class="btn btn-primary float-right">Post</button>
+</div>
