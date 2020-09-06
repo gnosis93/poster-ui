@@ -70,6 +70,7 @@ ipcMain.addListener('getPostByName', async (event, args) => {
 ipcMain.addListener('deletePostByName', async (event, args) => {
   let result = PostsHelper.deletePostByName(args);
   event.sender.send('deletePostByName', result);
+  console.log('deleted and sent')
 });
 
 ipcMain.addListener('getConfig',async (event,args) => {

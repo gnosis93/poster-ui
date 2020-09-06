@@ -70,7 +70,7 @@ export class PostsHelper{
         let result = true;
         let dirName = path.join(postsDirPath, postDirName);
         if(fs.existsSync(dirName) === true){
-            fs.rmdir(dirName, function(error){if(error){result = false}});
+            fs.rmdirSync(dirName,{ recursive: true });
         }
         
         //     let posts = this.getListOfPosts();

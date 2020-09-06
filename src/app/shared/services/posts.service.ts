@@ -50,7 +50,7 @@ export class PostsService {
     if(postName != null){
       this.electron.ipcRenderer.send('deletePostByName',postName);
     }
-    return this.$postsSubject.asObservable();
+    return this.$deleteSubject.asObservable();
   }
 
   public getPostByName(postName:string | null){

@@ -4,7 +4,7 @@ import { ElectronService } from 'app/core/services';
 import {Post} from '../../poster/models/post.interface';
 import { MatDialogRef, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import {ConfigDialogComponent} from '../shared/components/config-dialog/config-dialog.component';
 import { PostsService } from 'app/shared/services/posts.service';
 import { allowedNodeEnvironmentFlags } from 'process';
@@ -18,6 +18,7 @@ export class HomeComponent implements OnInit {
 
   public posts:Post[];
   private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
+  private deleteSubscription:Subscription = null;
 
   constructor(
     private router: Router,
@@ -109,19 +110,26 @@ export class HomeComponent implements OnInit {
     this.electron.ipcRenderer.send('websiteImport');
 
   }
-
+  
   async onDeleteClick(post:Post|null){
     if(!post || !post.name || post.name.length == 0){
       return;
     }
     if(confirm('Are you sure to delete ' + post.name + '?')){
-      this.postsService.deletePostByName(post.name).subscribe((response)=>{
-        if(response){
-          this.getPosts();
-        }else{
-          alert('Unexpected error occured while deleting this item. Please, contact support.');
-        }
-      })
+      this.showProgressSpinner();
+      
+      if(!this.deleteSubscription){
+        this.deleteSubscription = this.postsService.deletePostByName(post.name).subscribe((response)=>{
+          console.log('deleted on renderer recivied response ok')
+          if(response){
+            this.getPosts();
+          }else{
+            alert('Unexpected error occured while deleting this item. Please, contact support.');
+          }
+        })
+      }else{
+        this.postsService.deletePostByName(post.name);
+      }
     }
     
   }
