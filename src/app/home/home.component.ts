@@ -7,6 +7,7 @@ import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-s
 import { Observable } from 'rxjs';
 import {ConfigDialogComponent} from '../shared/components/config-dialog/config-dialog.component';
 import { PostsService } from 'app/shared/services/posts.service';
+import { allowedNodeEnvironmentFlags } from 'process';
 
 @Component({
   selector: 'app-home',
@@ -113,14 +114,16 @@ export class HomeComponent implements OnInit {
     if(!post || !post.name || post.name.length == 0){
       return;
     }
-    //TODO: confirmation here
-    this.showProgressSpinner();
-    this.postsService.Delete.subscribe((posts)=>{
-      this.posts = posts;
-      if(this.loadingDialogRef){
-        this.loadingDialogRef.close();
-      }
-    })
+    if(confirm('Are you sure to delete ' + post.name + '?')){
+      this.postsService.deletePostByName(post.name).subscribe((response)=>{
+        if(response){
+          this.getPosts();
+        }else{
+          alert('Unexpected error occured while deleting this item. Please, contact support.');
+        }
+      })
+    }
+    
   }
 
   async onConfigClick(){

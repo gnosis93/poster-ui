@@ -49,8 +49,8 @@
       <div class="post">
         <img width="450" height="300" [src]="post.images.length > 0 ? 'file://' + post.images[0] : 'assets/noimage.gif'" />
         <h4>{{post.name}}</h4>
+        <a (click)="onDeleteClick(post)" class="btn btn-danger float-right">Remove</a>
         <a (click)="onPostClick(post)" class="btn btn-primary float-right">Select</a>
-        <a (click)="onDeleteClick(post)" class="btn btn-primary float-right">Remove</a>
         <!-- <button (click)="onPostClick(post)" [routerLink]="['/detail/',post.name]" class="btn btn-primary float-right">Select</button> -->
       </div>
     </div>

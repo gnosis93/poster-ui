@@ -62,6 +62,22 @@ export class PostsHelper{
         return redefined;
     }
 
+    public static deletePostByName(postDirName,postsDirPath:string=null):boolean{
+        if(postsDirPath === null){
+          postsDirPath= this.getPostsDir();
+        }
+
+        let result = true;
+        let dirName = path.join(postsDirPath, postDirName);
+        if(fs.existsSync(dirName) === true){
+            fs.rmdir(dirName, function(error){if(error){result = false}});
+        }
+        
+        //     let posts = this.getListOfPosts();
+        //     return this.redefineListOfPosts(posts.postsDirs, posts.postsDirPath);
+        return result;
+    }
+
     public static getPostContent(postDirPath:string):string{
         let contentFilePath = path.join(postDirPath,PostsHelper.CONTENT_FILE_NAME);
         if(fs.existsSync(contentFilePath) === false){

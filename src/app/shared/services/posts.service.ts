@@ -11,12 +11,7 @@ export class PostsService {
   private $postsSubject:Subject<Post[]>;
   private $postSubject:Subject<Post>;
   private $postToFacebookPagesSubject:Subject<boolean>;
-
-  public get Delete(){
-    this.electron.ipcRenderer.send('deletePostByName');
-    return this.$postsSubject.asObservable();
-  }
-
+  private $deleteSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
@@ -25,9 +20,14 @@ export class PostsService {
     this.$postsSubject                = new Subject<Post[]>();
     this.$postSubject                 = new Subject<Post>();
     this.$postToFacebookPagesSubject  = new Subject<boolean>();
+    this.$deleteSubject               = new Subject<boolean>();
 
     this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
       this.$postSubject.next(message);
+    });
+
+    this.electron.ipcRenderer.addListener('deletePostByName',(sender,message)=>{
+      this.$deleteSubject.next(message);
     });
 
     this.electron.ipcRenderer.addListener('getPosts',(sender,message)=>{
@@ -43,6 +43,13 @@ export class PostsService {
 
   public get Posts(){
     this.electron.ipcRenderer.send('getPosts');
+    return this.$postsSubject.asObservable();
+  }
+
+  public deletePostByName(postName:string | null){
+    if(postName != null){
+      this.electron.ipcRenderer.send('deletePostByName',postName);
+    }
     return this.$postsSubject.asObservable();
   }
 
