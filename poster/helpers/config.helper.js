@@ -30,7 +30,7 @@ var ConfigHelper = /** @class */ (function () {
         if (fileExists) {
             return false;
         }
-        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"\",\n            \"facebook_password\":\"\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false\n        }";
+        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"\",\n            \"facebook_password\":\"\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            \"chrome_executable_path\":\"/usr/bin/google-chrome\"\n        }";
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;
     };

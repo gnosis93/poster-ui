@@ -40,7 +40,8 @@ export class ConfigHelper{
             "facebook_password":"",
             "facebook_pages":[],
             "facebook_groups":[],
-            "headless":false
+            "headless":false,
+            "chrome_executable_path":"/usr/bin/google-chrome"
         }`;
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;

@@ -96,8 +96,9 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
     
     async lunchBrowser():Promise<puppeteer.Browser>{//override
         let config = ConfigHelper.getConfig();
-
+        
         return puppeteer.launch({
+            executablePath:ConfigHelper.getConfigValue('chrome_executable_path'),
             headless: ConfigHelper.getConfigValue('headless',false), 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 

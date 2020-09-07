@@ -212,6 +212,7 @@ var FacebookGroupPoster = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 config = config_helper_1.ConfigHelper.getConfig();
                 return [2 /*return*/, puppeteer.launch({
+                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
                         headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
                         defaultViewport: null,
                         args: ['--start-maximized', "--disable-notifications"]

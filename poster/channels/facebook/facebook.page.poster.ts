@@ -112,6 +112,7 @@ export class FacebookPagePoster extends ChannelBase implements IChannel{
         let config = ConfigHelper.getConfig();
 
         return puppeteer.launch({
+            executablePath:ConfigHelper.getConfigValue('chrome_executable_path'),
             headless: ConfigHelper.getConfigValue('headless',false), 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 

@@ -206,6 +206,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                 config = config_helper_1.ConfigHelper.getConfig();
                 // if((ConfigHelper.getConfigValue('headless',false) ) === true){
                 return [2 /*return*/, puppeteer.launch({
+                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
                         headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
                         defaultViewport: null,
                         args: ['--start-maximized', "--disable-notifications"]

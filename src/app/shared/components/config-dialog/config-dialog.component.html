@@ -49,6 +49,13 @@
         <br>
         <h5>Config Behavior</h5>
         <br>
+
+        <div class="form-group">
+            <label for="chrome_executable_path">Chrome Executable Path:</label>
+            <input type="email" [(ngModel)]="config.chrome_executable_path"  name="chrome_executable_path" class="form-control" id="chrome_executable_path">
+        </div>
+
+
         <div class="row">
             <div class="col-10">
                <label>Headless</label>
@@ -58,6 +65,8 @@
                </mat-checkbox>  
             </div>
         </div>
+
+        
 
     </form>
 </mat-dialog-content>
