@@ -32,6 +32,11 @@ export class ConfigDialogComponent implements OnInit {
     urlToAddElement.value = "";
   }
 
+  headlessValueChange(value:{checked:boolean}){
+    this.config.headless = value.checked;
+    console.log(value);
+  }
+
   close(){
     this.dialogRef.close();
   }

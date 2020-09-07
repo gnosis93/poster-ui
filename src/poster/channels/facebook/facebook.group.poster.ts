@@ -1,6 +1,7 @@
 import * as puppeteer from 'puppeteer';
 import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
+import { ConfigHelper } from '../../helpers/config.helper';
 
 export class FacebookGroupPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
@@ -87,9 +88,13 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         return pages;
     }
 
+   
+    
     async lunchBrowser():Promise<puppeteer.Browser>{//override
+        let config = ConfigHelper.getConfig();
+
         return puppeteer.launch({
-            headless: false, 
+            headless: config.headless ?? true, 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 
         });

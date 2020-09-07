@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import {ConfigDialogComponent} from '../shared/components/config-dialog/config-dialog.component';
 import { PostsService } from 'app/shared/services/posts.service';
 import { allowedNodeEnvironmentFlags } from 'process';
+import { ImportService } from 'app/shared/services/import.service';
 
 @Component({
   selector: 'app-home',
@@ -22,29 +23,35 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private electron: ElectronService,
+    // private electron: ElectronService,
     private dialog: MatDialog,
-    private zone:NgZone,
-    private postsService:PostsService
+    // private zone:NgZone,
+    private postsService:PostsService,
+    private importService:ImportService
   ) { }
 
   ngOnInit(): void {
     this.getPosts();
+    this.importService.importHotdogCondos(false).subscribe((result)=>{
+      if(this.loadingDialogRef){
+        this.loadingDialogRef.close();
+      }
+      this.getPosts();
+    })
+    // this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
+    //   // console.log('response ',sender,message);
+    //   // this.posts = message;
+    //   // this.cdRef.detectChanges();
+    //   this.zone.run(()=>{
+    //     if(this.loadingDialogRef){
+    //       this.loadingDialogRef.close();
+    //     }
+    //     console.log('ok');
+    //     this.getPosts();
+    //     // this.testFunc()
+    //  });
 
-    this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
-      // console.log('response ',sender,message);
-      // this.posts = message;
-      // this.cdRef.detectChanges();
-      this.zone.run(()=>{
-        if(this.loadingDialogRef){
-          this.loadingDialogRef.close();
-        }
-        console.log('ok');
-        this.getPosts();
-        // this.testFunc()
-     });
-
-    });
+    // });
 
   }
 
@@ -107,8 +114,7 @@ export class HomeComponent implements OnInit {
 
   async onImportClick(){
     this.showProgressSpinner();
-    this.electron.ipcRenderer.send('websiteImport');
-
+    this.importService.importHotdogCondos();
   }
   
   async onDeleteClick(post:Post|null){

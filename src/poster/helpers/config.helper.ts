@@ -4,14 +4,20 @@ import fs   = require('fs');
 
 export class ConfigHelper{
 
+    private static configSingleton:any=null;
+
     public static getConfig():any{
-        let configFilePath  = ConfigHelper.getConfigFilePath();
-        let rawdata         = fs.readFileSync(configFilePath);
-        let parsedJSON      = JSON.parse(rawdata.toString());
-        return parsedJSON;
+        if(ConfigHelper.configSingleton === null){
+            let configFilePath  = ConfigHelper.getConfigFilePath();
+            let rawdata         = fs.readFileSync(configFilePath);
+            ConfigHelper.configSingleton   = JSON.parse(rawdata.toString());
+        }
+       
+        return ConfigHelper.configSingleton;
     }
 
     public static createConfigFile(){
+        ConfigHelper.configSingleton = null;
         let  configFilePath = ConfigHelper.getConfigFilePath();
         let fileExists = fs.existsSync(configFilePath);
 
@@ -32,6 +38,7 @@ export class ConfigHelper{
 
 
     public static saveConfig(newConfigContent:string){
+        ConfigHelper.configSingleton = null;
         let  configFilePath = ConfigHelper.getConfigFilePath();
         fs.writeFileSync(configFilePath, newConfigContent);
         return true;

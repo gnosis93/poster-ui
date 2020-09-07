@@ -2,6 +2,7 @@ import * as puppeteer from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as https from 'https';
+import { ConfigHelper } from '../helpers/config.helper';
 const Stream = require('stream').Transform;                                
 
 
@@ -63,7 +64,7 @@ export class HotDogCondosImporter{
         for(let imageUrl of images){
             this.downloadImage(path.join(postDirectoryPath,((new Date()).getTime() +'.jpg')),imageUrl );
         }
-
+        await page.close();
         return true;
     }
 
@@ -104,8 +105,10 @@ export class HotDogCondosImporter{
     }
 
     private async lunchBrowser():Promise<puppeteer.Browser>{
+        let config = ConfigHelper.getConfig();
+
         return puppeteer.launch({
-            headless: false, 
+            headless: config.headless ?? true, 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 
         });

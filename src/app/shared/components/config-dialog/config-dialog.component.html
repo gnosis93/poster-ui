@@ -45,6 +45,19 @@
                 <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
             </div>
         </div>
+        
+        <br>
+        <h5>Config Behavior</h5>
+        <br>
+        <div class="row">
+            <div class="col-10">
+               <label>Headless</label>
+               <mat-checkbox [checked]="config.headless" 
+               (change)="headlessValueChange($event)">
+               
+               </mat-checkbox>  
+            </div>
+        </div>
 
     </form>
 </mat-dialog-content>
