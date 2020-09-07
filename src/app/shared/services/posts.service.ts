@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'app/core/services';
 import { Subject } from 'rxjs';
-import { Post } from 'poster/models/post.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +11,7 @@ export class PostsService {
   private $postSubject:Subject<Post>;
   private $postToFacebookPagesSubject:Subject<boolean>;
   private $deleteSubject:Subject<boolean>;
+  private $postToFacebookGroupsSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
@@ -20,6 +20,7 @@ export class PostsService {
     this.$postsSubject                = new Subject<Post[]>();
     this.$postSubject                 = new Subject<Post>();
     this.$postToFacebookPagesSubject  = new Subject<boolean>();
+    this.$postToFacebookGroupsSubject = new Subject<boolean>();
     this.$deleteSubject               = new Subject<boolean>();
 
     this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
@@ -36,6 +37,10 @@ export class PostsService {
 
     this.electron.ipcRenderer.addListener('submitPostToFacebookPages',(sender,message)=>{
       this.$postToFacebookPagesSubject.next(message);
+    });
+
+    this.electron.ipcRenderer.addListener('submitPostToFacebookGroups',(sender,message)=>{
+      this.$postToFacebookGroupsSubject.next(message);
     });
 
   }
@@ -68,5 +73,19 @@ export class PostsService {
     return this.$postToFacebookPagesSubject.asObservable();
   }
 
+  public postToFacebookGroups(post:Post | null){
+    if(post != null){
+      this.electron.ipcRenderer.send('submitPostToFacebookGroups',post);
+    }
+    return this.$postToFacebookPagesSubject.asObservable();
+  }
+
+}
+
+export interface Post{
+  name    : string,
+  dirPath : string,
+  images  : string[] ,
+  content : string
 
 }

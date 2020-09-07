@@ -1,12 +1,11 @@
 import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { ElectronService } from 'app/core/services';
-import {Post} from '../../poster/models/post.interface';
 import { MatDialogRef, MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { Observable, Subscription } from 'rxjs';
 import {ConfigDialogComponent} from '../shared/components/config-dialog/config-dialog.component';
-import { PostsService } from 'app/shared/services/posts.service';
+import { PostsService, Post } from 'app/shared/services/posts.service';
 import { allowedNodeEnvironmentFlags } from 'process';
 import { ImportService } from 'app/shared/services/import.service';
 
@@ -152,7 +151,7 @@ export class HomeComponent implements OnInit {
     this.dialog.open(ConfigDialogComponent, dialogConfig);
   }
 
-  async onPostClick(post:Post|null){
+  async onSelectClick(post:Post|null){
     if(!post || !post.name || post.name.length == 0){
       return;
     }

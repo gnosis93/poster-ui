@@ -1,12 +1,13 @@
 import { app, BrowserWindow, screen, ipcMain, ipcRenderer } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import { FacebookPagePoster } from './src/poster/channels/facebook/facebook.page.poster';
 import * as fs from 'fs';
-import { PostsHelper } from './src/poster/helpers/posts.helper';
-import { HotDogCondosImporter } from './src/poster/importers/hotdogcondos.importer';
-import { Post } from './src/poster/models/post.interface';
-import { ConfigHelper } from './src/poster/helpers/config.helper';
+import { PostsHelper } from './poster/helpers/posts.helper';
+import { HotDogCondosImporter } from './poster/importers/hotdogcondos.importer';
+import { Post } from './poster/models/post.interface';
+import { ConfigHelper } from './poster/helpers/config.helper';
+import { FacebookGroupPoster } from './poster/channels/facebook/facebook.group.poster';
+import { FacebookPagePoster } from './poster/channels/facebook/facebook.page.poster';
 
 //importing necessary modules
 
@@ -133,6 +134,35 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   return event.sender.send('submitPostToFacebookPages', result);
 
 });
+
+ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
+  // console.log('detail clicked 2')
+  let config = ConfigHelper.getConfig();
+  console.log(config);
+
+  let result = true;
+  try {
+    let poster = new FacebookGroupPoster(
+      config.facebook_pages,
+      {
+        username: config.facebook_email,
+        password: config.facebook_password
+      },
+      post.images,
+      post.content
+    );
+
+    await poster.run();
+
+  } catch (e) {
+    result = false;
+    console.error(e);
+  }
+
+  return event.sender.send('submitPostToFacebookGroups', result);
+
+});
+
 
 try {
   // This method will be called when Electron has finished
