@@ -30,7 +30,8 @@ export class ConfigHelper{
             "facebook_email":"",
             "facebook_password":"",
             "facebook_pages":[],
-            "facebook_groups":[]
+            "facebook_groups":[],
+            "headless":false
         }`;
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;

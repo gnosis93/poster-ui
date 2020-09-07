@@ -13,23 +13,27 @@ export class HotDogCondosImporter{
 
     public async run():Promise<boolean>{
         let browser     = await this.lunchBrowser();
-        let pagesUrls   = await this.scrapePagesUrls(browser);
+
+        let mainPage = await browser.newPage();
+
+        let pagesUrls   = await this.scrapePagesUrls(mainPage);
         let propertiesUrls:Array<string> = [];
+        
 
         for(let pageUrl of pagesUrls){
-            let pagePropertiesUrls = await this.scrapeListingURLS(browser,pageUrl);
+            let pagePropertiesUrls = await this.scrapeListingURLS(mainPage,pageUrl);
             propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
         }
 
         for(let propertyUrl of propertiesUrls){
-            await this.scrapeProperty(browser,propertyUrl);
+            await this.scrapeProperty(propertyUrl,mainPage);
         }
         // this.scrapeListingURLS(browser,HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL);
         return true;
     }
 
-    private async scrapePagesUrls(browser:puppeteer.Browser):Promise<Array<string>>{
-        let page      = await browser.newPage();
+    private async scrapePagesUrls(page:puppeteer.Page):Promise<Array<string>>{
+        // let page      = await browser.newPage();
         await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL,{ waitUntil: 'networkidle2' });
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.pagination li a'), element => element.getAttribute('href')));
         urls.pop();
@@ -37,8 +41,8 @@ export class HotDogCondosImporter{
         // 
     }
 
-    private async scrapeProperty(browser:puppeteer.Browser,pageUrl:string){
-        let page    = await browser.newPage();
+    private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
+        // let page    = await browser.newPage();
         await page.goto(pageUrl,{ waitUntil: 'networkidle2' });  
         
         let title = await page.evaluate(() =>  document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").textContent : null); 
@@ -83,7 +87,7 @@ export class HotDogCondosImporter{
             response.on('end', function() {                                             
               fs.writeFileSync(imagePath, data.read());                               
             });                                                                         
-          }).end();
+        }).end();
     }
 
     private cleanImagesUrls(imagesUrls:Array<string>):Array<string>{
@@ -96,8 +100,7 @@ export class HotDogCondosImporter{
         return redefinedImagesUrl;
     }
 
-    private async scrapeListingURLS(browser:puppeteer.Browser,pageUrl:string):Promise<Array<string>>{
-        let page    = await browser.newPage();
+    private async scrapeListingURLS(page:puppeteer.Page,pageUrl:string):Promise<Array<string>>{
         await page.goto(pageUrl,{ waitUntil: 'networkidle2' });
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.listing-featured-image'), element => element.getAttribute('href')));
         
