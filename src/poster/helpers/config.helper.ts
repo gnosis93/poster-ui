@@ -6,6 +6,15 @@ export class ConfigHelper{
 
     private static configSingleton:any=null;
 
+
+    public static getConfigValue(valueKey:string,defaultValue:any=null){
+        let config = ConfigHelper.getConfig();
+        if(typeof config[valueKey] === 'undefined'){
+            return defaultValue
+        }
+        return config[valueKey];
+    }
+
     public static getConfig():any{
         if(ConfigHelper.configSingleton === null){
             let configFilePath  = ConfigHelper.getConfigFilePath();

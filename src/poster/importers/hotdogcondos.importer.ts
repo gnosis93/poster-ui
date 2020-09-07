@@ -28,6 +28,10 @@ export class HotDogCondosImporter{
         for(let propertyUrl of propertiesUrls){
             await this.scrapeProperty(propertyUrl,mainPage);
         }
+
+        // if((ConfigHelper.getConfigValue('headless',false) ) === true){
+            await browser.close();
+        // }
         // this.scrapeListingURLS(browser,HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL);
         return true;
     }
@@ -68,7 +72,6 @@ export class HotDogCondosImporter{
         for(let imageUrl of images){
             this.downloadImage(path.join(postDirectoryPath,((new Date()).getTime() +'.jpg')),imageUrl );
         }
-        await page.close();
         return true;
     }
 
@@ -103,15 +106,15 @@ export class HotDogCondosImporter{
     private async scrapeListingURLS(page:puppeteer.Page,pageUrl:string):Promise<Array<string>>{
         await page.goto(pageUrl,{ waitUntil: 'networkidle2' });
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.listing-featured-image'), element => element.getAttribute('href')));
-        
         return urls;
     }
 
     private async lunchBrowser():Promise<puppeteer.Browser>{
         let config = ConfigHelper.getConfig();
+        // if((ConfigHelper.getConfigValue('headless',false) ) === true){
 
         return puppeteer.launch({
-            headless: config.headless ?? true, 
+            headless: ConfigHelper.getConfigValue('headless',false), 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 
         });

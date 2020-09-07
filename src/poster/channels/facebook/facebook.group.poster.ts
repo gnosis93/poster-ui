@@ -47,6 +47,10 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         let browser     = await this.lunchBrowser();
         let loginPage   = await this.login(browser);
         let postedPages = this.postToPages(browser,onPageUploadedCallback);
+
+        if((ConfigHelper.getConfigValue('headless',false) ) === true){
+           await browser.close();
+        }
         return true;
     }
 
@@ -94,7 +98,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         let config = ConfigHelper.getConfig();
 
         return puppeteer.launch({
-            headless: config.headless ?? true, 
+            headless: ConfigHelper.getConfigValue('headless',false), 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 
         });
