@@ -143,7 +143,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
   let result = true;
   try {
     let poster = new FacebookGroupPoster(
-      config.facebook_pages,
+      config.facebook_groups,
       {
         username: config.facebook_email,
         password: config.facebook_password

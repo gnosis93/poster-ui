@@ -77,7 +77,7 @@ export class PostsService {
     if(post != null){
       this.electron.ipcRenderer.send('submitPostToFacebookGroups',post);
     }
-    return this.$postToFacebookPagesSubject.asObservable();
+    return this.$postToFacebookGroupsSubject.asObservable();
   }
 
 }
