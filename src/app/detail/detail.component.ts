@@ -4,6 +4,7 @@ import { ElectronService } from 'app/core/services';
 import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dialog';
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { PostsService, Post } from 'app/shared/services/posts.service';
+import { PostDialogComponent } from './dialogs/post/post.dialog.component';
 
 @Component({
   selector: 'app-detail',
@@ -53,6 +54,20 @@ export class DetailComponent implements OnInit {
       }
     });
 
+  } 
+
+  public onPostClick(){
+    const dialogPost = new MatDialogConfig();
+
+    dialogPost.disableClose = false;
+    dialogPost.autoFocus = true;
+
+    dialogPost.data = {
+      post:this.post
+    };
+
+    this.dialog.open(PostDialogComponent, dialogPost);
+    
   }
 
   public onPostFBPagesClick() {
