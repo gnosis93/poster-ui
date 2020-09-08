@@ -1,4 +1,5 @@
-<h1 mat-dialog-title>Channel Selection</h1>
+<h1 mat-dialog-title>
+    {{ isLoading ? ('Loading ( '+loadingProgress+'/'+numberSelectedChannels + ')') : 'Channel Selection' }}</h1>
 <hr />
 <span *ngIf="isLoading">
     <mat-spinner></mat-spinner>
@@ -15,7 +16,7 @@
                     </mat-checkbox>
                 </div>
             </div>
-            
+
         </form>
     </mat-dialog-content>
 

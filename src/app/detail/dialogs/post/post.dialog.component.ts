@@ -13,6 +13,9 @@ export class PostDialogComponent implements OnInit {
   private post:Post;
 
 
+  public loadingProgress:number = 0;
+  public numberSelectedChannels:number = 0;
+
   public readonly channels:Channel[] = [
     {
       "name":'Facebook Pages',
@@ -52,15 +55,15 @@ export class PostDialogComponent implements OnInit {
       if(selectedChannels.length > 0){
         this.handleQueueItem(selectedChannels[0]);
       }else{
-        this.isLoading = false;
-        console.log('Operation Completed')
+        this.postingCompleted();
       }
 
-      this.isLoading = false;
+      this.loadingProgress++;
+
       if (result === false) {
         alert('An error has occurred while posting this post');
       }
-      
+
       this.cd.detectChanges();
     });
 
@@ -71,10 +74,11 @@ export class PostDialogComponent implements OnInit {
       if(selectedChannels.length > 0){
         this.handleQueueItem(selectedChannels[0]);
       }else{
-        this.isLoading = false;
-        console.log('Operation Completed')
+        this.postingCompleted();
       }
-
+      
+      this.loadingProgress++;
+      
       if (result === false) {
         alert('An error has occurred while posting this post to groups');
       }
@@ -83,6 +87,12 @@ export class PostDialogComponent implements OnInit {
     });
   }
 
+  private postingCompleted(){
+    this.isLoading = false;
+    alert('Operation Completed')
+    this.dialogRef.close();
+    console.log('Operation Completed')
+  }
 
   close(){
     this.dialogRef.close();
@@ -116,7 +126,9 @@ export class PostDialogComponent implements OnInit {
   }
 
   onPostClick(){
-    let selectedChannels = this.getSelectedChannels();
+    let selectedChannels        = this.getSelectedChannels();
+    this.numberSelectedChannels = selectedChannels.length;
+    
     if(selectedChannels.length > 0){
       this.isLoading = true;
       this.handleQueueItem(selectedChannels[0]);

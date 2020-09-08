@@ -46,7 +46,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
     public async run(onPageUploadedCallback:Function|null=null):Promise<boolean>{
         let browser     = await this.lunchBrowser();
         let loginPage   = await this.login(browser);
-        let postedPages = this.postToPages(browser,onPageUploadedCallback);
+        let postedPages = await this.postToPages(browser,onPageUploadedCallback);
 
         if((ConfigHelper.getConfigValue('headless',false) ) === true){
            await browser.close();
