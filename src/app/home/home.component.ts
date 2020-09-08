@@ -24,17 +24,16 @@ export class HomeComponent implements OnInit {
     private router: Router,
     // private electron: ElectronService,
     private dialog: MatDialog,
-    // private zone:NgZone,
+    private zone:NgZone,
     private postsService:PostsService,
-    private importService:ImportService
+    private importService:ImportService,
   ) { }
+
 
   ngOnInit(): void {
     this.getPosts();
     this.importService.importHotdogCondos(false).subscribe((result)=>{
-      if(this.loadingDialogRef){
-        this.loadingDialogRef.close();
-      }
+      this.hideSpinner();
       this.getPosts();
     })
     // this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
@@ -54,15 +53,19 @@ export class HomeComponent implements OnInit {
 
   }
 
-
+  hideSpinner(){
+    this.zone.run(()=>{
+      if(this.loadingDialogRef){
+        this.loadingDialogRef.close();
+      }
+    })
+  }
 
   getPosts(){
     this.showProgressSpinner();
     this.postsService.Posts.subscribe((posts)=>{
       this.posts = posts;
-      if(this.loadingDialogRef){
-        this.loadingDialogRef.close();
-      }
+      this.hideSpinner();
     })
     // this.posts = [
     //   {
