@@ -48,3 +48,7 @@ package-lock.json
 # System Files
 .DS_Store
 Thumbs.db
+
+poster/channels/facebook/facebook.page.poster.js
+
+poster/channels/facebook/facebook.group.poster.js
