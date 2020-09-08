@@ -115,8 +115,14 @@ export class HomeComponent implements OnInit {
   }
 
   async onImportClick(){
-    this.showProgressSpinner();
-    this.importService.importHotdogCondos();
+    this.importService.validateConfigFile(false).subscribe((errorMessage)=>{
+      if(errorMessage == ""){
+        this.showProgressSpinner();
+        this.importService.importHotdogCondos();
+      }else{
+        alert(errorMessage);
+      }
+    })
   }
   
   async onDeleteClick(post:Post|null){

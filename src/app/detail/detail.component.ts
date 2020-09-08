@@ -56,18 +56,24 @@ export class DetailComponent implements OnInit {
 
   } 
 
-  public onPostClick(){
-    const dialogPost = new MatDialogConfig();
+  public onPostClick(){ 
 
-    dialogPost.disableClose = false;
-    dialogPost.autoFocus = true;
+    this.postsService.validateConfigFile(true).subscribe((errorMessage)=>{
+      if(errorMessage == ""){
+        const dialogPost = new MatDialogConfig();
 
-    dialogPost.data = {
-      post:this.post
-    };
-
-    this.dialog.open(PostDialogComponent, dialogPost);
+        dialogPost.disableClose = false;
+        dialogPost.autoFocus = true;
     
+        dialogPost.data = {
+          post:this.post
+        };
+    
+        this.dialog.open(PostDialogComponent, dialogPost);
+      }else{
+        alert(errorMessage);
+      }
+    })
   }
 
   public onPostFBPagesClick() {

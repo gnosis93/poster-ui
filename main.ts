@@ -89,6 +89,11 @@ ipcMain.addListener('saveConfig', async (event, args) => {
   event.sender.send('saveConfig', true);
 });
 
+ipcMain.addListener('validateConfig', async (event, args) => {
+  let errorMessage = await ConfigHelper.validateConfigData(args);
+  event.sender.send('validateConfig', errorMessage);
+});
+
 
 ipcMain.addListener('websiteImport', async (event, args) => {
   let websiteImporter = new HotDogCondosImporter();

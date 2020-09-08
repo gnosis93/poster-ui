@@ -1,6 +1,7 @@
 //importing necessary modules
 import path = require('path');
 import fs   = require('fs');
+import { chrome } from 'process';
 
 export class ConfigHelper{
 
@@ -23,6 +24,26 @@ export class ConfigHelper{
         }
        
         return ConfigHelper.configSingleton;
+    }
+
+    public static validateConfigData(posting: boolean ):string{
+        let value = "";
+        let config = this.getConfig();
+        if(posting && config.facebook_pages.length == 0){
+            value = 'The list of Facebook Pages is empty in Config.';
+            return value;
+        }else if(posting && config.facebook_groups.length == 0){
+            value = 'The list of Facebook Groups is empty in Config.';
+            return value;
+        }else if(config.chrome_executable_path == ""){
+            value = 'Chrome Executable Path is not set in Config.';
+            return value;
+        }else if(!fs.existsSync(config.chrome_executable_path)){
+            value = 'Chrome Executable Path is not valid in Config.';
+            return value;
+        }else{
+            return value;
+        }
     }
 
     public static createConfigFile(){

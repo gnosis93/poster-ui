@@ -23,6 +23,29 @@ var ConfigHelper = /** @class */ (function () {
         }
         return ConfigHelper.configSingleton;
     };
+    ConfigHelper.validateConfigData = function (posting) {
+        var value = "";
+        var config = this.getConfig();
+        if (posting && config.facebook_pages.length == 0) {
+            value = 'The list of Facebook Pages is empty in Config.';
+            return value;
+        }
+        else if (posting && config.facebook_groups.length == 0) {
+            value = 'The list of Facebook Groups is empty in Config.';
+            return value;
+        }
+        else if (config.chrome_executable_path == "") {
+            value = 'Chrome Executable Path is not set in Config.';
+            return value;
+        }
+        else if (!fs.existsSync(config.chrome_executable_path)) {
+            value = 'Chrome Executable Path is not valid in Config.';
+            return value;
+        }
+        else {
+            return value;
+        }
+    };
     ConfigHelper.createConfigFile = function () {
         ConfigHelper.configSingleton = null;
         var configFilePath = ConfigHelper.getConfigFilePath();

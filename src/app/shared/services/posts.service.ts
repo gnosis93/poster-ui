@@ -12,6 +12,7 @@ export class PostsService {
   private $postToFacebookPagesSubject:Subject<boolean>;
   private $deleteSubject:Subject<boolean>;
   private $postToFacebookGroupsSubject:Subject<boolean>;
+  private $validateConfigSubject:Subject<string>;
 
   constructor(
     private electron: ElectronService,
@@ -22,6 +23,7 @@ export class PostsService {
     this.$postToFacebookPagesSubject  = new Subject<boolean>();
     this.$postToFacebookGroupsSubject = new Subject<boolean>();
     this.$deleteSubject               = new Subject<boolean>();
+    this.$validateConfigSubject       = new Subject<string>();
 
     this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
       this.$postSubject.next(message);
@@ -80,6 +82,10 @@ export class PostsService {
     return this.$postToFacebookGroupsSubject.asObservable();
   }
 
+  public validateConfigFile(posting: boolean){
+    this.electron.ipcRenderer.send('validateConfig', posting);
+    return this.$validateConfigSubject.asObservable();
+  }
 }
 
 export interface Post{
