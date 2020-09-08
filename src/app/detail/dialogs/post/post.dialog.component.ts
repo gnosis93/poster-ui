@@ -49,39 +49,38 @@ export class PostDialogComponent implements OnInit {
 
     this.postsService.postToFacebookPages(null).subscribe((result) => {
       this.setChannelSelected('Facebook Pages',false);
+      this.loadingProgress++;
 
       let selectedChannels = this.getSelectedChannels();
       
-      if(selectedChannels.length > 0){
-        this.handleQueueItem(selectedChannels[0]);
+      if(selectedChannels.length == 0){
+        return this.postingCompleted();
       }else{
-        this.postingCompleted();
+        this.handleQueueItem(selectedChannels[0]);
       }
 
-      this.loadingProgress++;
 
-      if (result === false) {
-        alert('An error has occurred while posting this post');
-      }
+      // if (result === false) {
+      //   alert('An error has occurred while posting this post');
+      // }
 
       this.cd.detectChanges();
     });
 
     this.postsService.postToFacebookGroups(null).subscribe((result) => {
       this.setChannelSelected('Facebook Groups',false);
+      this.loadingProgress++;
 
       let selectedChannels = this.getSelectedChannels();
-      if(selectedChannels.length > 0){
-        this.handleQueueItem(selectedChannels[0]);
+      if(selectedChannels.length == 0){
+        return this.postingCompleted();
       }else{
-        this.postingCompleted();
+        this.handleQueueItem(selectedChannels[0]);
       }
       
-      this.loadingProgress++;
-      
-      if (result === false) {
-        alert('An error has occurred while posting this post to groups');
-      }
+      // if (result === false) {
+      //   alert('An error has occurred while posting this post to groups');
+      // }
 
       this.cd.detectChanges();
     });
@@ -89,9 +88,9 @@ export class PostDialogComponent implements OnInit {
 
   private postingCompleted(){
     this.isLoading = false;
-    alert('Operation Completed')
     this.dialogRef.close();
-    console.log('Operation Completed')
+    this.cd.detectChanges();
+    alert('Operation Completed')
   }
 
   close(){
@@ -128,7 +127,7 @@ export class PostDialogComponent implements OnInit {
   onPostClick(){
     let selectedChannels        = this.getSelectedChannels();
     this.numberSelectedChannels = selectedChannels.length;
-    
+
     if(selectedChannels.length > 0){
       this.isLoading = true;
       this.handleQueueItem(selectedChannels[0]);

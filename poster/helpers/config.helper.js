@@ -30,7 +30,7 @@ var ConfigHelper = /** @class */ (function () {
         if (fileExists) {
             return false;
         }
-        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"\",\n            \"facebook_password\":\"\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            \"chrome_executable_path\":\"/usr/bin/google-chrome\"\n        }";
+        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"\",\n            \"facebook_password\":\"\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;
     };
@@ -49,7 +49,8 @@ var ConfigHelper = /** @class */ (function () {
         return configFilePath;
     };
     ConfigHelper.getPostsDir = function () {
-        var homedir = require('os').homedir();
+        var app = require('electron').app;
+        var homedir = app.getPath('userData');
         var dirPath = path.join(homedir, 'posts');
         return dirPath;
     };

@@ -76,7 +76,8 @@ export class HotDogCondosImporter{
     }
 
     private getPostsDir():string{
-        return path.join( require('os').homedir(),'posts')
+        const {app} = require('electron');
+        return path.join( app.getPath('userData'),'posts')
     }
 
     private downloadImage(imagePath:string,imageUrl:string){

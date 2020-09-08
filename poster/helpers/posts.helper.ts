@@ -13,7 +13,8 @@ export class PostsHelper{
     ];
 
     public static getPostsDir(){
-        const homedir = require('os').homedir();
+        const {app} = require('electron');
+        const homedir = app.getPath('userData');
         let dirPath   = path.join(homedir, 'posts');
         return dirPath;
     }

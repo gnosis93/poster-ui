@@ -8,7 +8,8 @@ var PostsHelper = /** @class */ (function () {
     function PostsHelper() {
     }
     PostsHelper.getPostsDir = function () {
-        var homedir = require('os').homedir();
+        var app = require('electron').app;
+        var homedir = app.getPath('userData');
         var dirPath = path.join(homedir, 'posts');
         return dirPath;
     };

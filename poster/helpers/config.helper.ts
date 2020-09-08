@@ -41,7 +41,7 @@ export class ConfigHelper{
             "facebook_pages":[],
             "facebook_groups":[],
             "headless":false,
-            "chrome_executable_path":"/usr/bin/google-chrome"
+            "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         }`;
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;
@@ -65,7 +65,8 @@ export class ConfigHelper{
     }
 
     public static getPostsDir(){
-        const homedir = require('os').homedir();
+        const {app} = require('electron');
+        const homedir = app.getPath('userData');
         let dirPath   = path.join(homedir, 'posts');
         return dirPath;
     }

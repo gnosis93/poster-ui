@@ -160,7 +160,8 @@ var HotDogCondosImporter = /** @class */ (function () {
         });
     };
     HotDogCondosImporter.prototype.getPostsDir = function () {
-        return path.join(require('os').homedir(), 'posts');
+        var app = require('electron').app;
+        return path.join(app.getPath('userData'), 'posts');
     };
     HotDogCondosImporter.prototype.downloadImage = function (imagePath, imageUrl) {
         https.request(imageUrl, function (response) {
