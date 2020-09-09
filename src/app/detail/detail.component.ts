@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig } from '@angular/material/dial
 import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-spinner-dialog/progress-spinner-dialog.component';
 import { PostsService, Post } from 'app/shared/services/posts.service';
 import { PostDialogComponent } from './dialogs/post/post.dialog.component';
+import { ConfigService } from 'app/shared/services/config.service';
 
 @Component({
   selector: 'app-detail',
@@ -21,7 +22,8 @@ export class DetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
-    private postsService: PostsService
+    private postsService: PostsService,
+    private configService: ConfigService
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +60,7 @@ export class DetailComponent implements OnInit {
 
   public onPostClick(){ 
 
-    this.postsService.validateConfigFile(true).subscribe((errorMessage)=>{
+    this.configService.validateConfigData(true).subscribe((errorMessage)=>{
       if(errorMessage == ""){
         const dialogPost = new MatDialogConfig();
 

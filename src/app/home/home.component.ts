@@ -8,6 +8,7 @@ import {ConfigDialogComponent} from '../shared/components/config-dialog/config-d
 import { PostsService, Post } from 'app/shared/services/posts.service';
 import { allowedNodeEnvironmentFlags } from 'process';
 import { ImportService } from 'app/shared/services/import.service';
+import { ConfigService } from 'app/shared/services/config.service';
 
 @Component({
   selector: 'app-home',
@@ -27,6 +28,7 @@ export class HomeComponent implements OnInit {
     private zone:NgZone,
     private postsService:PostsService,
     private importService:ImportService,
+    private configService: ConfigService
   ) { }
 
 
@@ -115,7 +117,7 @@ export class HomeComponent implements OnInit {
   }
 
   async onImportClick(){
-    this.importService.validateConfigFile(false).subscribe((errorMessage)=>{
+    this.configService.validateConfigData(false).subscribe((errorMessage)=>{
       if(errorMessage == ""){
         this.showProgressSpinner();
         this.importService.importHotdogCondos();

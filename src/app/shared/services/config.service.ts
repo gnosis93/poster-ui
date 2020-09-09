@@ -9,12 +9,14 @@ export class ConfigService {
 
   private $getConfigSubject:Subject<any>;
   private $saveConfigSubject:Subject<boolean>;
+  private $validateConfigSubject:Subject<string>;
 
   constructor(
     private electron: ElectronService,
   ) {
-    this.$getConfigSubject = new Subject<any>();
-    this.$saveConfigSubject = new Subject<boolean>();
+    this.$getConfigSubject      = new Subject<any>();
+    this.$saveConfigSubject     = new Subject<boolean>();
+    this.$validateConfigSubject = new Subject<string>();
 
     this.electron.ipcRenderer.addListener('getConfig',(e,args)=>{
       this.$getConfigSubject.next(args);
@@ -24,7 +26,9 @@ export class ConfigService {
       this.$saveConfigSubject.next(args);
     });
 
-
+    this.electron.ipcRenderer.addListener('validateConfig',(sender,message)=>{
+      this.$validateConfigSubject.next(message);
+    })
   }
 
   public getConfig(){
@@ -40,4 +44,8 @@ export class ConfigService {
     return this.$saveConfigSubject.asObservable();
   }
 
+  public validateConfigData(posting: boolean){
+    this.electron.ipcRenderer.send('validateConfig', posting);
+    return this.$validateConfigSubject.asObservable();
+  }
 }
