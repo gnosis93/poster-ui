@@ -6,6 +6,7 @@ import { ProgressSpinnerDialogComponent } from 'app/shared/components/progress-s
 import { PostsService, Post } from 'app/shared/services/posts.service';
 import { PostDialogComponent } from './dialogs/post/post.dialog.component';
 import { ConfigService } from 'app/shared/services/config.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-detail',
@@ -17,16 +18,18 @@ export class DetailComponent implements OnInit {
   public post: Post | null = null;
 
   private loadingDialogRef: MatDialogRef<ProgressSpinnerDialogComponent, any> | null = null;
+  private validateConfigDataSubscription:Subscription|null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private postsService: PostsService,
-    private configService: ConfigService
+    private configService: ConfigService,
   ) { }
 
   ngOnInit(): void {
+
     this.route.params.subscribe((params) => {
       let postName = params['postName'] ?? null;
       if (!postName) {
@@ -59,23 +62,28 @@ export class DetailComponent implements OnInit {
   } 
 
   public onPostClick(){ 
+    if(this.validateConfigDataSubscription === null){
+      this.configService.validateConfigData(true).subscribe((errorMessage)=>{
+        if(errorMessage == ""){
+          const dialogPost = new MatDialogConfig();
+  
+          dialogPost.disableClose = false;
+          dialogPost.autoFocus = true;
+      
+          dialogPost.data = {
+            post:this.post
+          };
+      
+          this.dialog.open(PostDialogComponent, dialogPost);
+        }else{
+          alert(errorMessage);
+        }
+      })
+    }else{
+      this.configService.validateConfigData(true);
+    }
+   
 
-    this.configService.validateConfigData(true).subscribe((errorMessage)=>{
-      if(errorMessage == ""){
-        const dialogPost = new MatDialogConfig();
-
-        dialogPost.disableClose = false;
-        dialogPost.autoFocus = true;
-    
-        dialogPost.data = {
-          post:this.post
-        };
-    
-        this.dialog.open(PostDialogComponent, dialogPost);
-      }else{
-        alert(errorMessage);
-      }
-    })
   }
 
   public onPostFBPagesClick() {

@@ -19,8 +19,9 @@ export class HomeComponent implements OnInit {
 
   public posts:Post[];
   private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
-  private deleteSubscription:Subscription = null;
-
+  private deleteSubscription:Subscription|null = null;
+  private configValidationSubscription:Subscription|null = null;
+  
   constructor(
     private router: Router,
     // private electron: ElectronService,
@@ -37,21 +38,7 @@ export class HomeComponent implements OnInit {
     this.importService.importHotdogCondos(false).subscribe((result)=>{
       this.hideSpinner();
       this.getPosts();
-    })
-    // this.electron.ipcRenderer.addListener('websiteImport',(sender,message)=>{
-    //   // console.log('response ',sender,message);
-    //   // this.posts = message;
-    //   // this.cdRef.detectChanges();
-    //   this.zone.run(()=>{
-    //     if(this.loadingDialogRef){
-    //       this.loadingDialogRef.close();
-    //     }
-    //     console.log('ok');
-    //     this.getPosts();
-    //     // this.testFunc()
-    //  });
-
-    // });
+    });
 
   }
 
@@ -69,62 +56,21 @@ export class HomeComponent implements OnInit {
       this.posts = posts;
       this.hideSpinner();
     })
-    // this.posts = [
-    //   {
-    //     "content": "POST sadsadm",
-    //     "dirPath": "/home/aaron/posts/post-1",
-    //     "images":[
-
-    //     ],
-    //     "name": "post 1"
-    //   },
-    //   {
-    //     "content": "POST sadsadm",
-    //     "dirPath": "/home/aaron/posts/post-1",
-    //     "images":[
-
-    //     ],
-    //     "name": "ASA post 1"
-    //   },
-    //   {
-    //     "content": "POST sadsadm",
-    //     "dirPath": "/home/aaron/posts/post-1",
-    //     "images":[
-
-    //     ],
-    //     "name": "aaa OOOost-1"
-    //   },
-    //   {
-    //     "content": "POST sadsadm",
-    //     "dirPath": "/home/aaron/posts/post-1",
-    //     "images":[
-
-    //     ],
-    //     "name": "AA post-1"
-    //   },
-    //   {
-    //     "content": "POST sadsadm",
-    //     "dirPath": "/home/aaron/posts/post-1",
-    //     "images":[
-
-    //     ],
-    //     "name": "post-1"
-    //   }
-    // ]
-    // this.cdRef.detectChanges();
-
-
   }
 
   async onImportClick(){
-    this.configService.validateConfigData(false).subscribe((errorMessage)=>{
-      if(errorMessage == ""){
-        this.showProgressSpinner();
-        this.importService.importHotdogCondos();
-      }else{
-        alert(errorMessage);
-      }
-    })
+    if(this.configValidationSubscription === null){
+      this.configValidationSubscription = this.configService.validateConfigData(false).subscribe((errorMessage)=>{
+        if(errorMessage && errorMessage.length ===  0){
+          this.showProgressSpinner();
+          this.importService.importHotdogCondos();
+        }else{
+          alert(errorMessage);
+        }
+      })
+    }else{
+      this.configService.validateConfigData(false)
+    }
   }
   
   async onDeleteClick(post:Post|null){
