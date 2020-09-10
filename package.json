@@ -1,8 +1,8 @@
 {
-  "name": "angular-electron",
+  "name": "appsilon-poster",
   "version": "8.0.4",
   "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "homepage": "https://github.com/maximegris/appsilon-poster",
   "author": {
     "name": "Maxime GRIS",
     "email": "maxime.gris@gmail.com"

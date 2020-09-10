@@ -34,7 +34,7 @@ With this sample, you can :
 Clone this repository locally :
 
 ```bash
-git clone https://github.com/maximegris/angular-electron.git
+git clone https://github.com/maximegris/appsilon-poster.git
 ```
 
 Install dependencies with npm :
@@ -101,24 +101,24 @@ Note: To make it work behind a proxy, you can add this proxy exception in your t
 
 ## Branch & Packages version
 
-- Angular 4 & Electron 1 : Branch [angular4](https://github.com/maximegris/angular-electron/tree/angular4)
-- Angular 5 & Electron 1 : Branch [angular5](https://github.com/maximegris/angular-electron/tree/angular5)
-- Angular 6 & Electron 3 : Branch [angular6](https://github.com/maximegris/angular-electron/tree/angular6)
-- Angular 7 & Electron 3 : Branch [angular7](https://github.com/maximegris/angular-electron/tree/angular7)
-- Angular 8 & Electron 7 : Branch [angular8](https://github.com/maximegris/angular-electron/tree/angular8)
-- Angular 9 & Electron 7 : Branch [angular9](https://github.com/maximegris/angular-electron/tree/angular9)
+- Angular 4 & Electron 1 : Branch [angular4](https://github.com/maximegris/appsilon-poster/tree/angular4)
+- Angular 5 & Electron 1 : Branch [angular5](https://github.com/maximegris/appsilon-poster/tree/angular5)
+- Angular 6 & Electron 3 : Branch [angular6](https://github.com/maximegris/appsilon-poster/tree/angular6)
+- Angular 7 & Electron 3 : Branch [angular7](https://github.com/maximegris/appsilon-poster/tree/angular7)
+- Angular 8 & Electron 7 : Branch [angular8](https://github.com/maximegris/appsilon-poster/tree/angular8)
+- Angular 9 & Electron 7 : Branch [angular9](https://github.com/maximegris/appsilon-poster/tree/angular9)
 - Angular 10 & Electron 9 : (master)
 
-[build-badge]: https://travis-ci.org/maximegris/angular-electron.svg?branch=master&style=style=flat-square
-[build]: https://travis-ci.org/maximegris/angular-electron
+[build-badge]: https://travis-ci.org/maximegris/appsilon-poster.svg?branch=master&style=style=flat-square
+[build]: https://travis-ci.org/maximegris/appsilon-poster
 [license-badge]: https://img.shields.io/badge/license-Apache2-blue.svg?style=style=flat-square
-[license]: https://github.com/maximegris/angular-electron/blob/master/LICENSE.md
+[license]: https://github.com/maximegris/appsilon-poster/blob/master/LICENSE.md
 [prs-badge]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square
 [prs]: http://makeapullrequest.com
-[github-watch-badge]: https://img.shields.io/github/watchers/maximegris/angular-electron.svg?style=social
-[github-watch]: https://github.com/maximegris/angular-electron/watchers
-[github-star-badge]: https://img.shields.io/github/stars/maximegris/angular-electron.svg?style=social
-[github-star]: https://github.com/maximegris/angular-electron/stargazers
-[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20angular-electron!%20https://github.com/maximegris/angular-electron%20%F0%9F%91%8D
-[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/maximegris/angular-electron.svg?style=social
+[github-watch-badge]: https://img.shields.io/github/watchers/maximegris/appsilon-poster.svg?style=social
+[github-watch]: https://github.com/maximegris/appsilon-poster/watchers
+[github-star-badge]: https://img.shields.io/github/stars/maximegris/appsilon-poster.svg?style=social
+[github-star]: https://github.com/maximegris/appsilon-poster/stargazers
+[twitter]: https://twitter.com/intent/tweet?text=Check%20out%20appsilon-poster!%20https://github.com/maximegris/appsilon-poster%20%F0%9F%91%8D
+[twitter-badge]: https://img.shields.io/twitter/url/https/github.com/maximegris/appsilon-poster.svg?style=social
 [maintained-badge]: https://img.shields.io/badge/maintained-yes-brightgreen

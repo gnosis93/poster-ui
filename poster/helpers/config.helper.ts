@@ -82,6 +82,7 @@ export class ConfigHelper{
           fs.mkdirSync(postDirPath);
         }
         let configFilePath = path.join(postDirPath,'config.json');
+        console.log(configFilePath);
         return configFilePath;
     }
 

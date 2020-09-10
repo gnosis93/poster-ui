@@ -69,6 +69,7 @@ var ConfigHelper = /** @class */ (function () {
             fs.mkdirSync(postDirPath);
         }
         var configFilePath = path.join(postDirPath, 'config.json');
+        console.log(configFilePath);
         return configFilePath;
     };
     ConfigHelper.getPostsDir = function () {
