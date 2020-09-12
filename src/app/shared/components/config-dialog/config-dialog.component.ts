@@ -36,6 +36,42 @@ export class ConfigDialogComponent implements OnInit {
     this.config.headless = value.checked;
     console.log(value);
   }
+  
+  onDeletePageClick(pageUrl:string){
+    if(confirm('Are you sure you want to delete this page ?') === false){
+      return;
+    }
+    if(!this.config){
+      return;
+    }
+    let pages = this.config.facebook_pages;
+    let pagesRedefined = [];
+    for(let page of pages){
+      if(pageUrl === page){
+        continue;
+      }
+      pagesRedefined.push(page);
+    }
+    this.config.facebook_pages = pagesRedefined;
+  }
+
+  onDeleteGroupClick(groupUrl:string){
+    if(confirm('Are you sure you want to delete this group ?') === false){
+      return;
+    }
+    if(!this.config){
+      return;
+    }
+    let groups = this.config.facebook_groups;
+    let groupsRedefined = [];
+    for(let group of groups){
+      if(groupUrl === group){
+        continue;
+      }
+      groupsRedefined.push(group);
+    }
+    this.config.facebook_groups = groupsRedefined;
+  }
 
   close(){
     this.dialogRef.close();

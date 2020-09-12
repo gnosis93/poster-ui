@@ -18,7 +18,7 @@
             <div class="col-12">
                 <label><strong>Facebook Pages</strong></label>
                 <ul>
-                    <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}}</li>
+                    <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}} <button class="btn btn-danger" (click)="onDeletePageClick(pageUrl)">Delete</button></li>
                 </ul>
             </div>
             <div class="col-10">
@@ -35,7 +35,7 @@
             <div class="col-12">
                 <label><strong>Facebook Groups</strong></label>
                 <ul>
-                    <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}}</li>
+                    <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}} <button class="btn btn-danger" (click)="onDeleteGroupClick(pageUrl)">Delete</button></li>
                 </ul>
             </div>
             <div class="col-10">
