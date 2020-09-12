@@ -73,9 +73,11 @@ export class DetailComponent implements OnInit {
           dialogPost.data = {
             post:this.post
           };
+          console.log('no error')
       
           this.dialog.open(PostDialogComponent, dialogPost);
         }else{
+          console.log('errorMessage',errorMessage)
           alert(errorMessage);
         }
       })

@@ -61,10 +61,11 @@ export class HomeComponent implements OnInit {
   async onImportClick(){
     if(this.configValidationSubscription === null){
       this.configValidationSubscription = this.configService.validateConfigData(false).subscribe((errorMessage)=>{
-        if(errorMessage && errorMessage.length ===  0){
+        if(errorMessage == ''){
           this.showProgressSpinner();
           this.importService.importHotdogCondos();
         }else{
+          console.log(errorMessage,errorMessage.length)
           alert(errorMessage);
         }
       })
