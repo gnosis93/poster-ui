@@ -19,11 +19,11 @@ export class ImportService {
     })
   }
 
-
   public importHotdogCondos(startImport:boolean=true){
     if(startImport === true){
       this.electron.ipcRenderer.send('websiteImport');
     }
     return this.$importHotDogCondosSubject.asObservable();
   }
+  
 }

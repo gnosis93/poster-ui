@@ -19,33 +19,30 @@ var ConfigHelper = /** @class */ (function () {
         if (ConfigHelper.configSingleton === null) {
             var configFilePath = ConfigHelper.getConfigFilePath();
             var rawdata = fs.readFileSync(configFilePath);
+            return JSON.parse(rawdata.toString()); //TODO REMOVE LINE
             ConfigHelper.configSingleton = JSON.parse(rawdata.toString());
         }
         return ConfigHelper.configSingleton;
     };
-    ConfigHelper.validateConfigData = function (posting) {
-        var value = "";
-        var config = this.getConfig();
-        if (posting && config.facebook_pages.length == 0) {
-            value = 'The list of Facebook Pages is empty in Config.';
-        }
-        else if (posting && config.facebook_groups.length == 0) {
-            value = 'The list of Facebook Groups is empty in Config.';
-        }
-        else if (config.chrome_executable_path == "") {
-            value = 'Chrome Executable Path is not set in Config.';
-        }
-        else if (!fs.existsSync(config.chrome_executable_path)) {
-            value = 'Chrome Executable Path is not valid in Config.';
-        }
-        if (value === "") {
-            console.log('no config validation error found');
-        }
-        else {
-            console.error('config validation value error: ' + value);
-        }
-        return value;
-    };
+    // public static validateConfigData(posting: boolean ):string{
+    //     let value = "";
+    //     let config = this.getConfig();
+    //     if(posting && config.facebook_pages.length == 0){
+    //         value = 'The list of Facebook Pages is empty in Config.';
+    //     }else if(posting && config.facebook_groups.length == 0){
+    //         value = 'The list of Facebook Groups is empty in Config.';
+    //     }else if(config.chrome_executable_path == ""){
+    //         value = 'Chrome Executable Path is not set in Config.';
+    //     }else if(!fs.existsSync(config.chrome_executable_path)){
+    //         value = 'Chrome Executable Path is not valid in Config.';
+    //     }
+    //     if(value === ""){
+    //         console.log('no config validation error found');
+    //     }else{
+    //         console.error('config validation value error: '+value);
+    //     }
+    //     return value;
+    // }
     ConfigHelper.createConfigFile = function () {
         ConfigHelper.configSingleton = null;
         var configFilePath = ConfigHelper.getConfigFilePath();

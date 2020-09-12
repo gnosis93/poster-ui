@@ -18,7 +18,6 @@ export class DetailComponent implements OnInit {
   public post: Post | null = null;
 
   private loadingDialogRef: MatDialogRef<ProgressSpinnerDialogComponent, any> | null = null;
-  private validateConfigDataSubscription:Subscription|null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -62,41 +61,29 @@ export class DetailComponent implements OnInit {
   } 
 
   public onPostClick(){ 
-    if(this.validateConfigDataSubscription === null){
-      this.configService.validateConfigData(true).subscribe((errorMessage)=>{
-        if(errorMessage == ""){
-          const dialogPost = new MatDialogConfig();
+    const dialogPost = new MatDialogConfig();
   
-          dialogPost.disableClose = false;
-          dialogPost.autoFocus = true;
-      
-          dialogPost.data = {
-            post:this.post
-          };
-          console.log('no error')
-      
-          this.dialog.open(PostDialogComponent, dialogPost);
-        }else{
-          console.log('errorMessage',errorMessage)
-          alert(errorMessage);
-        }
-      })
-    }else{
-      this.configService.validateConfigData(true);
-    }
-   
+    dialogPost.disableClose = false;
+    dialogPost.autoFocus = true;
+
+    dialogPost.data = {
+      post:this.post
+    };
+    console.log('no error')
+
+    this.dialog.open(PostDialogComponent, dialogPost);
 
   }
 
-  public onPostFBPagesClick() {
-    this.showProgressSpinner();
-    this.postsService.postToFacebookPages(this.post);
-  }
+  // public onPostFBPagesClick() {
+  //   this.showProgressSpinner();
+  //   this.postsService.postToFacebookPages(this.post);
+  // }
 
-  public onPostFBGroupsClick() {
-    this.showProgressSpinner();
-    this.postsService.postToFacebookGroups(this.post);
-  }
+  // public onPostFBGroupsClick() {
+  //   this.showProgressSpinner();
+  //   this.postsService.postToFacebookGroups(this.post);
+  // }
 
   private getPost(postName: string) {
     this.showProgressSpinner();

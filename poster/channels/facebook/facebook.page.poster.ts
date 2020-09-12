@@ -3,6 +3,7 @@ import { Func } from 'mocha';
 import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
+import { config } from 'process';
 
 export class FacebookPagePoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
@@ -63,20 +64,26 @@ export class FacebookPagePoster extends ChannelBase implements IChannel{
             await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
             await groupPage.goto(group,{ waitUntil: 'networkidle2' });
-            await groupPage.click('div[aria-label="Create Post"]');
+            // await groupPage.click('div[aria-label="Create Post"]');
 
-            await this.delay(2000);
-            await groupPage.keyboard.type(this.content);   // click submit
-            // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
+            // await this.delay(2000);
+
             const inputUploadHandles = await groupPage.$$('input[type=file]');
-            const inputUploadHandle  = inputUploadHandles[2];
+           
+            const inputUploadHandle  = inputUploadHandles[1];
             let filesToUpload        = this.getImagesToPost();
+           
             
-            await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
             // Sets the value of the file input to fileToUpload
-            for(let fileToUpload of filesToUpload){
-                await inputUploadHandle.uploadFile(fileToUpload);
-            }
+            // for(let fileToUpload of filesToUpload){
+            // }
+            await inputUploadHandle.uploadFile(...filesToUpload);
+            await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
+
+            await groupPage.click('.rq0escxv.datstx6m.k4urcfbm.a8c37x1j');
+            await this.delay(100);   
+
+            await groupPage.keyboard.type(this.content);   // click submit
 
             //click the post button
             let postButtonXPath = "//div[text()='Post']"

@@ -1,7 +1,6 @@
 //importing necessary modules
 import path = require('path');
 import fs   = require('fs');
-import { chrome } from 'process';
 
 export class ConfigHelper{
 
@@ -26,26 +25,27 @@ export class ConfigHelper{
         return ConfigHelper.configSingleton;
     }
 
-    public static validateConfigData(posting: boolean ):string{
-        let value = "";
-        let config = this.getConfig();
-        if(posting && config.facebook_pages.length == 0){
-            value = 'The list of Facebook Pages is empty in Config.';
-        }else if(posting && config.facebook_groups.length == 0){
-            value = 'The list of Facebook Groups is empty in Config.';
-        }else if(config.chrome_executable_path == ""){
-            value = 'Chrome Executable Path is not set in Config.';
-        }else if(!fs.existsSync(config.chrome_executable_path)){
-            value = 'Chrome Executable Path is not valid in Config.';
-        }
-        if(value === ""){
-            console.log('no config validation error found');
-        }else{
-            console.error('config validation value error: '+value);
-        }
-        return value;
-    }
+    // public static validateConfigData(posting: boolean ):string{
+    //     let value = "";
+    //     let config = this.getConfig();
+    //     if(posting && config.facebook_pages.length == 0){
+    //         value = 'The list of Facebook Pages is empty in Config.';
+    //     }else if(posting && config.facebook_groups.length == 0){
+    //         value = 'The list of Facebook Groups is empty in Config.';
+    //     }else if(config.chrome_executable_path == ""){
+    //         value = 'Chrome Executable Path is not set in Config.';
+    //     }else if(!fs.existsSync(config.chrome_executable_path)){
+    //         value = 'Chrome Executable Path is not valid in Config.';
+    //     }
+    //     if(value === ""){
+    //         console.log('no config validation error found');
+    //     }else{
+    //         console.error('config validation value error: '+value);
+    //     }
+    //     return value;
+    // }
 
+   
     public static createConfigFile(){
         ConfigHelper.configSingleton = null;
         let  configFilePath = ConfigHelper.getConfigFilePath();
@@ -87,7 +87,7 @@ export class ConfigHelper{
     }
 
     public static getPostsDir(){
-        const {app} = require('electron');
+        const {app}   = require('electron');
         const homedir = app.getPath('userData');
         let dirPath   = path.join(homedir, 'posts');
         return dirPath;

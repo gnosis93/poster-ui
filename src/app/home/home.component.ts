@@ -9,6 +9,7 @@ import { PostsService, Post } from 'app/shared/services/posts.service';
 import { allowedNodeEnvironmentFlags } from 'process';
 import { ImportService } from 'app/shared/services/import.service';
 import { ConfigService } from 'app/shared/services/config.service';
+import { Config } from 'electron/main';
 
 @Component({
   selector: 'app-home',
@@ -20,8 +21,8 @@ export class HomeComponent implements OnInit {
   public posts:Post[];
   private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
   private deleteSubscription:Subscription|null = null;
-  private configValidationSubscription:Subscription|null = null;
-  
+  private config:any;
+
   constructor(
     private router: Router,
     // private electron: ElectronService,
@@ -40,6 +41,7 @@ export class HomeComponent implements OnInit {
       this.getPosts();
     });
 
+    this.configService.getConfig().subscribe((config)=>this.config = config);
   }
 
   hideSpinner(){
@@ -59,19 +61,14 @@ export class HomeComponent implements OnInit {
   }
 
   async onImportClick(){
-    if(this.configValidationSubscription === null){
-      this.configValidationSubscription = this.configService.validateConfigData(false).subscribe((errorMessage)=>{
-        if(errorMessage == ''){
-          this.showProgressSpinner();
-          this.importService.importHotdogCondos();
-        }else{
-          console.log(errorMessage,errorMessage.length)
-          alert(errorMessage);
-        }
-      })
-    }else{
-      this.configService.validateConfigData(false)
+    let validExcPathInConfig = await this.configService.validateConfigExecutablePath()
+    if(validExcPathInConfig === false){
+      alert('Executable Path is not set in config, Please set it up');
+      return;
     }
+    
+    this.importService.importHotdogCondos();
+      
   }
   
   async onDeleteClick(post:Post|null){
@@ -83,11 +80,11 @@ export class HomeComponent implements OnInit {
       
       if(!this.deleteSubscription){
         this.deleteSubscription = this.postsService.deletePostByName(post.name).subscribe((response)=>{
-          console.log('deleted on renderer recivied response ok')
+          console.log('deleted on renderer received response ok')
           if(response){
             this.getPosts();
           }else{
-            alert('Unexpected error occured while deleting this item. Please, contact support.');
+            alert('Unexpected error occurred while deleting this item. Please, contact support.');
           }
         })
       }else{

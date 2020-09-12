@@ -79,6 +79,18 @@ ipcMain.addListener('getConfig',async (event,args) => {
   event.sender.send('getConfig', config);
 });
 
+ipcMain.addListener('getConfigValue',async (event,args) => {
+  let configValue = ConfigHelper.getConfigValue(args);
+  event.sender.send('getConfigValue', configValue);
+});
+
+ipcMain.addListener('fileExists',async (event,args) => {
+  // let configValue = ConfigHelper.getConfigValue(args);
+  let fileExists = fs.existsSync(args);
+  event.sender.send('fileExists', fileExists);
+});
+
+
 ipcMain.addListener('getPosts', async (event, args) => {
   let result = await PostsHelper.getListOfPosts();
   event.sender.send('getPosts', PostsHelper.redefineListOfPosts(result.postsDirs, result.postsDirPath));
@@ -89,10 +101,10 @@ ipcMain.addListener('saveConfig', async (event, args) => {
   event.sender.send('saveConfig', true);
 });
 
-ipcMain.addListener('validateConfig', async (event, args) => {
-  let errorMessage = await ConfigHelper.validateConfigData(args);
-  event.sender.send('validateConfig', errorMessage);
-});
+// ipcMain.addListener('validateConfig', async (event, args) => {
+//   let errorMessage = await ConfigHelper.validateConfigData(args);
+//   event.sender.send('validateConfig', errorMessage);
+// });
 
 
 ipcMain.addListener('websiteImport', async (event, args) => {

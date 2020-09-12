@@ -51,6 +51,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         if((ConfigHelper.getConfigValue('headless',false) ) === true){
            await browser.close();
         }
+        
         return true;
     }
 
@@ -61,7 +62,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
             count++;
             
             const groupPage = await browser.newPage();
-            await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
+            // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
             await groupPage.goto(group,{ waitUntil: 'networkidle2' });
             await groupPage.click('.kbf60n1y');
@@ -70,17 +71,20 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
             await groupPage.keyboard.type(this.content);   // click submit
             // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
             const inputUploadHandles = await groupPage.$$('input[type=file]');
-            const inputUploadHandle  = inputUploadHandles[2];
-            let filesToUpload        = this.getImagesToPost();
+            const inputUploadHandle  = inputUploadHandles[5];//5
             
-            await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
+            let filesToUpload        = this.getImagesToPost();
+            // console.log('Post Images',filesToUpload);
+            await this.delay(100);
+
+            // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
+            // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
             // Sets the value of the file input to fileToUpload
             for(let fileToUpload of filesToUpload){
                 await inputUploadHandle.uploadFile(fileToUpload);
             }
 
-            await this.delay(1000);
-
+            await this.delay(2000);
             await groupPage.click('div[aria-label="Post"]');
 
             if(onPageUploadedCallback !== null){

@@ -41,9 +41,11 @@ export class ConfigDialogComponent implements OnInit {
     if(confirm('Are you sure you want to delete this page ?') === false){
       return;
     }
+
     if(!this.config){
       return;
     }
+    
     let pages = this.config.facebook_pages;
     let pagesRedefined = [];
     for(let page of pages){
