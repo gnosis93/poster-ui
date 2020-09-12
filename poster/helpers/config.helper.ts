@@ -38,7 +38,11 @@ export class ConfigHelper{
         }else if(!fs.existsSync(config.chrome_executable_path)){
             value = 'Chrome Executable Path is not valid in Config.';
         }
-        console.log('config validation value: '+value);
+        if(value === ""){
+            console.log('no config validation error found');
+        }else{
+            console.error('config validation value error: '+value);
+        }
         return value;
     }
 

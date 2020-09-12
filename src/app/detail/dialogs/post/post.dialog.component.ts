@@ -34,12 +34,13 @@ export class PostDialogComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) data:any,
     private cd: ChangeDetectorRef
     ) { 
+      this.isLoading = false;
 
-    this.post = data.post ?? null;
-    if(!this.post){
-      this.dialogRef.close();
-      alert('Invalid post')
-    }
+      this.post = data.post ?? null;
+      if(!this.post){
+        this.dialogRef.close();
+        alert('Invalid post')
+      }
 
   }
 
@@ -86,15 +87,17 @@ export class PostDialogComponent implements OnInit {
     });
   }
 
-  private postingCompleted(){
+  private  postingCompleted(){
     this.isLoading = false;
-    this.dialogRef.close();
+   this.dialogRef.close();
     this.cd.detectChanges();
-    alert('Operation Completed')
+    // alert('Operation Completed')
   }
 
-  close(){
-    this.dialogRef.close();
+  async close(){
+    await this.dialogRef.close();
+    this.cd.detectChanges();
+    console.log('post dialog closed');
   }
 
 

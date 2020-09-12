@@ -1,11 +1,12 @@
 <h1 mat-dialog-title>
     {{ isLoading ? ('Loading ( '+loadingProgress+'/'+numberSelectedChannels + ')') : 'Channel Selection' }}</h1>
 <hr />
-<span *ngIf="isLoading">
+
+<span *ngIf="isLoading === true">
     <mat-spinner></mat-spinner>
 </span>
 
-<span *ngIf="isLoading == false">
+<span *ngIf="isLoading === false">
     <mat-dialog-content>
         <form>
 
@@ -19,21 +20,21 @@
 
         </form>
     </mat-dialog-content>
+</span>
 
-    <mat-dialog-actions>
-        <div class="row">
-            <div class="col-12">
-                <hr>
-            </div>
-            <div class="col-12">
-                <div class="float-right">
-                    <button class="btn mat-raised-button" (click)="close()">Close</button> &nbsp;&nbsp;
-                    <button class="btn mat-raised-button mat-primary" (click)="onPostClick()">Post</button>
-                </div>
+<mat-dialog-actions>
+    <div class="row">
+        <div class="col-12">
+            <hr>
+        </div>
+        <div class="col-12">
+            <div class="float-right">
+                <button class="btn mat-raised-button" (click)="close()">Close</button> &nbsp;&nbsp;
+                <button class="btn mat-raised-button mat-primary" (click)="onPostClick()">Post</button>
             </div>
         </div>
+    </div>
 
-    </mat-dialog-actions>
+</mat-dialog-actions>
 
 
-</span>
