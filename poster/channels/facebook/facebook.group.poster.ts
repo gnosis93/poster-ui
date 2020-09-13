@@ -2,12 +2,13 @@ import * as puppeteer from 'puppeteer';
 import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
+import { PostImage } from '../../models/post.interface';
 
 export class FacebookGroupPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
     private readonly channelLoginUrl:string = 'https://en-gb.facebook.com/login/';
 
-    constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:string[],private content:string){
+    constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:PostImage[],private content:string){
         super();
         if(!postPages || postPages.length === 0){
             throw "Invalid Post pages given to FacebookGroupPoster";
@@ -18,8 +19,8 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
     }
 
     public getImagesToPost(){
-        return this.imagesToPost;
-    }
+      return this.imagesToPost.filter((i)=> i.selected == true).map((i) => i.imageURL);
+  }
 
     public getCredentials(){//override
         return this.credentials;
@@ -52,7 +53,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         if((ConfigHelper.getConfigValue('headless',false) ) === true){
            await browser.close();
         }
-        
+
         return true;
     }
 
@@ -61,7 +62,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         let count = 0;
         for(let group of this.getPostPages()){
             count++;
-            
+
             const groupPage = await browser.newPage();
             // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
@@ -73,7 +74,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
             // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
             const inputUploadHandles = await groupPage.$$('input[type=file]');
             const inputUploadHandle  = inputUploadHandles[5];//5
-            
+
             let filesToUpload        = this.getImagesToPost();
             // console.log('Post Images',filesToUpload);
             await this.delay(100);
@@ -97,18 +98,18 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
         return pages;
     }
 
-   
-    
+
+
     async lunchBrowser():Promise<puppeteer.Browser>{//override
         let config = ConfigHelper.getConfig();
-        
+
         return puppeteer.launch({
             executablePath:ConfigHelper.getConfigValue('chrome_executable_path'),
-            headless: ConfigHelper.getConfigValue('headless',false), 
-            defaultViewport: null, 
-            args: ['--start-maximized',"--disable-notifications"] 
+            headless: ConfigHelper.getConfigValue('headless',false),
+            defaultViewport: null,
+            args: ['--start-maximized',"--disable-notifications"]
         });
-        
-    } 
+
+    }
 
 }

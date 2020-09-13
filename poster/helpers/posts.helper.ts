@@ -1,11 +1,11 @@
 //importing necessary modules
 import path = require('path');
 import fs   = require('fs');
-import {Post} from '../models/post.interface';
+import {Post, PostImage} from '../models/post.interface';
 import { dir } from 'console';
 
 export class PostsHelper{
-    
+
     public static readonly CONTENT_FILE_NAME = 'text.txt';
 
     public static readonly ACCEPTED_IMAGES = [
@@ -19,7 +19,7 @@ export class PostsHelper{
         return dirPath;
     }
 
-   
+
     public static getListOfPosts(){
         let dirPath = this.getPostsDir();
 
@@ -28,9 +28,9 @@ export class PostsHelper{
             console.error(errMsg);
             throw errMsg;
         }
-        
-        // let result = fs.readdirSync(dirPath); 
-      
+
+        // let result = fs.readdirSync(dirPath);
+
         //filter all files and directories to only directories
         const directoriesInPostsDir = fs.readdirSync(dirPath).filter(f => fs.statSync(path.join(dirPath, f)).isDirectory())
 
@@ -73,7 +73,7 @@ export class PostsHelper{
         if(fs.existsSync(dirName) === true){
             fs.rmdirSync(dirName,{ recursive: true });
         }
-        
+
         //     let posts = this.getListOfPosts();
         //     return this.redefineListOfPosts(posts.postsDirs, posts.postsDirPath);
         return result;
@@ -86,32 +86,35 @@ export class PostsHelper{
             console.error(errMsg);
             throw errMsg;
         }
-        
+
         return fs.readFileSync(contentFilePath).toString();
     }
 
-    public static getPostImages(postDirPath:string):string[]{
+    public static getPostImages(postDirPath:string):PostImage[]{
         if(fs.existsSync(postDirPath) === false){
             let errMsg = "Posts directory does not exist!! "+postDirPath;
             console.error(errMsg);
             throw errMsg;
         }
-        
-        let filesInDir = fs.readdirSync(postDirPath); 
+
+        let filesInDir = fs.readdirSync(postDirPath);
         let imageFiles = Array();
         for(let file of filesInDir ){
-            
+
             if(!file || file.indexOf('.') === -1){
                 continue;
             }
-            
+
             let fileNameExploded = file.split('.');
             let fileExtension    = fileNameExploded.length > 1 ? fileNameExploded[fileNameExploded.length-1] : null;
             if(!fileExtension || PostsHelper.ACCEPTED_IMAGES.indexOf(String(fileExtension)) === -1 ){
                 continue;
             }
 
-            imageFiles.push(path.join(postDirPath,file));
+            imageFiles.push({
+              imageURL:path.join(postDirPath,file),
+              selected:true
+            });
         }
 
         return imageFiles;

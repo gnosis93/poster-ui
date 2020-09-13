@@ -35,7 +35,7 @@ export class PostDialogComponent implements OnInit {
     private configService:ConfigService,
     @Inject(MAT_DIALOG_DATA) data:any,
     private cd: ChangeDetectorRef
-    ) { 
+    ) {
       this.isLoading = false;
 
       this.post = data.post ?? null;
@@ -47,38 +47,38 @@ export class PostDialogComponent implements OnInit {
       this.postsService.postToFacebookPages(null).subscribe((result) => {
         this.setChannelSelected('Facebook Pages',false);
         this.loadingProgress++;
-  
+
         let selectedChannels = this.getSelectedChannels();
-        
+
         if(selectedChannels.length == 0){
           return this.postingCompleted();
         }else{
           this.handleQueueItem(selectedChannels[0]);
         }
-  
-  
+
+
         // if (result === false) {
         //   alert('An error has occurred while posting this post');
         // }
-  
+
         this.cd.detectChanges();
       });
-  
+
       this.postsService.postToFacebookGroups(null).subscribe((result) => {
         this.setChannelSelected('Facebook Groups',false);
         this.loadingProgress++;
-  
+
         let selectedChannels = this.getSelectedChannels();
         if(selectedChannels.length == 0){
           return this.postingCompleted();
         }else{
           this.handleQueueItem(selectedChannels[0]);
         }
-        
+
         // if (result === false) {
         //   alert('An error has occurred while posting this post to groups');
         // }
-  
+
         this.cd.detectChanges();
       });
 
@@ -88,7 +88,7 @@ export class PostDialogComponent implements OnInit {
     this.isLoading = false;
 
 
- 
+
   }
 
   private  postingCompleted(){
@@ -135,41 +135,54 @@ export class PostDialogComponent implements OnInit {
           case 'Facebook Pages':
             result = await this.validateFacebookPageConfig()
             if(result == false){
-              alert('Facebook Pages are not valid in Config');
               return result;
             }
           break;
           case 'Facebook Groups':
             result =  await this.validateFacebookGroupConfig()
             if(result == false){
-              alert('Facebook Groups are not valid in Config');
               return result;
             }
 
           break;
       }
-    
+
     }
     return result;
   }
 
   private async validateFacebookPageConfig(){
+    if(await this.configService.validateFacebookCredentials() === false){
+      alert('Facebook Email/Password are not set or incorrect');
+      return false;
+    }
+
     let configPages= (await this.configService.getConfigValue<Array<string>>('facebook_pages'));
     if(Array.isArray(configPages) === false){
+      alert('Facebook Pages are not valid in Config');
       return false;
     }
     if(configPages.length == 0){
+      alert('Facebook Pages are not valid in Config');
       return false;
     }
+
     return true;
   }
 
   private async validateFacebookGroupConfig(){
+    if(await this.configService.validateFacebookCredentials() === false){
+      alert('Facebook Email/Password are not set or incorrect');
+      return false;
+    }
+
     let configPages= (await this.configService.getConfigValue<Array<string>>('facebook_groups'));
     if(Array.isArray(configPages) === false){
+      alert('Facebook Groups are not valid in Config');
       return false;
     }
     if(configPages.length == 0){
+      alert('Facebook Groups are not valid in Config');
       return false;
     }
     return true;

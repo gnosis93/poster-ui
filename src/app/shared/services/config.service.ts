@@ -70,6 +70,21 @@ export class ConfigService {
     return this.$saveConfigSubject.asObservable();
   }
 
+  async validateFacebookCredentials(){
+    let facebookEmail    = await this.getConfigValue<string>('facebook_email');
+    let facebookPassword = await this.getConfigValue<string>('facebook_password');
+
+    if(!facebookEmail || facebookEmail.indexOf('@') == -1){
+      return false;
+    }
+
+    if(!facebookPassword || facebookEmail.length <= 1){
+      return false;
+    }
+
+    return true;
+  }
+
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
     let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')

@@ -58,11 +58,11 @@ export class DetailComponent implements OnInit {
       }
     });
 
-  } 
+  }
 
-  public onPostClick(){ 
+  public onPostClick(){
     const dialogPost = new MatDialogConfig();
-  
+
     dialogPost.disableClose = false;
     dialogPost.autoFocus = true;
 

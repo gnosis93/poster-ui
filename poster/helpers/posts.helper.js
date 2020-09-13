@@ -20,7 +20,7 @@ var PostsHelper = /** @class */ (function () {
             console.error(errMsg);
             throw errMsg;
         }
-        // let result = fs.readdirSync(dirPath); 
+        // let result = fs.readdirSync(dirPath);
         //filter all files and directories to only directories
         var directoriesInPostsDir = fs.readdirSync(dirPath).filter(function (f) { return fs.statSync(path.join(dirPath, f)).isDirectory(); });
         return {
@@ -92,7 +92,10 @@ var PostsHelper = /** @class */ (function () {
             if (!fileExtension || PostsHelper.ACCEPTED_IMAGES.indexOf(String(fileExtension)) === -1) {
                 continue;
             }
-            imageFiles.push(path.join(postDirPath, file));
+            imageFiles.push({
+                imageURL: path.join(postDirPath, file),
+                selected: true
+            });
         }
         return imageFiles;
     };
