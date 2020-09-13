@@ -46,7 +46,7 @@ export class ConfigService {
       this.electron.ipcRenderer.addListener(channelName, handler);
       this.electron.ipcRenderer.send(channelName,configValueKey);
     });
-   
+
   }
 
   public async fileExists(filePath: string) {
@@ -60,7 +60,7 @@ export class ConfigService {
       this.electron.ipcRenderer.send(channelName,filePath);
 
     });
-   
+
   }
 
   public saveConfig(config: any) {
@@ -72,17 +72,17 @@ export class ConfigService {
 
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
-    let excPathInConfig = await this.getConfigValue('chrome_executable_path')
+    let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')
     console.log('excPathInConfig',excPathInConfig);
     if(excPathInConfig == null || String(excPathInConfig).length == 0){
       return false;
     }
 
-    let executablePathExists = await this.getConfigValue(String(excPathInConfig));
+    let executablePathExists = await this.fileExists(excPathInConfig);
     if(executablePathExists === false){
       return false;
     }
-    
+
     return true;
   }
 

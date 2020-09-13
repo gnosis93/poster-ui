@@ -66,18 +66,19 @@ export class HomeComponent implements OnInit {
       alert('Executable Path is not set in config, Please set it up');
       return;
     }
-    
+
+    this.showProgressSpinner();
     this.importService.importHotdogCondos();
-      
+
   }
-  
+
   async onDeleteClick(post:Post|null){
     if(!post || !post.name || post.name.length == 0){
       return;
     }
     if(confirm('Are you sure to delete ' + post.name + '?')){
       this.showProgressSpinner();
-      
+
       if(!this.deleteSubscription){
         this.deleteSubscription = this.postsService.deletePostByName(post.name).subscribe((response)=>{
           console.log('deleted on renderer received response ok')
@@ -91,7 +92,7 @@ export class HomeComponent implements OnInit {
         this.postsService.deletePostByName(post.name);
       }
     }
-    
+
   }
 
   async onConfigClick(){
