@@ -7,6 +7,7 @@ import { config } from 'process';
 
 export class FacebookPagePoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
+    private readonly channelLoginUrl:string = 'https://en-gb.facebook.com/login/';
 
     constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:string[],private content:string){
         super();
@@ -35,10 +36,10 @@ export class FacebookPagePoster extends ChannelBase implements IChannel{
         let {username,password} = this.getCredentials();
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelUrl , { waitUntil: 'networkidle2' });
+        await loginPage.goto(this.channelLoginUrl , { waitUntil: 'networkidle2' });
         await loginPage.type('#email', username);
         await loginPage.type('#pass' , password);
-        await loginPage.click('#u_0_d');
+        await loginPage.click('#loginbutton');
         await loginPage.waitForNavigation();
 
         return loginPage;

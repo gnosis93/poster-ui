@@ -19,7 +19,6 @@ var ConfigHelper = /** @class */ (function () {
         if (ConfigHelper.configSingleton === null) {
             var configFilePath = ConfigHelper.getConfigFilePath();
             var rawdata = fs.readFileSync(configFilePath);
-            return JSON.parse(rawdata.toString()); //TODO REMOVE LINE
             ConfigHelper.configSingleton = JSON.parse(rawdata.toString());
         }
         return ConfigHelper.configSingleton;
