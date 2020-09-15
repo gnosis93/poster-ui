@@ -53,6 +53,43 @@ var ChannelBase = /** @class */ (function () {
             });
         });
     };
+    ChannelBase.prototype.getActivePage = function (browser, timeout) {
+        return __awaiter(this, void 0, void 0, function () {
+            var start, pages, arr, _i, pages_1, p;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        start = new Date().getTime();
+                        _a.label = 1;
+                    case 1:
+                        if (!(new Date().getTime() - start < timeout)) return [3 /*break*/, 7];
+                        return [4 /*yield*/, browser.pages()];
+                    case 2:
+                        pages = _a.sent();
+                        arr = [];
+                        _i = 0, pages_1 = pages;
+                        _a.label = 3;
+                    case 3:
+                        if (!(_i < pages_1.length)) return [3 /*break*/, 6];
+                        p = pages_1[_i];
+                        return [4 /*yield*/, p.evaluate(function () { return document.visibilityState == 'visible'; })];
+                    case 4:
+                        if (_a.sent()) {
+                            arr.push(p);
+                        }
+                        _a.label = 5;
+                    case 5:
+                        _i++;
+                        return [3 /*break*/, 3];
+                    case 6:
+                        if (arr.length == 1)
+                            return [2 /*return*/, arr[0]];
+                        return [3 /*break*/, 1];
+                    case 7: throw "Unable to get active page";
+                }
+            });
+        });
+    };
     return ChannelBase;
 }());
 exports.ChannelBase = ChannelBase;

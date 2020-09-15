@@ -49,7 +49,7 @@ var ConfigHelper = /** @class */ (function () {
         if (fileExists) {
             return false;
         }
-        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"\",\n            \"facebook_password\":\"\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
+        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"aaronscifo@gmail.com\",\n            \"facebook_password\":\"Miami5151+-*\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            facebook_old_style:true\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;
     };

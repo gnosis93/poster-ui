@@ -8,6 +8,10 @@ import { Post } from './poster/models/post.interface';
 import { ConfigHelper } from './poster/helpers/config.helper';
 import { FacebookGroupPoster } from './poster/channels/facebook/facebook.group.poster';
 import { FacebookPagePoster } from './poster/channels/facebook/facebook.page.poster';
+import { ChannelBase } from './poster/channels/channel.base';
+import { IChannel } from './poster/channels/channel.interface';
+import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
+import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
 
 //importing necessary modules
 
@@ -124,6 +128,9 @@ ipcMain.addListener('getPostByName', async () => {
 
 })
 
+
+
+
 ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   // console.log('detail clicked 2')
   let config = ConfigHelper.getConfig();
@@ -131,15 +138,30 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
   let result = true;
   try {
-    let poster = new FacebookPagePoster(
-      config.facebook_pages,
-      {
-        username: config.facebook_email,
-        password: config.facebook_password
-      },
-      post.images,
-      post.content
-    );
+    let poster:IChannel|null = null;
+
+    if(ConfigHelper.getConfigValue<boolean>('facebook_old_style',true) === true){
+       poster = new FacebookOldPagePoster(
+        config.facebook_pages,
+        {
+          username: config.facebook_email,
+          password: config.facebook_password
+        },
+        post.images,
+        post.content
+      );
+    }else{
+       poster = new FacebookPagePoster(
+        config.facebook_pages,
+        {
+          username: config.facebook_email,
+          password: config.facebook_password
+        },
+        post.images,
+        post.content
+      );
+    }
+   
 
     await poster.run();
 
@@ -159,15 +181,31 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
 
   let result = true;
   try {
-    let poster = new FacebookGroupPoster(
-      config.facebook_groups,
-      {
-        username: config.facebook_email,
-        password: config.facebook_password
-      },
-      post.images,
-      post.content
-    );
+
+    let poster:IChannel|null = null;
+
+    if(  ConfigHelper.getConfigValue<boolean>('facebook_old_style',true) === true)      {
+      poster = new FacebookOldGroupPoster(
+        config.facebook_groups,
+        {
+          username: config.facebook_email,
+          password: config.facebook_password
+        },
+        post.images,
+        post.content
+      );
+    }else{
+      poster = new FacebookGroupPoster(
+        config.facebook_groups,
+        {
+          username: config.facebook_email,
+          password: config.facebook_password
+        },
+        post.images,
+        post.content
+      );
+    }
+   
 
     await poster.run();
 

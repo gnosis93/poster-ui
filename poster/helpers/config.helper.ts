@@ -7,7 +7,7 @@ export class ConfigHelper{
     private static configSingleton:any=null;
 
 
-    public static getConfigValue(valueKey:string,defaultValue:any=null){
+    public static getConfigValue<T=any>(valueKey:string,defaultValue:any=null):T{
         let config = ConfigHelper.getConfig();
         if(typeof config[valueKey] === 'undefined'){
             return defaultValue
@@ -57,11 +57,16 @@ export class ConfigHelper{
 
         let jsonFileTemplate = `
         {
-            "facebook_email":"",
-            "facebook_password":"",
-            "facebook_pages":[],
-            "facebook_groups":[],
+            "facebook_email":"aaronscifo@gmail.com",
+            "facebook_password":"Miami5151+-*",
+            "facebook_pages":[
+                "https://www.facebook.com/Test123-109118157588870/"
+            ],
+            "facebook_groups":[
+                "https://www.facebook.com/groups/317055712850966"
+            ],
             "headless":false,
+            facebook_old_style:true
             "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         }`;
         fs.writeFileSync(configFilePath, jsonFileTemplate);

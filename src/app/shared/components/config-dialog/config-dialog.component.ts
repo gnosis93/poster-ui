@@ -36,6 +36,11 @@ export class ConfigDialogComponent implements OnInit {
     this.config.headless = value.checked;
     console.log(value);
   }
+
+  facebookStyleValueChange(value:{checked:boolean}){
+    this.config.facebook_old_style = value.checked;
+    console.log(value);
+  }
   
   onDeletePageClick(pageUrl:string){
     if(confirm('Are you sure you want to delete this page ?') === false){
