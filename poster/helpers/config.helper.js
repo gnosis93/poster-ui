@@ -15,6 +15,15 @@ var ConfigHelper = /** @class */ (function () {
         }
         return config[valueKey];
     };
+    ConfigHelper.restoreConfigToDefaults = function () {
+        var configFilePath = ConfigHelper.getConfigFilePath();
+        var fileExists = fs.existsSync(configFilePath);
+        if (fileExists) {
+            fs.unlinkSync(configFilePath);
+        }
+        ConfigHelper.createConfigFile();
+        return true;
+    };
     ConfigHelper.getConfig = function () {
         if (ConfigHelper.configSingleton === null) {
             var configFilePath = ConfigHelper.getConfigFilePath();
@@ -49,7 +58,7 @@ var ConfigHelper = /** @class */ (function () {
         if (fileExists) {
             return false;
         }
-        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"aaronscifo@gmail.com\",\n            \"facebook_password\":\"Miami5151+-*\",\n            \"facebook_pages\":[],\n            \"facebook_groups\":[],\n            \"headless\":false,\n            facebook_old_style:true\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
+        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"aaronscifo@gmail.com\",\n            \"facebook_password\":\"Miami5151+-*\",\n            \"facebook_pages\":[\n                \"https://www.facebook.com/Test123-109118157588870/\"\n            ],\n            \"facebook_groups\":[\n                \"https://www.facebook.com/groups/317055712850966\"\n            ],\n            \"headless\":false,\n            \"facebook_old_style\":true,\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
         fs.writeFileSync(configFilePath, jsonFileTemplate);
         return true;
     };

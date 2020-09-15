@@ -1,4 +1,11 @@
-<h1 mat-dialog-title>Config Options</h1>
+<div class="row">
+    <div class="col-6">
+        <h1 mat-dialog-title>Config Options</h1>
+    </div>
+    <div class="col-6">
+        <a class="float-right" style="cursor: pointer;color:cornflowerblue" (click)="onRestoreConfigToDefaults()">Restore All To Default</a>
+    </div>
+</div>
 <hr/>
 <mat-dialog-content>
     <form *ngIf="config">

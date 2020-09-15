@@ -124,12 +124,10 @@ ipcMain.addListener('websiteImport', async (event, args) => {
   return event.sender.send('websiteImport', true);
 })
 
-ipcMain.addListener('getPostByName', async () => {
-
-})
-
-
-
+ipcMain.addListener('restoreConfigToDefault', async (event, args) => {
+  ConfigHelper.restoreConfigToDefaults();
+  return event.sender.send('restoreConfigToDefault', true);
+});
 
 ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   // console.log('detail clicked 2')

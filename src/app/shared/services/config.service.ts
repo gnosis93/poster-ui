@@ -10,12 +10,14 @@ export class ConfigService {
   private $getConfigSubject: Subject<any>;
   private $saveConfigSubject: Subject<boolean>;
   private $validateConfigSubject: Subject<string>;
+  private $restoreConfigSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
   ) {
     this.$getConfigSubject = new Subject<any>();
     this.$saveConfigSubject = new Subject<boolean>();
+    this.$restoreConfigSubject = new Subject<boolean>();
     this.$validateConfigSubject = new Subject<string>();
 
     this.electron.ipcRenderer.addListener('getConfig', (e, args) => {
@@ -29,10 +31,16 @@ export class ConfigService {
     this.electron.ipcRenderer.addListener('validateConfig', (sender, message) => {
       this.$validateConfigSubject.next(message);
     })
+
+    this.electron.ipcRenderer.addListener('restoreConfigToDefault', (sender, message) => {
+      this.$restoreConfigSubject.next(message);
+    })
   }
 
-  public getConfig() {
-    this.electron.ipcRenderer.send('getConfig');
+  public getConfig(getConfig:boolean=true) {
+    if(getConfig===true){
+      this.electron.ipcRenderer.send('getConfig');
+    }
     return this.$getConfigSubject.asObservable();
   }
 
@@ -62,6 +70,14 @@ export class ConfigService {
     });
 
   }
+
+  public restoreConfig(sendRestoreConfig:boolean=true){
+    if(sendRestoreConfig === true){
+      this.electron.ipcRenderer.send('restoreConfigToDefault');
+    }
+    return this.$restoreConfigSubject.asObservable();
+  }
+
 
   public saveConfig(config: any) {
     let configStr = JSON.stringify(config);

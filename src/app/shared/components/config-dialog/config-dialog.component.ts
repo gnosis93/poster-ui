@@ -15,11 +15,34 @@ export class ConfigDialogComponent implements OnInit {
 
   constructor(
     private configService:ConfigService,
-    private dialogRef:MatDialogRef<ConfigDialogComponent>
+    private dialogRef:MatDialogRef<ConfigDialogComponent>,
+    private zone:NgZone
   ) { }
 
   ngOnInit(): void {
-   this.configService.getConfig().subscribe((config)=>this.config = config);
+   
+   this.configService.getConfig(false).subscribe((config)=>{
+      this.zone.run(()=>{
+        this.config = config
+      });
+    });
+    
+   this.configService.restoreConfig(false).subscribe((result)=>{
+     if(!result){
+      alert('an error as occurred while restoring defaults');
+      return;
+    }
+    this.getConfig();
+    // this.dialogRef.close();
+   });
+
+   this.getConfig();
+
+  }
+
+
+  private getConfig(){
+    this.configService.getConfig();
   }
 
   public addFaceBookPage(urlToAddElement){
@@ -41,6 +64,11 @@ export class ConfigDialogComponent implements OnInit {
     this.config.facebook_old_style = value.checked;
     console.log(value);
   }
+  
+  onRestoreConfigToDefaults(){
+    this.configService.restoreConfig();
+  }
+
   
   onDeletePageClick(pageUrl:string){
     if(confirm('Are you sure you want to delete this page ?') === false){

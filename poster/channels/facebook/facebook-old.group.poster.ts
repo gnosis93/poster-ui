@@ -100,7 +100,7 @@ export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
                 // postButton = await groupPage.$x(postButtonXPath);
                 let disabledJSHandle = await postButton[0].getProperty('attributes');
                 let disabledValue = await disabledJSHandle.jsonValue();//when the disabled attribute is not present only 3 values are present
-                console.log('disabled attributes' , disabledValue);
+                // console.log('disabled attributes' , disabledValue);
                 // postButton[0].
                 // console.log(disabledValue);
                 if(

@@ -15,6 +15,17 @@ export class ConfigHelper{
         return config[valueKey];
     }
 
+    public static restoreConfigToDefaults(){
+        let configFilePath  = ConfigHelper.getConfigFilePath();
+        let fileExists = fs.existsSync(configFilePath);
+        if(fileExists){
+            fs.unlinkSync(configFilePath);
+        }
+        ConfigHelper.createConfigFile();
+        return true;
+
+    }
+
     public static getConfig():any{
         if(ConfigHelper.configSingleton === null){
             let configFilePath  = ConfigHelper.getConfigFilePath();
@@ -66,7 +77,7 @@ export class ConfigHelper{
                 "https://www.facebook.com/groups/317055712850966"
             ],
             "headless":false,
-            facebook_old_style:true
+            "facebook_old_style":true,
             "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         }`;
         fs.writeFileSync(configFilePath, jsonFileTemplate);

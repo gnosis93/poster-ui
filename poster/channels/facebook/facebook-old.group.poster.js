@@ -216,7 +216,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, disabledJSHandle.jsonValue()];
                     case 15:
                         disabledValue = _b.sent();
-                        console.log('disabled attributes', disabledValue);
+                        // console.log('disabled attributes' , disabledValue);
                         // postButton[0].
                         // console.log(disabledValue);
                         if (typeof disabledValue['3'] === 'undefined') {
