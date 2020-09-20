@@ -52,7 +52,7 @@
     "@angular/compiler": "10.0.14",
     "@angular/compiler-cli": "10.0.14",
     "@angular/core": "10.0.14",
-    "@angular/forms": "10.0.14",
+    "@angular/forms": "10.1.2",
     "@angular/language-service": "10.0.14",
     "@angular/platform-browser": "10.0.14",
     "@angular/platform-browser-dynamic": "10.0.14",
@@ -98,14 +98,14 @@
     "node": ">=10.13.0"
   },
   "dependencies": {
-    "@angular/animations": "^10.0.0 || ^11.0.0-0",
+    "@angular/animations": "10.1.2",
     "@angular/cdk": "10.2.0",
-    "@angular/forms": "^10.0.0 || ^11.0.0-0",
     "@angular/material": "10.2.0",
     "@types/puppeteer": "3.0.1",
     "@types/puppeteer-core": "2.0.0",
     "bootstrap": "4.5.2",
     "electron-util": "0.14.2",
+    "puppeteer": "5.3.0",
     "puppeteer-core": "5.3.0"
   }
 }
