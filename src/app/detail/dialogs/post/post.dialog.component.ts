@@ -189,6 +189,17 @@ export class PostDialogComponent implements OnInit {
       alert('Craigslist Email/Password are not set or incorrect');
       return false;
     }
+    let phoneNumber    = (await this.configService.getConfigValue<string|null>('phone_number'));
+    if(phoneNumber == null || phoneNumber.length == 0){
+      alert('Phone number in config is required, Please set it up');
+      return false;
+    }
+
+    let phoneExtension = (await this.configService.getConfigValue<string|null>('phone_number'));
+    if(phoneExtension == null || phoneExtension.length == 0){
+      alert('Phone extension in config is required, Please set it up');
+      return false;
+    }
 
     return true;
   }
