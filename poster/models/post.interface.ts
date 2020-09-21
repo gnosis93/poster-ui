@@ -14,10 +14,10 @@ export interface PostImage{
 export interface PostMetaData{
   'title'      : string,
   'url'        : string,
-  'beds'       : number,
-  'baths'      : number,
+  'beds'       : string,
+  'baths'      : string,
   'size'       : string,
   'floorNumber': string,
   'price'       :string
-
+  'features'   : string
 }

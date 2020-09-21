@@ -120,16 +120,18 @@ var HotDogCondosImporter = /** @class */ (function () {
             });
         });
     };
-    HotDogCondosImporter.prototype.processPropertyFeatures = function (propertyFeaturesText) {
+    HotDogCondosImporter.prototype.processPropertyFeatures = function (propertyMetaData) {
         return __awaiter(this, void 0, void 0, function () {
+            var text;
             return __generator(this, function (_a) {
-                return [2 /*return*/, propertyFeaturesText];
+                text = propertyMetaData.title + " is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amentias you can imagine ! \nMore info at : " + propertyMetaData.url + "\nProperty Features: \n" + propertyMetaData.features + "\n\nCall for view:  " + (config_helper_1.ConfigHelper.getConfigValue('phone_extension') + ' ' + config_helper_1.ConfigHelper.getConfigValue('phone_number')) + "\n        ";
+                return [2 /*return*/, text];
             });
         });
     };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, propertyFeatures, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, _i, images_1, imageUrl;
+            var title, images, propertyFeatures, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, textContent, _i, images_1, imageUrl;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: 
@@ -145,31 +147,34 @@ var HotDogCondosImporter = /** @class */ (function () {
                     case 3:
                         images = _a.sent();
                         images = this.cleanImagesUrls(images);
-                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-features .info-inner") != null ? document.querySelector("#listing-features .info-inner").textContent : null; })];
+                        return [4 /*yield*/, page.evaluate(function () {
+                                var selector = document.querySelector("#listing-features .info-inner");
+                                if (selector == null) {
+                                    return null;
+                                }
+                                return selector.innerText;
+                            })];
                     case 4:
                         propertyFeatures = _a.sent();
-                        return [4 /*yield*/, this.processPropertyFeatures(propertyFeatures)];
-                    case 5:
-                        textContent = _a.sent();
                         postDirectoryPath = path.join(this.getPostsDir(), title);
                         postDirectoryExists = fs.existsSync(postDirectoryPath);
                         if (postDirectoryExists === true) {
                             return [2 /*return*/, true];
                         }
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null; })];
-                    case 6:
+                    case 5:
                         beds = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null; })];
-                    case 7:
+                    case 6:
                         baths = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null; })];
-                    case 8:
+                    case 7:
                         size = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null; })];
-                    case 9:
+                    case 8:
                         floorNumber = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
-                    case 10:
+                    case 9:
                         price = _a.sent();
                         price = price.replace('THB', '');
                         price = price.replace(',', '');
@@ -186,6 +191,9 @@ var HotDogCondosImporter = /** @class */ (function () {
                         console.log(metadata);
                         //save content
                         fs.mkdirSync(postDirectoryPath);
+                        return [4 /*yield*/, this.processPropertyFeatures(metadata)];
+                    case 10:
+                        textContent = _a.sent();
                         fs.writeFileSync(path.join(postDirectoryPath, 'text.txt'), textContent);
                         this.writeJSONToFile(postDirectoryPath, 'metadata.json', metadata);
                         //save images

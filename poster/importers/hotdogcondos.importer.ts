@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as https from 'https';
 import { ConfigHelper } from '../helpers/config.helper';
+import { PostMetaData } from '../models/post.interface';
 const Stream = require('stream').Transform;                                
 
 
@@ -47,8 +48,17 @@ export class HotDogCondosImporter{
 
    
 
-    private async processPropertyFeatures(propertyFeaturesText:string){
-        return propertyFeaturesText;
+    private async processPropertyFeatures(propertyMetaData:PostMetaData){
+        let text = `${propertyMetaData.title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! 
+
+More info at : ${propertyMetaData.url}
+
+Property Features: 
+${propertyMetaData.features}
+
+Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigHelper.getConfigValue('phone_number')}
+        `;
+        return text;
     }
 
     private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
@@ -60,8 +70,13 @@ export class HotDogCondosImporter{
         let images = await page.evaluate(() => Array.from( document.querySelectorAll(".listings-slider-image"), element => element.getAttribute('src')))  
         images = this.cleanImagesUrls(images);
 
-        let propertyFeatures = await page.evaluate(() => document.querySelector("#listing-features .info-inner") != null ? document.querySelector("#listing-features .info-inner").textContent : null); 
-        let textContent      = await this.processPropertyFeatures(propertyFeatures);
+        let propertyFeatures = await page.evaluate(() => {
+           let selector = document.querySelector("#listing-features .info-inner") as HTMLElement;
+            if(selector == null){
+               return null;
+            }
+            return selector.innerText
+        }); 
         // console.log(title,images,textContent);
         
         //get path to post dir , stop execution if folder already exists
@@ -79,7 +94,7 @@ export class HotDogCondosImporter{
         price = price.replace('THB','')
         price = price.replace(',','')
         
-        let metadata = {
+        let metadata:PostMetaData = {
             'title'      : title,
             'url'        : pageUrl,
             'beds'       : beds,
@@ -93,6 +108,8 @@ export class HotDogCondosImporter{
         console.log(metadata);
         //save content
         fs.mkdirSync(postDirectoryPath);
+
+        let textContent      = await this.processPropertyFeatures(metadata);
         fs.writeFileSync(path.join(postDirectoryPath,'text.txt'),textContent)
         
         this.writeJSONToFile(postDirectoryPath,'metadata.json', metadata);
