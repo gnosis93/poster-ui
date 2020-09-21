@@ -14,9 +14,9 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         private content:string,
         private title:string='Test Title',
         private location:string='Test Location',
-        private price:number=20000,
-        private surfaceArea:number=23,
-        private phoneNumber:string='325 2325 2322',
+        private price:string,
+        private surfaceArea:string,
+        private phoneNumber:string,
         private phoneExtension:string='+356'
     ){
         super();

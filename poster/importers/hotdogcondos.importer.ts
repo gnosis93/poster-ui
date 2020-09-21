@@ -68,7 +68,9 @@ export class HotDogCondosImporter{
         let baths = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null); 
         let size = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null); 
         let floorNumber = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
-        
+        let price = await page.evaluate(() =>  document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null); 
+        price = price.replace('THB','')
+        price = price.replace(',','')
         
         let metadata = {
             'title'      : title,
@@ -76,7 +78,8 @@ export class HotDogCondosImporter{
             'beds'       : beds,
             'baths'      : baths,
             'size'       : size,
-            'floorNumber':floorNumber
+            'floorNumber':floorNumber,
+            'price'      :price
         }
 
         console.log(metadata);
@@ -85,7 +88,7 @@ export class HotDogCondosImporter{
         fs.writeFileSync(path.join(postDirectoryPath,'text.txt'),textContent)
         
         this.writeJSONToFile(postDirectoryPath,'metadata.json', metadata);
-        
+
         //save images
         for(let imageUrl of images){
             this.downloadImage(path.join(postDirectoryPath,((new Date()).getTime() +'.jpg')),imageUrl );

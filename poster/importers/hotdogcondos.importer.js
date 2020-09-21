@@ -122,7 +122,7 @@ var HotDogCondosImporter = /** @class */ (function () {
     };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, metadata, _i, images_1, imageUrl;
+            var title, images, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, _i, images_1, imageUrl;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: 
@@ -158,13 +158,19 @@ var HotDogCondosImporter = /** @class */ (function () {
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null; })];
                     case 8:
                         floorNumber = _a.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
+                    case 9:
+                        price = _a.sent();
+                        price = price.replace('THB', '');
+                        price = price.replace(',', '');
                         metadata = {
                             'title': title,
                             'url': pageUrl,
                             'beds': beds,
                             'baths': baths,
                             'size': size,
-                            'floorNumber': floorNumber
+                            'floorNumber': floorNumber,
+                            'price': price
                         };
                         console.log(metadata);
                         //save content

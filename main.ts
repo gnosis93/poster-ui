@@ -188,7 +188,10 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post) => {
       post.content,
       post?.metaData?.title,
       'Pattaya',
-
+      post.metaData.price,
+      post?.metaData?.size,
+      ConfigHelper.getConfigValue('phone_number'),
+      ConfigHelper.getConfigValue('phone_extension')
     ); 
 
     await poster.run();

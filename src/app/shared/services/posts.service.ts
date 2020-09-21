@@ -119,4 +119,5 @@ export interface PostMetaData{
   'baths'      : number,
   'size'       : string,
   'floorNumber': string
+  'price': string
 }

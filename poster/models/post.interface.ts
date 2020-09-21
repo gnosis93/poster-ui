@@ -17,5 +17,7 @@ export interface PostMetaData{
   'beds'       : number,
   'baths'      : number,
   'size'       : string,
-  'floorNumber': string
+  'floorNumber': string,
+  'price'       :string
+
 }

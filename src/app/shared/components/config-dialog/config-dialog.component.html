@@ -42,7 +42,8 @@
         
         <br/>
        
-
+        <h5>Phone Number</h5>
+        
         <div class="row">
             <div class="col-3">
                 <label for="text">Phone Extension:</label>
@@ -52,31 +53,32 @@
             </div>
             <div class="col-3">
                 <label for="v">Phone Number:</label>
-
             </div>
             <div class="col-3">
                 <input type="text" [(ngModel)]="config.phone_number"  name="phone_number" class="form-control" id="phone_number">
-
             </div>
         </div>
 
+        <br/>
+
         <div class="row">
+            
             <div class="col-12">
                 <label><strong>Facebook Groups</strong></label>
                 <ul>
                     <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}} <button class="btn btn-danger" (click)="onDeleteGroupClick(pageUrl)">Delete</button></li>
                 </ul>
             </div>
+
             <div class="col-10">
                 <input  class="form-control" #txtNewFBGroupURL  type="text"/>
             </div>
+
             <div class="col-2">
                 <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
             </div>
         </div>
-
         
-
         <br>
 
         <h5>Craigslist Credentials</h5>
@@ -106,8 +108,6 @@
                <mat-checkbox [checked]="config.headless" (change)="headlessValueChange($event)"></mat-checkbox>  
             </div>
         </div>
-
-        
 
     </form>
 </mat-dialog-content>

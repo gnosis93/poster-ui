@@ -58,9 +58,6 @@ var CraigslistPoster = /** @class */ (function (_super) {
     function CraigslistPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension) {
         if (title === void 0) { title = 'Test Title'; }
         if (location === void 0) { location = 'Test Location'; }
-        if (price === void 0) { price = 20000; }
-        if (surfaceArea === void 0) { surfaceArea = 23; }
-        if (phoneNumber === void 0) { phoneNumber = '325 2325 2322'; }
         if (phoneExtension === void 0) { phoneExtension = '+356'; }
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
