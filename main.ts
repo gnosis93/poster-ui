@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, ipcMain, ipcRenderer } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, ipcRenderer,shell } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
@@ -13,7 +13,6 @@ import { IChannel } from './poster/channels/channel.interface';
 import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
 import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
 import { CraigslistPoster } from './poster/channels/facebook/craigslist.group.poster';
-
 //importing necessary modules
 
 let win: BrowserWindow = null;
@@ -101,6 +100,11 @@ ipcMain.addListener('getPosts', async (event, args) => {
   event.sender.send('getPosts', PostsHelper.redefineListOfPosts(result.postsDirs, result.postsDirPath));
 });
 
+
+ipcMain.addListener('openBrowser',async (event,link) => {
+  await shell.openExternal(link)
+  console.log('Browser Opened at '+link);
+;})
 
 ipcMain.addListener('deleteAllPosts', async (event, args) => {
   let result = await PostsHelper.getListOfPosts();

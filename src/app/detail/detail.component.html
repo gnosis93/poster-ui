@@ -8,10 +8,21 @@
   }}</a>
 
   <hr />
-
+  
   <div class="row">
+    
+    <div class="col-6">
+      <label>Post Content</label>
+    </div>
+
+    <div class="col-6">
+      <button class="btn btn-success float-right" (click)="openBrowser()">
+        Open In Browser
+      </button>
+    </div>
+
+
     <div class="col-12">
-      <label>Post Content</label><br />
       <textarea class="form-control" rows="10" cols="100" matInput placeholder="Post Text"
         [(ngModel)]="post.content"></textarea>
     </div>

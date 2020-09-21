@@ -60,6 +60,13 @@ export class DetailComponent implements OnInit {
 
   }
 
+  public openBrowser(){
+    if(!this.post.metaData){
+      return;
+    }
+    this.configService.openBrowser(this.post.metaData.url)
+  }
+
   public onPostClick(){
     const dialogPost = new MatDialogConfig();
 

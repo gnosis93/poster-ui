@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'app/core/services';
 import { Subject } from 'rxjs';
+import { ipcMain } from 'electron';
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +38,12 @@ export class ConfigService {
     })
   }
 
+  public openBrowser(link:string){
+    this.electron.ipcRenderer.send('openBrowser',link);
+  }
+
   public getConfig(getConfig:boolean=true) {
-    if(getConfig===true){
+    if(getConfig === true){
       this.electron.ipcRenderer.send('getConfig');
     }
     return this.$getConfigSubject.asObservable();

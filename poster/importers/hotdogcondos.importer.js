@@ -124,7 +124,7 @@ var HotDogCondosImporter = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var text;
             return __generator(this, function (_a) {
-                text = propertyMetaData.title + " is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amentias you can imagine ! \nMore info at : " + propertyMetaData.url + "\nProperty Features: \n" + propertyMetaData.features + "\n\nCall for view:  " + (config_helper_1.ConfigHelper.getConfigValue('phone_extension') + ' ' + config_helper_1.ConfigHelper.getConfigValue('phone_number')) + "\n        ";
+                text = propertyMetaData.title + " is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! \n\nMore info at : " + propertyMetaData.url + "\n\nProperty Features: \n" + propertyMetaData.features + "\n\nCall for view:  " + (config_helper_1.ConfigHelper.getConfigValue('phone_extension') + ' ' + config_helper_1.ConfigHelper.getConfigValue('phone_number')) + "\n        ";
                 return [2 /*return*/, text];
             });
         });
