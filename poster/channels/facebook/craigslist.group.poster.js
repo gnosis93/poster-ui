@@ -188,14 +188,16 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, page.type("#PostingBody", this.content)];
                     case 8:
                         _a.sent();
-                        return [4 /*yield*/, page.type("input[name='price']", String(this.price))];
+                        return [4 /*yield*/, page.type("input[name='price']", this.price)];
                     case 9:
                         _a.sent();
-                        return [4 /*yield*/, page.type("input[name='surface_area']", String(this.surfaceArea))];
+                        return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
                     case 10:
                         _a.sent();
+                        // await page.type("input[name='surface_area']",'');
                         return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
                     case 11:
+                        // await page.type("input[name='surface_area']",'');
                         _a.sent();
                         return [4 /*yield*/, this.clickTickbox(page, 'show my phone number', false)];
                     case 12:
@@ -249,6 +251,25 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 27:
                         _a.sent();
                         return [2 /*return*/, page];
+                }
+            });
+        });
+    };
+    CraigslistPoster.prototype.threeClickType = function (page, selector, value) {
+        return __awaiter(this, void 0, void 0, function () {
+            var input;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, page.$(selector)];
+                    case 1:
+                        input = _a.sent();
+                        return [4 /*yield*/, input.click({ clickCount: 3 })];
+                    case 2:
+                        _a.sent(); //selects all text in input thus causing it to be deleted
+                        return [4 /*yield*/, input.type(value)];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });

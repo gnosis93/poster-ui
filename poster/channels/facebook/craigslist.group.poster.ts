@@ -94,8 +94,11 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         await page.type("#PostingTitle",this.title);
         await page.type("#geographic_area",this.location);
         await page.type("#PostingBody",this.content);
-        await page.type("input[name='price']",String(this.price));
-        await page.type("input[name='surface_area']",String(this.surfaceArea));
+        await page.type("input[name='price']",this.price);
+
+        await this.threeClickType(page,"input[name='surface_area']",this.surfaceArea);
+        // await page.type("input[name='surface_area']",'');
+        
         await page.select("select[name='housing_type']", '2');
         
         await this.clickTickbox(page,'show my phone number',false);
@@ -128,6 +131,12 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         await page.click('button[type=submit].done');
 
         return page;
+    }
+
+    private async threeClickType(page:puppeteer.Page,selector:string,value:string){
+        const input = await page.$(selector);
+        await input.click({ clickCount: 3 });//selects all text in input thus causing it to be deleted
+        await input.type(value);
     }
 
     private async getImageCount(page:puppeteer.Page){
