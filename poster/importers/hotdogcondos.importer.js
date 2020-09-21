@@ -120,9 +120,16 @@ var HotDogCondosImporter = /** @class */ (function () {
             });
         });
     };
+    HotDogCondosImporter.prototype.processPropertyFeatures = function (propertyFeaturesText) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, propertyFeaturesText];
+            });
+        });
+    };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, _i, images_1, imageUrl;
+            var title, images, propertyFeatures, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, _i, images_1, imageUrl;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: 
@@ -131,7 +138,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                     case 1:
                         // let page    = await browser.newPage();
                         _a.sent();
-                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").textContent : null; })];
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null; })];
                     case 2:
                         title = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return Array.from(document.querySelectorAll(".listings-slider-image"), function (element) { return element.getAttribute('src'); }); })];
@@ -140,6 +147,9 @@ var HotDogCondosImporter = /** @class */ (function () {
                         images = this.cleanImagesUrls(images);
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-features .info-inner") != null ? document.querySelector("#listing-features .info-inner").textContent : null; })];
                     case 4:
+                        propertyFeatures = _a.sent();
+                        return [4 /*yield*/, this.processPropertyFeatures(propertyFeatures)];
+                    case 5:
                         textContent = _a.sent();
                         postDirectoryPath = path.join(this.getPostsDir(), title);
                         postDirectoryExists = fs.existsSync(postDirectoryPath);
@@ -147,19 +157,19 @@ var HotDogCondosImporter = /** @class */ (function () {
                             return [2 /*return*/, true];
                         }
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null; })];
-                    case 5:
+                    case 6:
                         beds = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null; })];
-                    case 6:
+                    case 7:
                         baths = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null; })];
-                    case 7:
+                    case 8:
                         size = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null; })];
-                    case 8:
+                    case 9:
                         floorNumber = _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
-                    case 9:
+                    case 10:
                         price = _a.sent();
                         price = price.replace('THB', '');
                         price = price.replace(',', '');
@@ -170,7 +180,8 @@ var HotDogCondosImporter = /** @class */ (function () {
                             'baths': baths,
                             'size': size,
                             'floorNumber': floorNumber,
-                            'price': price
+                            'price': price,
+                            'features': propertyFeatures
                         };
                         console.log(metadata);
                         //save content

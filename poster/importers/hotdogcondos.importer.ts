@@ -45,16 +45,23 @@ export class HotDogCondosImporter{
         // 
     }
 
+   
+
+    private async processPropertyFeatures(propertyFeaturesText:string){
+        return propertyFeaturesText;
+    }
+
     private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
         // let page    = await browser.newPage();
         await page.goto(pageUrl,{ waitUntil: 'networkidle2' });  
         
-        let title = await page.evaluate(() =>  document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").textContent : null); 
+        let title = await page.evaluate(() =>  document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null); 
         
         let images = await page.evaluate(() => Array.from( document.querySelectorAll(".listings-slider-image"), element => element.getAttribute('src')))  
         images = this.cleanImagesUrls(images);
 
-        let textContent = await page.evaluate(() => document.querySelector("#listing-features .info-inner") != null ? document.querySelector("#listing-features .info-inner").textContent : null); 
+        let propertyFeatures = await page.evaluate(() => document.querySelector("#listing-features .info-inner") != null ? document.querySelector("#listing-features .info-inner").textContent : null); 
+        let textContent      = await this.processPropertyFeatures(propertyFeatures);
         // console.log(title,images,textContent);
         
         //get path to post dir , stop execution if folder already exists
@@ -79,7 +86,8 @@ export class HotDogCondosImporter{
             'baths'      : baths,
             'size'       : size,
             'floorNumber':floorNumber,
-            'price'      :price
+            'price'      :price,
+            'features'   : propertyFeatures
         }
 
         console.log(metadata);

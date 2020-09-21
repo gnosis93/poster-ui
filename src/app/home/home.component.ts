@@ -41,6 +41,11 @@ export class HomeComponent implements OnInit {
       this.getPosts();
     });
 
+    this.postsService.deleteAllPosts(false).subscribe((result)=>{
+      this.hideSpinner();
+      this.getPosts();
+    });
+
     this.configService.getConfig().subscribe((config)=>this.config = config);
   }
 
@@ -58,6 +63,15 @@ export class HomeComponent implements OnInit {
       this.posts = posts;
       this.hideSpinner();
     })
+  }
+
+
+  async onDeleteAllPosts(){
+    if(confirm('Are you sure you want delete all the posts ?') === false){
+      return;
+    }
+    this.showProgressSpinner();
+    this.postsService.deleteAllPosts(true);
   }
 
   async onImportClick(){

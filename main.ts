@@ -101,6 +101,19 @@ ipcMain.addListener('getPosts', async (event, args) => {
   event.sender.send('getPosts', PostsHelper.redefineListOfPosts(result.postsDirs, result.postsDirPath));
 });
 
+
+ipcMain.addListener('deleteAllPosts', async (event, args) => {
+  let result = await PostsHelper.getListOfPosts();
+  for(let post of result.postsDirs){
+    await PostsHelper.deletePostByName(post);
+  }
+  event.sender.send('deleteAllPosts', true);
+
+  return true;
+});
+
+
+
 ipcMain.addListener('saveConfig', async (event, args) => {
   let result = await ConfigHelper.saveConfig(args);
   event.sender.send('saveConfig', true);
