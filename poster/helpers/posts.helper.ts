@@ -1,7 +1,7 @@
 //importing necessary modules
 import path = require('path');
 import fs   = require('fs');
-import {Post, PostImage} from '../models/post.interface';
+import {Post, PostImage, PostMetaData} from '../models/post.interface';
 import { dir } from 'console';
 
 export class PostsHelper{
@@ -58,10 +58,20 @@ export class PostsHelper{
             name    : postDirName,
             dirPath : dirPath,
             images  : PostsHelper.getPostImages(dirPath) ,
-            content : PostsHelper.getPostContent(dirPath)
+            content : PostsHelper.getPostContent(dirPath),
+            metaData: PostsHelper.getPostMetaData(dirPath)
         }
         return redefined;
     }
+
+    private static getPostMetaData(dirPath:string):PostMetaData|null{
+        let jsonFileLocation = (path.join(dirPath,'metadata.json'));
+        if(fs.existsSync(jsonFileLocation) == false ){
+            return null;
+        }
+        return JSON.parse(fs.readFileSync(jsonFileLocation).toString());
+    }
+
 
     public static deletePostByName(postDirName,postsDirPath:string=null):boolean{
         if(postsDirPath === null){

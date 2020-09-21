@@ -12,6 +12,7 @@ import { ChannelBase } from './poster/channels/channel.base';
 import { IChannel } from './poster/channels/channel.interface';
 import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
 import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
+import { CraigslistPoster } from './poster/channels/facebook/craigslist.group.poster';
 
 //importing necessary modules
 
@@ -170,6 +171,34 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
   return event.sender.send('submitPostToFacebookPages', result);
 
+});
+
+ipcMain.addListener('submitPostToCraigslist', async (event, post: Post) => {
+  let config = ConfigHelper.getConfig();
+  let poster:IChannel|null = null;
+  let result = true;
+
+  try {
+    poster = new CraigslistPoster(
+      {
+        username: config.craigslist_email,
+        password: config.craigslist_password
+      },
+      post.images,
+      post.content,
+      post?.metaData?.title,
+      'Pattaya',
+
+    ); 
+
+    await poster.run();
+
+  } catch (e) {
+    result = false;
+    console.error(e);
+  }
+
+  return event.sender.send('submitPostToCraigslist', result);
 });
 
 ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {

@@ -47,9 +47,17 @@ var PostsHelper = /** @class */ (function () {
             name: postDirName,
             dirPath: dirPath,
             images: PostsHelper.getPostImages(dirPath),
-            content: PostsHelper.getPostContent(dirPath)
+            content: PostsHelper.getPostContent(dirPath),
+            metaData: PostsHelper.getPostMetaData(dirPath)
         };
         return redefined;
+    };
+    PostsHelper.getPostMetaData = function (dirPath) {
+        var jsonFileLocation = (path.join(dirPath, 'metadata.json'));
+        if (fs.existsSync(jsonFileLocation) == false) {
+            return null;
+        }
+        return JSON.parse(fs.readFileSync(jsonFileLocation).toString());
     };
     PostsHelper.deletePostByName = function (postDirName, postsDirPath) {
         if (postsDirPath === void 0) { postsDirPath = null; }

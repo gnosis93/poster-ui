@@ -58,8 +58,24 @@ var ConfigHelper = /** @class */ (function () {
         if (fileExists) {
             return false;
         }
-        var jsonFileTemplate = "\n        {\n            \"facebook_email\":\"aaronscifo@gmail.com\",\n            \"facebook_password\":\"Miami5151+-*\",\n            \"facebook_pages\":[\n                \"https://www.facebook.com/Test123-109118157588870/\"\n            ],\n            \"facebook_groups\":[\n                \"https://www.facebook.com/groups/317055712850966\"\n            ],\n            \"headless\":false,\n            \"facebook_old_style\":true,\n            \"chrome_executable_path\":\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\"\n        }";
-        fs.writeFileSync(configFilePath, jsonFileTemplate);
+        var jsonFileTemplate = {
+            "facebook_email": "aaronscifo@gmail.com",
+            "facebook_password": "Miami5151+-*",
+            "facebook_pages": [
+                "https://www.facebook.com/Test123-109118157588870/"
+            ],
+            "facebook_groups": [
+                "https://www.facebook.com/groups/317055712850966"
+            ],
+            "headless": false,
+            "phone_number": '090 048 9999',
+            "phone_extension": '+66',
+            "facebook_old_style": true,
+            "chrome_executable_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "craigslist_email": "hotdogcondos@gmail.com",
+            "craigslist_password": "Miami5151+-*!!",
+        };
+        fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
     };
     ConfigHelper.saveConfig = function (newConfigContent) {

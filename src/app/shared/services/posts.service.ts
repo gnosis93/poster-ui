@@ -12,6 +12,7 @@ export class PostsService {
   private $postToFacebookPagesSubject:Subject<boolean>;
   private $deleteSubject:Subject<boolean>;
   private $postToFacebookGroupsSubject:Subject<boolean>;
+  private $postToCraigslistSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
@@ -21,6 +22,7 @@ export class PostsService {
     this.$postSubject                 = new Subject<Post>();
     this.$postToFacebookPagesSubject  = new Subject<boolean>();
     this.$postToFacebookGroupsSubject = new Subject<boolean>();
+    this.$postToCraigslistSubject     = new Subject<boolean>();
     this.$deleteSubject               = new Subject<boolean>();
 
     this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
@@ -42,6 +44,11 @@ export class PostsService {
     this.electron.ipcRenderer.addListener('submitPostToFacebookGroups',(sender,message)=>{
       this.$postToFacebookGroupsSubject.next(message);
     });
+
+    this.electron.ipcRenderer.addListener('postToCraigslistSubject',(sender,message)=>{
+      this.$postToCraigslistSubject.next(message);
+    });
+
 
   }
 
@@ -79,16 +86,37 @@ export class PostsService {
     }
     return this.$postToFacebookGroupsSubject.asObservable();
   }
+
+  public postToCraigslist(post:Post | null){
+    if(post != null){
+      this.electron.ipcRenderer.send('submitPostToCraigslist',post);
+    }
+    return this.$postToCraigslistSubject.asObservable();
+  }
+
+
+
 }
 
 export interface Post{
   name    : string,
   dirPath : string,
   images  : PostImage[] ,
-  content : string
+  content : string,
+  metaData:PostMetaData|null
+
 
 }
 export interface PostImage{
   imageURL: string,
   selected:boolean
+}
+
+export interface PostMetaData{
+  'title'      : string,
+  'url'        : string,
+  'beds'       : number,
+  'baths'      : number,
+  'size'       : string,
+  'floorNumber': string
 }

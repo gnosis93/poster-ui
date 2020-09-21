@@ -122,7 +122,7 @@ var HotDogCondosImporter = /** @class */ (function () {
     };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, textContent, postDirectoryPath, postDirectoryExists, _i, images_1, imageUrl;
+            var title, images, textContent, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, metadata, _i, images_1, imageUrl;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: 
@@ -146,9 +146,31 @@ var HotDogCondosImporter = /** @class */ (function () {
                         if (postDirectoryExists === true) {
                             return [2 /*return*/, true];
                         }
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null; })];
+                    case 5:
+                        beds = _a.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null; })];
+                    case 6:
+                        baths = _a.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null; })];
+                    case 7:
+                        size = _a.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null; })];
+                    case 8:
+                        floorNumber = _a.sent();
+                        metadata = {
+                            'title': title,
+                            'url': pageUrl,
+                            'beds': beds,
+                            'baths': baths,
+                            'size': size,
+                            'floorNumber': floorNumber
+                        };
+                        console.log(metadata);
                         //save content
                         fs.mkdirSync(postDirectoryPath);
                         fs.writeFileSync(path.join(postDirectoryPath, 'text.txt'), textContent);
+                        this.writeJSONToFile(postDirectoryPath, 'metadata.json', metadata);
                         //save images
                         for (_i = 0, images_1 = images; _i < images_1.length; _i++) {
                             imageUrl = images_1[_i];
@@ -158,6 +180,10 @@ var HotDogCondosImporter = /** @class */ (function () {
                 }
             });
         });
+    };
+    HotDogCondosImporter.prototype.writeJSONToFile = function (dirPath, fileName, content) {
+        var encodedContent = JSON.stringify(content);
+        return fs.writeFileSync(path.join(dirPath, fileName), encodedContent);
     };
     HotDogCondosImporter.prototype.getPostsDir = function () {
         var app = require('electron').app;

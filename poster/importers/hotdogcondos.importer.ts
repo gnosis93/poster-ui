@@ -64,15 +64,39 @@ export class HotDogCondosImporter{
             return true;
         }
 
+        let beds = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null); 
+        let baths = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null); 
+        let size = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null); 
+        let floorNumber = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
+        
+        
+        let metadata = {
+            'title'      : title,
+            'url'        : pageUrl,
+            'beds'       : beds,
+            'baths'      : baths,
+            'size'       : size,
+            'floorNumber':floorNumber
+        }
+
+        console.log(metadata);
         //save content
         fs.mkdirSync(postDirectoryPath);
         fs.writeFileSync(path.join(postDirectoryPath,'text.txt'),textContent)
+        
+        this.writeJSONToFile(postDirectoryPath,'metadata.json', metadata);
         
         //save images
         for(let imageUrl of images){
             this.downloadImage(path.join(postDirectoryPath,((new Date()).getTime() +'.jpg')),imageUrl );
         }
         return true;
+    }
+
+
+    private writeJSONToFile(dirPath:string,fileName:string,content:any){
+        let encodedContent = JSON.stringify(content);
+        return fs.writeFileSync(path.join(dirPath,fileName),encodedContent);
     }
 
     private getPostsDir():string{

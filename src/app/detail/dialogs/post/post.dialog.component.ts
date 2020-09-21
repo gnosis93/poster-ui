@@ -25,6 +25,10 @@ export class PostDialogComponent implements OnInit {
     {
       "name":'Facebook Groups',
       "selected":false,
+    },
+    {    
+      "name":'Craigslist',
+      "selected":false,
     }
   ];
 
@@ -113,6 +117,9 @@ export class PostDialogComponent implements OnInit {
       case 'Facebook Groups':
         this.postsService.postToFacebookGroups(this.post);
         break;
+      case 'Craigslist':
+        this.postsService.postToCraigslist(this.post);
+        break;
 
     }
   }
@@ -145,6 +152,13 @@ export class PostDialogComponent implements OnInit {
             }
 
           break;
+          case 'Craigslist':
+            result =  await this.validateCraigslistConfig()
+            if(result == false){
+              return result;
+            }
+
+          break;
       }
 
     }
@@ -164,6 +178,15 @@ export class PostDialogComponent implements OnInit {
     }
     if(configPages.length == 0){
       alert('Facebook Pages are not valid in Config');
+      return false;
+    }
+
+    return true;
+  }
+
+  private async validateCraigslistConfig(){
+    if(await this.configService.validateCraigslistCredentials() === false){
+      alert('Craigslist Email/Password are not set or incorrect');
       return false;
     }
 

@@ -7,11 +7,7 @@ export interface IChannel {
      */
     getCredentials():object
 
-    /**
-     * Getter to fetch the list of pages that will be posted
-     */
-    getPostPages():Array<string>;
-
+   
     /**
      * Lunches the browser
      */

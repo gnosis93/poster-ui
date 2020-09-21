@@ -101,6 +101,21 @@ export class ConfigService {
     return true;
   }
 
+  async validateCraigslistCredentials(){
+    let craigslistEmail    = await this.getConfigValue<string>('craigslist_email');
+    let craigslistPassword = await this.getConfigValue<string>('craigslist_password');
+
+    if(!craigslistEmail || craigslistEmail.indexOf('@') == -1){
+      return false;
+    }
+
+    if(!craigslistPassword || craigslistPassword.length <= 1){
+      return false;
+    }
+
+    return true;
+  }
+
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
     let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')

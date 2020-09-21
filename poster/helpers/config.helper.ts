@@ -66,7 +66,7 @@ export class ConfigHelper{
             return false;
         }
 
-        let jsonFileTemplate = `
+        let jsonFileTemplate =
         {
             "facebook_email":"aaronscifo@gmail.com",
             "facebook_password":"Miami5151+-*",
@@ -77,10 +77,14 @@ export class ConfigHelper{
                 "https://www.facebook.com/groups/317055712850966"
             ],
             "headless":false,
+            "phone_number":'090 048 9999',
+            "phone_extension":'+66',
             "facebook_old_style":true,
-            "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-        }`;
-        fs.writeFileSync(configFilePath, jsonFileTemplate);
+            "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+            "craigslist_email":"hotdogcondos@gmail.com",
+            "craigslist_password":"Miami5151+-*!!",
+        };
+        fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
     }
 
