@@ -163,10 +163,15 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.clickTickbox(page, 'real estate - by broker')];
                     case 4:
                         page = _a.sent();
-                        return [4 /*yield*/, page.click('button[type=submit]')];
+                        return [4 /*yield*/, Promise.all([
+                                page.waitForNavigation({ waitUntil: 'load' }),
+                                page.click('button[type=submit]'),
+                                page.waitForNavigation({ waitUntil: 'load' })
+                            ])];
                     case 5:
                         _a.sent();
-                        this.delay(500);
+                        // await page.click('button[type=submit]');
+                        // this.delay(500);
                         // await page.waitForNavigation(
                         //     {
                         //         waitUntil: "networkidle2",
@@ -175,6 +180,8 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         // );
                         return [4 /*yield*/, page.type("#PostingTitle", this.title)];
                     case 6:
+                        // await page.click('button[type=submit]');
+                        // this.delay(500);
                         // await page.waitForNavigation(
                         //     {
                         //         waitUntil: "networkidle2",
@@ -212,43 +219,47 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.clickTickbox(page, 'furnished', false)];
                     case 15:
                         _a.sent();
-                        return [4 /*yield*/, this.delay(500)];
+                        // await this.delay(500);
+                        // await page.click('button[type=submit]');
+                        // await this.delay(500);
+                        return [4 /*yield*/, Promise.all([
+                                page.waitForNavigation({ waitUntil: 'load' }),
+                                page.click('button[type=submit]'),
+                                page.waitForNavigation({ waitUntil: 'load' })
+                            ])];
                     case 16:
-                        _a.sent();
-                        return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 17:
-                        _a.sent();
-                        return [4 /*yield*/, this.delay(500)];
-                    case 18:
+                        // await this.delay(500);
+                        // await page.click('button[type=submit]');
+                        // await this.delay(500);
                         _a.sent();
                         return [4 /*yield*/, page.waitForSelector('.imgcount')
                             // await page.waitForNavigation();
                         ];
-                    case 19:
+                    case 17:
                         _a.sent();
                         return [4 /*yield*/, page.$$('input[type=file]')];
-                    case 20:
+                    case 18:
                         inputUploadHandles = _a.sent();
                         inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, filesToUpload)];
+                    case 19:
+                        _a.sent();
+                        return [4 /*yield*/, this.getImageCount(page)];
+                    case 20:
+                        imageCount = (_a.sent());
+                        _a.label = 21;
                     case 21:
-                        _a.sent();
-                        return [4 /*yield*/, this.getImageCount(page)];
-                    case 22:
-                        imageCount = (_a.sent());
-                        _a.label = 23;
-                    case 23:
-                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 26];
+                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 24];
                         return [4 /*yield*/, this.delay(100)];
-                    case 24:
+                    case 22:
                         _a.sent();
                         return [4 /*yield*/, this.getImageCount(page)];
-                    case 25:
+                    case 23:
                         imageCount = (_a.sent());
-                        return [3 /*break*/, 23];
-                    case 26: return [4 /*yield*/, page.click('button[type=submit].done')];
-                    case 27:
+                        return [3 /*break*/, 21];
+                    case 24: return [4 /*yield*/, page.click('button[type=submit].done')];
+                    case 25:
                         _a.sent();
                         return [2 /*return*/, page];
                 }

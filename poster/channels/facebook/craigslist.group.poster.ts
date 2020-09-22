@@ -81,8 +81,16 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         page = await this.clickTickbox(page,'housing offered')
         page = await this.clickTickbox(page,'real estate - by broker')
         
-        await page.click('button[type=submit]');
-        this.delay(500);
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'load' }),
+            page.click('button[type=submit]'),
+            page.waitForNavigation({ waitUntil: 'load' })
+        ]);
+
+
+        // await page.click('button[type=submit]');
+        // this.delay(500);
         // await page.waitForNavigation(
         //     {
         //         waitUntil: "networkidle2",
@@ -108,9 +116,16 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
 
         
         await this.clickTickbox(page,'furnished',false);
-        await this.delay(500);
-        await page.click('button[type=submit]');
-        await this.delay(500);
+        // await this.delay(500);
+        // await page.click('button[type=submit]');
+        // await this.delay(500);
+
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'load' }),
+            page.click('button[type=submit]'),
+            page.waitForNavigation({ waitUntil: 'load' })
+        ]);
+
 
         await page.waitForSelector('.imgcount')
         
