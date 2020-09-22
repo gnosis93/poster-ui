@@ -190,7 +190,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
 });
 
-ipcMain.addListener('submitPostToCraigslist', async (event, post: Post) => {
+ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:string) => {
   let config = ConfigHelper.getConfig();
   let poster:IChannel|null = null;
   let result = true;
@@ -208,7 +208,8 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post) => {
       post.metaData.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
-      ConfigHelper.getConfigValue('phone_extension')
+      ConfigHelper.getConfigValue('phone_extension'),
+      city
     ); 
 
     await poster.run();

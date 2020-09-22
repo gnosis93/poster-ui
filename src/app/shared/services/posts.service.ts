@@ -102,9 +102,9 @@ export class PostsService {
     return this.$postToFacebookGroupsSubject.asObservable();
   }
 
-  public postToCraigslist(post:Post | null){
+  public postToCraigslist(post:Post | null,city:string){
     if(post != null){
-      this.electron.ipcRenderer.send('submitPostToCraigslist',post);
+      this.electron.ipcRenderer.send('submitPostToCraigslist',post,city);
     }
     return this.$postToCraigslistSubject.asObservable();
   }

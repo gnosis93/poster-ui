@@ -15,6 +15,13 @@
                     <label for="">{{channel.name}}</label>
                     <mat-checkbox [checked]="channel.selected" (change)="channel.selected = !channel.selected">
                     </mat-checkbox>
+                    <div class="row" *ngIf="channel.cities && channel.selected" >
+                        <div class="col-3" *ngFor="let city of channel.cities">
+                            <label for="">{{city.name}}</label>
+                            <mat-checkbox [checked]="city.selected" (change)="city.selected = !city.selected">
+                            </mat-checkbox>
+                        </div>
+                    </div>
                 </div>
             </div>
 

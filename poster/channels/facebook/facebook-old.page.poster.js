@@ -48,6 +48,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacebookOldPagePoster = void 0;
 var puppeteer = require("puppeteer");
@@ -140,27 +151,31 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     FacebookOldPagePoster.prototype.postToPages = function (browser, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var pages, count, _i, _a, group, groupPage, postButtonXPath, inputUploadHandles, inputUploadHandle, filesToUpload, _b, filesToUpload_1, image, postButton;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var pages, count, _a, _b, group, groupPage, postButtonXPath, inputUploadHandles, inputUploadHandle, filesToUpload, filesToUpload_1, filesToUpload_1_1, image, e_1_1, postButton, e_2_1;
+            var e_2, _c, e_1, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
                         pages = [];
                         count = 0;
-                        _i = 0, _a = this.getPostPages();
-                        _c.label = 1;
+                        _e.label = 1;
                     case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 17];
-                        group = _a[_i];
+                        _e.trys.push([1, 23, 24, 25]);
+                        _a = __values(this.getPostPages()), _b = _a.next();
+                        _e.label = 2;
+                    case 2:
+                        if (!!_b.done) return [3 /*break*/, 22];
+                        group = _b.value;
                         count++;
                         return [4 /*yield*/, browser.newPage()];
-                    case 2:
-                        groupPage = _c.sent();
-                        return [4 /*yield*/, groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 3:
-                        _c.sent();
-                        return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2' })];
+                        groupPage = _e.sent();
+                        return [4 /*yield*/, groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 4:
-                        _c.sent();
+                        _e.sent();
+                        return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2' })];
+                    case 5:
+                        _e.sent();
                         // await groupPage.click('div[aria-label="Create Post"]');
                         // await this.delay(2000);
                         // Sets the value of the file input to fileToUpload
@@ -168,47 +183,61 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         // }
                         // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         return [4 /*yield*/, groupPage.click('textarea[title="Write a post..."]')];
-                    case 5:
+                    case 6:
                         // await groupPage.click('div[aria-label="Create Post"]');
                         // await this.delay(2000);
                         // Sets the value of the file input to fileToUpload
                         // for(let fileToUpload of filesToUpload){
                         // }
                         // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
-                        _c.sent();
+                        _e.sent();
                         return [4 /*yield*/, this.delay(100)];
-                    case 6:
-                        _c.sent();
-                        return [4 /*yield*/, groupPage.keyboard.type(this.content)];
                     case 7:
-                        _c.sent(); // click submit
+                        _e.sent();
+                        return [4 /*yield*/, groupPage.keyboard.type(this.content)];
+                    case 8:
+                        _e.sent(); // click submit
                         postButtonXPath = "//span[text()='Post']";
                         return [4 /*yield*/, groupPage.$$('input[type=file]')];
-                    case 8:
-                        inputUploadHandles = _c.sent();
+                    case 9:
+                        inputUploadHandles = _e.sent();
                         inputUploadHandle = inputUploadHandles[1];
                         filesToUpload = this.getImagesToPost();
-                        _b = 0, filesToUpload_1 = filesToUpload;
-                        _c.label = 9;
-                    case 9:
-                        if (!(_b < filesToUpload_1.length)) return [3 /*break*/, 13];
-                        image = filesToUpload_1[_b];
-                        return [4 /*yield*/, inputUploadHandle.uploadFile(image)];
+                        _e.label = 10;
                     case 10:
-                        _c.sent();
-                        return [4 /*yield*/, this.delay(1000)];
+                        _e.trys.push([10, 16, 17, 18]);
+                        filesToUpload_1 = (e_1 = void 0, __values(filesToUpload)), filesToUpload_1_1 = filesToUpload_1.next();
+                        _e.label = 11;
                     case 11:
-                        _c.sent();
-                        _c.label = 12;
+                        if (!!filesToUpload_1_1.done) return [3 /*break*/, 15];
+                        image = filesToUpload_1_1.value;
+                        return [4 /*yield*/, inputUploadHandle.uploadFile(image)];
                     case 12:
-                        _b++;
-                        return [3 /*break*/, 9];
-                    case 13: return [4 /*yield*/, this.delay(2000)];
+                        _e.sent();
+                        return [4 /*yield*/, this.delay(1000)];
+                    case 13:
+                        _e.sent();
+                        _e.label = 14;
                     case 14:
-                        _c.sent();
+                        filesToUpload_1_1 = filesToUpload_1.next();
+                        return [3 /*break*/, 11];
+                    case 15: return [3 /*break*/, 18];
+                    case 16:
+                        e_1_1 = _e.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 18];
+                    case 17:
+                        try {
+                            if (filesToUpload_1_1 && !filesToUpload_1_1.done && (_d = filesToUpload_1.return)) _d.call(filesToUpload_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 18: return [4 /*yield*/, this.delay(2000)];
+                    case 19:
+                        _e.sent();
                         return [4 /*yield*/, groupPage.click('button[type="submit"][value="1"]._1mf7')];
-                    case 15:
-                        postButton = _c.sent();
+                    case 20:
+                        postButton = _e.sent();
                         // while(true){
                         //     let disabledJSHandle = await postButton[0].getProperty('attributes');
                         //     let disabledValue = await disabledJSHandle.jsonValue();//when the disabled attribute is not present only 3 values are present
@@ -227,11 +256,22 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                             onPageUploadedCallback(groupPage, count);
                         }
                         pages.push(groupPage);
-                        _c.label = 16;
-                    case 16:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 17: return [2 /*return*/, pages];
+                        _e.label = 21;
+                    case 21:
+                        _b = _a.next();
+                        return [3 /*break*/, 2];
+                    case 22: return [3 /*break*/, 25];
+                    case 23:
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 25];
+                    case 24:
+                        try {
+                            if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                        return [7 /*endfinally*/];
+                    case 25: return [2 /*return*/, pages];
                 }
             });
         });

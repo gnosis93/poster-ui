@@ -8,6 +8,21 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://craigslist.com/';
     private readonly channelLoginUrl:string = 'https://accounts.craigslist.org/login';
 
+    private readonly locationsPostUrls = [
+        {
+            'city' : "bangkok",
+            'url'  : "https://post.craigslist.org/c/bkk"
+
+        },
+        {
+            'city' : "beijing",
+            'url'  : "https://post.craigslist.org/k/itFJytj86hGqeJr07S0gOQ/wsZtg?s=type&lang=zh"
+
+        }
+     
+    ];
+
+
     constructor(
         private credentials:{username:string,password:string},
         private imagesToPost:PostImage[],
@@ -17,7 +32,8 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         private price:string,
         private surfaceArea:string,
         private phoneNumber:string,
-        private phoneExtension:string='+356'
+        private phoneExtension:string='+356',
+        private city:string='bangkok'
     ){
         super();
        
@@ -26,7 +42,18 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         }
     }
 
+    private getCityUrl():string{
+        if(!this.city || this.city.length === 0){
+            throw 'City in Criagslist poster is a required param'
+        }
 
+        let city = this.locationsPostUrls.find((c) => c.city == this.city);
+        if(!city){
+            throw 'Invalid City given to Criagslist poster, given INVALID city name: '+this.city;
+        }
+
+        return city.url; 
+    }
   
     public getImagesToPost(){
       return this.imagesToPost.filter((i)=> i.selected == true).map((i) => i.imageURL);
@@ -69,25 +96,43 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         let count = 0;
         
         // let page = (await browser.newPage())
-        await page.goto('https://post.craigslist.org/c/bkk',{
+        // 'https://post.craigslist.org/k/itFJytj86hGqeJr07S0gOQ/wsZtg?s=type&lang=zh'
+        //'https://post.craigslist.org/c/bkk'
+        let cityPostURL = this.getCityUrl();
+        await page.goto(cityPostURL,{
             waitUntil: "networkidle2",
             timeout: 0
         });
 
-        await page.setDefaultNavigationTimeout(0);
+        await page.setDefaultNavigationTimeout(10000);
         // page.click('.selection-list li')[6]
 
         
-        page = await this.clickTickbox(page,'housing offered')
-        page = await this.clickTickbox(page,'real estate - by broker')
-        
+        // page = await this.clickTickbox(page,'housing offered')
+        // page = await this.clickTickbox(page,'real estate - by broker')
+        // await Promise.all([
+            await this.clickTickboxByIndex(page,3),
+            await page.waitForSelector('button[type=submit]'),
+            await page.click('button[type=submit]'),
+                    this.delay(2000);
 
-        await Promise.all([
-            page.waitForNavigation({ waitUntil: 'load' }),
+            // await page.waitForNavigation({ waitUntil: 'load' }),
+        // ]);
+
+        // await Promise.all([
+            // await page.waitForNavigation({ waitUntil: 'load' }),
+            await this.clickTickboxByIndex(page,5,'.option-label'),
+        // ]);
+                this.delay(2000);
+
+        // await Promise.all([
+            await page.waitForSelector('button[type=submit]'),
+
             page.click('button[type=submit]'),
-            page.waitForNavigation({ waitUntil: 'load' })
-        ]);
+            // page.waitForNavigation({ waitUntil: 'load' })
+                    // this.delay(500);
 
+        // ]);
 
         // await page.click('button[type=submit]');
         // this.delay(500);
@@ -98,7 +143,8 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         //     }
         // );
 
-
+        await page.waitForSelector("#PostingTitle");
+        
         await page.type("#PostingTitle",this.title);
         await page.type("#geographic_area",this.location);
         await page.type("#PostingBody",this.content);
@@ -109,13 +155,17 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         
         await page.select("select[name='housing_type']", '2');
         
-        await this.clickTickbox(page,'show my phone number',false);
-        this.delay(500);
+        // await this.clickTickbox(page,'show my phone number',false);
+        // this.delay(500);
+
+        await page.click('input.show_phone_ok');
+
         await page.type("input[name='contact_phone']",this.phoneNumber);
         await page.type("input[name='contact_phone_extension']",this.phoneExtension);
 
-        
-        await this.clickTickbox(page,'furnished',false);
+        await page.click('input.is_furnished');
+
+        // await this.clickTickbox(page,'furnished',false);
         // await this.delay(500);
         // await page.click('button[type=submit]');
         // await this.delay(500);
@@ -173,6 +223,37 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         }
 
         return page;
+    }
+
+
+    private async clickTickboxByIndex(page:puppeteer.Page,selectionIndex:number,querySelector=".selection-list>li>label>.right-side",awaitNavigation:boolean=true){
+        // const linkHandlers = await page.$(querySelector);
+        console.log('start');
+
+        let result = false;
+        let elements =   await page.$$(querySelector);
+        for (let [i, link] of ( elements.entries()) ) {
+            if(i == selectionIndex){
+                console.log('Selected index' + selectionIndex, link);
+                await link.click();
+                result = true;
+                // await page.waitForNavigation({ waitUntil: 'load' });
+                break;
+            }else {
+                result = false
+            }
+        }
+
+        if (result) {
+            return true;
+            // await linkHandlers[0].click();
+        } else {
+            await this.delay(500);
+            return await this.clickTickboxByIndex(page,selectionIndex,querySelector,awaitNavigation)
+            // throw new Error("Link By Index: "+selectionIndex+". not found");
+        }
+        
+        return false;
     }
 
     async lunchBrowser():Promise<puppeteer.Browser>{//override

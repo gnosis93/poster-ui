@@ -35,6 +35,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HotDogCondosImporter = void 0;
 var puppeteer = require("puppeteer");
@@ -48,51 +59,78 @@ var HotDogCondosImporter = /** @class */ (function () {
     }
     HotDogCondosImporter.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var browser, mainPage, pagesUrls, propertiesUrls, _i, pagesUrls_1, pageUrl, pagePropertiesUrls, _a, propertiesUrls_1, propertyUrl;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var browser, mainPage, pagesUrls, propertiesUrls, pagesUrls_1, pagesUrls_1_1, pageUrl, pagePropertiesUrls, e_1_1, propertiesUrls_1, propertiesUrls_1_1, propertyUrl, e_2_1;
+            var e_1, _a, e_2, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, this.lunchBrowser()];
                     case 1:
-                        browser = _b.sent();
+                        browser = _c.sent();
                         return [4 /*yield*/, browser.newPage()];
                     case 2:
-                        mainPage = _b.sent();
+                        mainPage = _c.sent();
                         return [4 /*yield*/, this.scrapePagesUrls(mainPage)];
                     case 3:
-                        pagesUrls = _b.sent();
+                        pagesUrls = _c.sent();
                         propertiesUrls = [];
-                        _i = 0, pagesUrls_1 = pagesUrls;
-                        _b.label = 4;
+                        _c.label = 4;
                     case 4:
-                        if (!(_i < pagesUrls_1.length)) return [3 /*break*/, 7];
-                        pageUrl = pagesUrls_1[_i];
-                        return [4 /*yield*/, this.scrapeListingURLS(mainPage, pageUrl)];
+                        _c.trys.push([4, 9, 10, 11]);
+                        pagesUrls_1 = __values(pagesUrls), pagesUrls_1_1 = pagesUrls_1.next();
+                        _c.label = 5;
                     case 5:
-                        pagePropertiesUrls = _b.sent();
-                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
-                        _b.label = 6;
+                        if (!!pagesUrls_1_1.done) return [3 /*break*/, 8];
+                        pageUrl = pagesUrls_1_1.value;
+                        return [4 /*yield*/, this.scrapeListingURLS(mainPage, pageUrl)];
                     case 6:
-                        _i++;
-                        return [3 /*break*/, 4];
+                        pagePropertiesUrls = _c.sent();
+                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
+                        _c.label = 7;
                     case 7:
-                        _a = 0, propertiesUrls_1 = propertiesUrls;
-                        _b.label = 8;
-                    case 8:
-                        if (!(_a < propertiesUrls_1.length)) return [3 /*break*/, 11];
-                        propertyUrl = propertiesUrls_1[_a];
-                        return [4 /*yield*/, this.scrapeProperty(propertyUrl, mainPage)];
+                        pagesUrls_1_1 = pagesUrls_1.next();
+                        return [3 /*break*/, 5];
+                    case 8: return [3 /*break*/, 11];
                     case 9:
-                        _b.sent();
-                        _b.label = 10;
+                        e_1_1 = _c.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 11];
                     case 10:
-                        _a++;
-                        return [3 /*break*/, 8];
-                    case 11: 
+                        try {
+                            if (pagesUrls_1_1 && !pagesUrls_1_1.done && (_a = pagesUrls_1.return)) _a.call(pagesUrls_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 11:
+                        _c.trys.push([11, 16, 17, 18]);
+                        propertiesUrls_1 = __values(propertiesUrls), propertiesUrls_1_1 = propertiesUrls_1.next();
+                        _c.label = 12;
+                    case 12:
+                        if (!!propertiesUrls_1_1.done) return [3 /*break*/, 15];
+                        propertyUrl = propertiesUrls_1_1.value;
+                        return [4 /*yield*/, this.scrapeProperty(propertyUrl, mainPage)];
+                    case 13:
+                        _c.sent();
+                        _c.label = 14;
+                    case 14:
+                        propertiesUrls_1_1 = propertiesUrls_1.next();
+                        return [3 /*break*/, 12];
+                    case 15: return [3 /*break*/, 18];
+                    case 16:
+                        e_2_1 = _c.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 18];
+                    case 17:
+                        try {
+                            if (propertiesUrls_1_1 && !propertiesUrls_1_1.done && (_b = propertiesUrls_1.return)) _b.call(propertiesUrls_1);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                        return [7 /*endfinally*/];
+                    case 18: 
                     // if((ConfigHelper.getConfigValue('headless',false) ) === true){
                     return [4 /*yield*/, browser.close()];
-                    case 12:
+                    case 19:
                         // if((ConfigHelper.getConfigValue('headless',false) ) === true){
-                        _b.sent();
+                        _c.sent();
                         // }
                         // this.scrapeListingURLS(browser,HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL);
                         return [2 /*return*/, true];
@@ -131,21 +169,22 @@ var HotDogCondosImporter = /** @class */ (function () {
     };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, propertyFeatures, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, textContent, _i, images_1, imageUrl;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var title, images, propertyFeatures, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, textContent, images_1, images_1_1, imageUrl;
+            var e_3, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0: 
                     // let page    = await browser.newPage();
                     return [4 /*yield*/, page.goto(pageUrl, { waitUntil: 'networkidle2' })];
                     case 1:
                         // let page    = await browser.newPage();
-                        _a.sent();
+                        _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null; })];
                     case 2:
-                        title = _a.sent();
+                        title = _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return Array.from(document.querySelectorAll(".listings-slider-image"), function (element) { return element.getAttribute('src'); }); })];
                     case 3:
-                        images = _a.sent();
+                        images = _b.sent();
                         images = this.cleanImagesUrls(images);
                         return [4 /*yield*/, page.evaluate(function () {
                                 var selector = document.querySelector("#listing-features .info-inner");
@@ -155,7 +194,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                                 return selector.innerText;
                             })];
                     case 4:
-                        propertyFeatures = _a.sent();
+                        propertyFeatures = _b.sent();
                         postDirectoryPath = path.join(this.getPostsDir(), title);
                         postDirectoryExists = fs.existsSync(postDirectoryPath);
                         if (postDirectoryExists === true) {
@@ -163,19 +202,19 @@ var HotDogCondosImporter = /** @class */ (function () {
                         }
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null; })];
                     case 5:
-                        beds = _a.sent();
+                        beds = _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null; })];
                     case 6:
-                        baths = _a.sent();
+                        baths = _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null; })];
                     case 7:
-                        size = _a.sent();
+                        size = _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null; })];
                     case 8:
-                        floorNumber = _a.sent();
+                        floorNumber = _b.sent();
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
                     case 9:
-                        price = _a.sent();
+                        price = _b.sent();
                         price = price.replace('THB', '');
                         price = price.replace(',', '');
                         metadata = {
@@ -193,13 +232,22 @@ var HotDogCondosImporter = /** @class */ (function () {
                         fs.mkdirSync(postDirectoryPath);
                         return [4 /*yield*/, this.processPropertyFeatures(metadata)];
                     case 10:
-                        textContent = _a.sent();
+                        textContent = _b.sent();
                         fs.writeFileSync(path.join(postDirectoryPath, 'text.txt'), textContent);
                         this.writeJSONToFile(postDirectoryPath, 'metadata.json', metadata);
-                        //save images
-                        for (_i = 0, images_1 = images; _i < images_1.length; _i++) {
-                            imageUrl = images_1[_i];
-                            this.downloadImage(path.join(postDirectoryPath, ((new Date()).getTime() + '.jpg')), imageUrl);
+                        try {
+                            //save images
+                            for (images_1 = __values(images), images_1_1 = images_1.next(); !images_1_1.done; images_1_1 = images_1.next()) {
+                                imageUrl = images_1_1.value;
+                                this.downloadImage(path.join(postDirectoryPath, ((new Date()).getTime() + '.jpg')), imageUrl);
+                            }
+                        }
+                        catch (e_3_1) { e_3 = { error: e_3_1 }; }
+                        finally {
+                            try {
+                                if (images_1_1 && !images_1_1.done && (_a = images_1.return)) _a.call(images_1);
+                            }
+                            finally { if (e_3) throw e_3.error; }
                         }
                         return [2 /*return*/, true];
                 }
@@ -226,12 +274,22 @@ var HotDogCondosImporter = /** @class */ (function () {
         }).end();
     };
     HotDogCondosImporter.prototype.cleanImagesUrls = function (imagesUrls) {
+        var e_4, _a;
         var redefinedImagesUrl = [];
-        for (var _i = 0, imagesUrls_1 = imagesUrls; _i < imagesUrls_1.length; _i++) {
-            var imageUrl = imagesUrls_1[_i];
-            var indexOfQuery = imageUrl.indexOf('?');
-            var imageUrlWithNoQuery = imageUrl.substr(0, indexOfQuery);
-            redefinedImagesUrl.push(imageUrlWithNoQuery);
+        try {
+            for (var imagesUrls_1 = __values(imagesUrls), imagesUrls_1_1 = imagesUrls_1.next(); !imagesUrls_1_1.done; imagesUrls_1_1 = imagesUrls_1.next()) {
+                var imageUrl = imagesUrls_1_1.value;
+                var indexOfQuery = imageUrl.indexOf('?');
+                var imageUrlWithNoQuery = imageUrl.substr(0, indexOfQuery);
+                redefinedImagesUrl.push(imageUrlWithNoQuery);
+            }
+        }
+        catch (e_4_1) { e_4 = { error: e_4_1 }; }
+        finally {
+            try {
+                if (imagesUrls_1_1 && !imagesUrls_1_1.done && (_a = imagesUrls_1.return)) _a.call(imagesUrls_1);
+            }
+            finally { if (e_4) throw e_4.error; }
         }
         return redefinedImagesUrl;
     };

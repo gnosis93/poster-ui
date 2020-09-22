@@ -29,6 +29,16 @@ export class PostDialogComponent implements OnInit {
     {    
       "name":'Craigslist',
       "selected":false,
+      'cities':[
+        {
+          name:'bangkok',
+          selected:false
+        },
+        {
+          name:'beijing',
+          selected:false
+        }
+      ]
     }
   ];
 
@@ -118,7 +128,10 @@ export class PostDialogComponent implements OnInit {
         this.postsService.postToFacebookGroups(this.post);
         break;
       case 'Craigslist':
-        this.postsService.postToCraigslist(this.post);
+        let selectedCities = channel.cities.filter(s => s.selected);
+        for(let city of selectedCities){
+          this.postsService.postToCraigslist(this.post,city.name);
+        }
         break;
 
     }
@@ -150,17 +163,18 @@ export class PostDialogComponent implements OnInit {
             if(result == false){
               return result;
             }
-
           break;
           case 'Craigslist':
             result =  await this.validateCraigslistConfig()
             if(result == false){
               return result;
             }
-
+            if(channel.cities.find((c) => c.selected == true) == null){
+              alert('Please select at least one city!')
+              return false 
+            }
           break;
       }
-
     }
     return result;
   }
@@ -240,6 +254,7 @@ export class PostDialogComponent implements OnInit {
       this.isLoading = false;
       return;
     }
+    
     this.isLoading = true;
     this.handleQueueItem(selectedChannels[0]);
     // this.channelPostingQueue;
@@ -247,4 +262,4 @@ export class PostDialogComponent implements OnInit {
 }
 
 
-interface Channel{name:string,selected:boolean};
+interface Channel{name:string,selected:boolean,cities?:Array<{name:string,selected:boolean}>};

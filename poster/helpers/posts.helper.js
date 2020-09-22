@@ -1,4 +1,15 @@
 "use strict";
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostsHelper = void 0;
 //importing necessary modules
@@ -29,11 +40,21 @@ var PostsHelper = /** @class */ (function () {
         };
     };
     PostsHelper.redefineListOfPosts = function (posts, postsDirPath) {
+        var e_1, _a;
         var redefinedPosts = [];
-        for (var _i = 0, posts_1 = posts; _i < posts_1.length; _i++) {
-            var postDirName = posts_1[_i];
-            var redefined = PostsHelper.getPostByName(postDirName, postsDirPath);
-            redefinedPosts.push(redefined);
+        try {
+            for (var posts_1 = __values(posts), posts_1_1 = posts_1.next(); !posts_1_1.done; posts_1_1 = posts_1.next()) {
+                var postDirName = posts_1_1.value;
+                var redefined = PostsHelper.getPostByName(postDirName, postsDirPath);
+                redefinedPosts.push(redefined);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (posts_1_1 && !posts_1_1.done && (_a = posts_1.return)) _a.call(posts_1);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
         return redefinedPosts;
     };
@@ -83,6 +104,7 @@ var PostsHelper = /** @class */ (function () {
         return fs.readFileSync(contentFilePath).toString();
     };
     PostsHelper.getPostImages = function (postDirPath) {
+        var e_2, _a;
         if (fs.existsSync(postDirPath) === false) {
             var errMsg = "Posts directory does not exist!! " + postDirPath;
             console.error(errMsg);
@@ -90,20 +112,29 @@ var PostsHelper = /** @class */ (function () {
         }
         var filesInDir = fs.readdirSync(postDirPath);
         var imageFiles = Array();
-        for (var _i = 0, filesInDir_1 = filesInDir; _i < filesInDir_1.length; _i++) {
-            var file = filesInDir_1[_i];
-            if (!file || file.indexOf('.') === -1) {
-                continue;
+        try {
+            for (var filesInDir_1 = __values(filesInDir), filesInDir_1_1 = filesInDir_1.next(); !filesInDir_1_1.done; filesInDir_1_1 = filesInDir_1.next()) {
+                var file = filesInDir_1_1.value;
+                if (!file || file.indexOf('.') === -1) {
+                    continue;
+                }
+                var fileNameExploded = file.split('.');
+                var fileExtension = fileNameExploded.length > 1 ? fileNameExploded[fileNameExploded.length - 1] : null;
+                if (!fileExtension || PostsHelper.ACCEPTED_IMAGES.indexOf(String(fileExtension)) === -1) {
+                    continue;
+                }
+                imageFiles.push({
+                    imageURL: path.join(postDirPath, file),
+                    selected: true
+                });
             }
-            var fileNameExploded = file.split('.');
-            var fileExtension = fileNameExploded.length > 1 ? fileNameExploded[fileNameExploded.length - 1] : null;
-            if (!fileExtension || PostsHelper.ACCEPTED_IMAGES.indexOf(String(fileExtension)) === -1) {
-                continue;
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (filesInDir_1_1 && !filesInDir_1_1.done && (_a = filesInDir_1.return)) _a.call(filesInDir_1);
             }
-            imageFiles.push({
-                imageURL: path.join(postDirPath, file),
-                selected: true
-            });
+            finally { if (e_2) throw e_2.error; }
         }
         return imageFiles;
     };

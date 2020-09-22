@@ -48,6 +48,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacebookOldGroupPoster = void 0;
 var puppeteer = require("puppeteer");
@@ -140,104 +171,119 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
     FacebookOldGroupPoster.prototype.postToPages = function (browser, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var pages, count, _i, _a, group, groupPage, inputUploadHandles, inputUploadHandle, filesToUpload, postButtonQuery, postButton, disabledJSHandle, disabledValue;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var pages, count, _a, _b, group, groupPage, inputUploadHandles, inputUploadHandle, filesToUpload, postButtonQuery, postButton, disabledJSHandle, disabledValue, e_1_1;
+            var e_1, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
                     case 0:
                         pages = [];
                         count = 0;
-                        _i = 0, _a = this.getPostPages();
-                        _b.label = 1;
+                        _d.label = 1;
                     case 1:
-                        if (!(_i < _a.length)) return [3 /*break*/, 20];
-                        group = _a[_i];
+                        _d.trys.push([1, 22, 23, 24]);
+                        _a = __values(this.getPostPages()), _b = _a.next();
+                        _d.label = 2;
+                    case 2:
+                        if (!!_b.done) return [3 /*break*/, 21];
+                        group = _b.value;
                         count++;
                         return [4 /*yield*/, browser.newPage()];
-                    case 2:
-                        groupPage = _b.sent();
+                    case 3:
+                        groupPage = _d.sent();
                         // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
                         return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2' })];
-                    case 3:
-                        // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-                        _b.sent();
-                        return [4 /*yield*/, groupPage.keyboard.press('p')];
                     case 4:
-                        _b.sent();
+                        // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
+                        _d.sent();
+                        return [4 /*yield*/, groupPage.keyboard.press('p')];
+                    case 5:
+                        _d.sent();
                         // await groupPage.click('textarea#js_1g');
                         return [4 /*yield*/, groupPage.keyboard.type(this.content)];
-                    case 5:
-                        // await groupPage.click('textarea#js_1g');
-                        _b.sent(); // click submit
-                        return [4 /*yield*/, groupPage.click('a[loggingname="media_tab_selector"]')];
                     case 6:
-                        _b.sent();
-                        return [4 /*yield*/, this.delay(500)];
+                        // await groupPage.click('textarea#js_1g');
+                        _d.sent(); // click submit
+                        return [4 /*yield*/, groupPage.click('a[loggingname="media_tab_selector"]')];
                     case 7:
-                        _b.sent();
-                        return [4 /*yield*/, groupPage.$$('input[type=file]')];
+                        _d.sent();
+                        return [4 /*yield*/, this.delay(500)];
                     case 8:
-                        inputUploadHandles = _b.sent();
+                        _d.sent();
+                        return [4 /*yield*/, groupPage.$$('input[type=file]')];
+                    case 9:
+                        inputUploadHandles = _d.sent();
                         console.log(inputUploadHandles);
                         inputUploadHandle = inputUploadHandles[1];
                         filesToUpload = this.getImagesToPost();
                         // console.log('Post Images',filesToUpload);
                         return [4 /*yield*/, this.delay(100)];
-                    case 9:
-                        // console.log('Post Images',filesToUpload);
-                        _b.sent();
-                        // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
-                        // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
-                        // Sets the value of the file input to fileToUpload
-                        // for(let fileToUpload of filesToUpload){
-                        //     await inputUploadHandle.uploadFile(fileToUpload);
-                        // }
-                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, filesToUpload)];
                     case 10:
+                        // console.log('Post Images',filesToUpload);
+                        _d.sent();
                         // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
                         // Sets the value of the file input to fileToUpload
                         // for(let fileToUpload of filesToUpload){
                         //     await inputUploadHandle.uploadFile(fileToUpload);
                         // }
-                        _b.sent();
-                        return [4 /*yield*/, this.delay(2000)];
+                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
                     case 11:
-                        _b.sent();
+                        // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
+                        // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
+                        // Sets the value of the file input to fileToUpload
+                        // for(let fileToUpload of filesToUpload){
+                        //     await inputUploadHandle.uploadFile(fileToUpload);
+                        // }
+                        _d.sent();
+                        return [4 /*yield*/, this.delay(2000)];
+                    case 12:
+                        _d.sent();
                         postButtonQuery = 'button[type=submit]._1mf7';
                         return [4 /*yield*/, groupPage.$$(postButtonQuery)];
-                    case 12:
-                        postButton = _b.sent();
-                        _b.label = 13;
                     case 13:
-                        if (!true) return [3 /*break*/, 17];
-                        return [4 /*yield*/, postButton[0].getProperty('attributes')];
+                        postButton = _d.sent();
+                        _d.label = 14;
                     case 14:
-                        disabledJSHandle = _b.sent();
-                        return [4 /*yield*/, disabledJSHandle.jsonValue()];
+                        if (!true) return [3 /*break*/, 18];
+                        return [4 /*yield*/, postButton[0].getProperty('attributes')];
                     case 15:
-                        disabledValue = _b.sent();
+                        disabledJSHandle = _d.sent();
+                        return [4 /*yield*/, disabledJSHandle.jsonValue()];
+                    case 16:
+                        disabledValue = _d.sent();
                         // console.log('disabled attributes' , disabledValue);
                         // postButton[0].
                         // console.log(disabledValue);
                         if (typeof disabledValue['3'] === 'undefined') {
-                            return [3 /*break*/, 17];
+                            return [3 /*break*/, 18];
                         }
                         return [4 /*yield*/, this.delay(100)];
-                    case 16:
-                        _b.sent();
-                        return [3 /*break*/, 13];
-                    case 17: return [4 /*yield*/, groupPage.click(postButtonQuery)];
-                    case 18:
-                        _b.sent();
+                    case 17:
+                        _d.sent();
+                        return [3 /*break*/, 14];
+                    case 18: return [4 /*yield*/, groupPage.click(postButtonQuery)];
+                    case 19:
+                        _d.sent();
                         if (onPageUploadedCallback !== null) {
                             onPageUploadedCallback(groupPage, count);
                         }
                         pages.push(groupPage);
-                        _b.label = 19;
-                    case 19:
-                        _i++;
-                        return [3 /*break*/, 1];
-                    case 20: return [2 /*return*/, pages];
+                        _d.label = 20;
+                    case 20:
+                        _b = _a.next();
+                        return [3 /*break*/, 2];
+                    case 21: return [3 /*break*/, 24];
+                    case 22:
+                        e_1_1 = _d.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 24];
+                    case 23:
+                        try {
+                            if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 24: return [2 /*return*/, pages];
                 }
             });
         });

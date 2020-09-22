@@ -35,6 +35,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelBase = void 0;
 var ChannelBase = /** @class */ (function () {
@@ -55,37 +66,52 @@ var ChannelBase = /** @class */ (function () {
     };
     ChannelBase.prototype.getActivePage = function (browser, timeout) {
         return __awaiter(this, void 0, void 0, function () {
-            var start, pages, arr, _i, pages_1, p;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var start, pages, arr, pages_1, pages_1_1, p, e_1_1;
+            var e_1, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         start = new Date().getTime();
-                        _a.label = 1;
+                        _b.label = 1;
                     case 1:
-                        if (!(new Date().getTime() - start < timeout)) return [3 /*break*/, 7];
+                        if (!(new Date().getTime() - start < timeout)) return [3 /*break*/, 11];
                         return [4 /*yield*/, browser.pages()];
                     case 2:
-                        pages = _a.sent();
+                        pages = _b.sent();
                         arr = [];
-                        _i = 0, pages_1 = pages;
-                        _a.label = 3;
+                        _b.label = 3;
                     case 3:
-                        if (!(_i < pages_1.length)) return [3 /*break*/, 6];
-                        p = pages_1[_i];
-                        return [4 /*yield*/, p.evaluate(function () { return document.visibilityState == 'visible'; })];
+                        _b.trys.push([3, 8, 9, 10]);
+                        pages_1 = (e_1 = void 0, __values(pages)), pages_1_1 = pages_1.next();
+                        _b.label = 4;
                     case 4:
-                        if (_a.sent()) {
+                        if (!!pages_1_1.done) return [3 /*break*/, 7];
+                        p = pages_1_1.value;
+                        return [4 /*yield*/, p.evaluate(function () { return document.visibilityState == 'visible'; })];
+                    case 5:
+                        if (_b.sent()) {
                             arr.push(p);
                         }
-                        _a.label = 5;
-                    case 5:
-                        _i++;
-                        return [3 /*break*/, 3];
+                        _b.label = 6;
                     case 6:
+                        pages_1_1 = pages_1.next();
+                        return [3 /*break*/, 4];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_1_1 = _b.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (pages_1_1 && !pages_1_1.done && (_a = pages_1.return)) _a.call(pages_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 10:
                         if (arr.length == 1)
                             return [2 /*return*/, arr[0]];
                         return [3 /*break*/, 1];
-                    case 7: throw "Unable to get active page";
+                    case 11: throw "Unable to get active page";
                 }
             });
         });
