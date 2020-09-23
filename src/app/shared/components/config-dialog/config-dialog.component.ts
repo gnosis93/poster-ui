@@ -60,6 +60,11 @@ export class ConfigDialogComponent implements OnInit {
     console.log(value);
   }
 
+  postImmediatelyValueChange(value:{checked:boolean}){
+    this.config.post_immediately = value.checked;
+    console.log(value);
+  }
+
   facebookStyleValueChange(value:{checked:boolean}){
     this.config.facebook_old_style = value.checked;
     console.log(value);

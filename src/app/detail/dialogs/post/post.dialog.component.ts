@@ -10,33 +10,33 @@ import { ConfigService } from 'app/shared/services/config.service';
 })
 export class PostDialogComponent implements OnInit {
 
-  public isLoading:boolean = false;
-  private post:Post;
+  public isLoading: boolean = false;
+  private post: Post;
 
 
-  public loadingProgress:number = 0;
-  public numberSelectedChannels:number = 0;
+  public loadingProgress: number = 0;
+  public numberSelectedChannels: number = 0;
 
-  public readonly channels:Channel[] = [
+  public readonly channels: Channel[] = [
     {
-      "name":'Facebook Pages',
-      "selected":false,
+      "name": 'Facebook Pages',
+      "selected": false,
     },
     {
-      "name":'Facebook Groups',
-      "selected":false,
+      "name": 'Facebook Groups',
+      "selected": false,
     },
-    {    
-      "name":'Craigslist',
-      "selected":false,
-      'cities':[
+    {
+      "name": 'Craigslist',
+      "selected": false,
+      'cities': [
         {
-          name:'bangkok',
-          selected:false
+          name: 'bangkok',
+          selected: false
         },
         {
-          name:'beijing',
-          selected:false
+          name: 'beijing',
+          selected: false
         }
       ]
     }
@@ -44,57 +44,57 @@ export class PostDialogComponent implements OnInit {
 
 
   constructor(
-    private dialogRef:MatDialogRef<PostDialogComponent>,
+    private dialogRef: MatDialogRef<PostDialogComponent>,
     private postsService: PostsService,
-    private configService:ConfigService,
-    @Inject(MAT_DIALOG_DATA) data:any,
+    private configService: ConfigService,
+    @Inject(MAT_DIALOG_DATA) data: any,
     private cd: ChangeDetectorRef
-    ) {
-      this.isLoading = false;
+  ) {
+    this.isLoading = false;
 
-      this.post = data.post ?? null;
-      if(!this.post){
-        this.dialogRef.close();
-        alert('Invalid post')
+    this.post = data.post ?? null;
+    if (!this.post) {
+      this.dialogRef.close();
+      alert('Invalid post')
+    }
+
+    this.postsService.postToFacebookPages(null).subscribe((result) => {
+      this.setChannelSelected('Facebook Pages', false);
+      this.loadingProgress++;
+
+      let selectedChannels = this.getSelectedChannels();
+
+      if (selectedChannels.length == 0) {
+        return this.postingCompleted();
+      } else {
+        this.handleQueueItem(selectedChannels[0]);
       }
 
-      this.postsService.postToFacebookPages(null).subscribe((result) => {
-        this.setChannelSelected('Facebook Pages',false);
-        this.loadingProgress++;
 
-        let selectedChannels = this.getSelectedChannels();
+      // if (result === false) {
+      //   alert('An error has occurred while posting this post');
+      // }
 
-        if(selectedChannels.length == 0){
-          return this.postingCompleted();
-        }else{
-          this.handleQueueItem(selectedChannels[0]);
-        }
+      this.cd.detectChanges();
+    });
 
+    this.postsService.postToFacebookGroups(null).subscribe((result) => {
+      this.setChannelSelected('Facebook Groups', false);
+      this.loadingProgress++;
 
-        // if (result === false) {
-        //   alert('An error has occurred while posting this post');
-        // }
+      let selectedChannels = this.getSelectedChannels();
+      if (selectedChannels.length == 0) {
+        return this.postingCompleted();
+      } else {
+        this.handleQueueItem(selectedChannels[0]);
+      }
 
-        this.cd.detectChanges();
-      });
+      // if (result === false) {
+      //   alert('An error has occurred while posting this post to groups');
+      // }
 
-      this.postsService.postToFacebookGroups(null).subscribe((result) => {
-        this.setChannelSelected('Facebook Groups',false);
-        this.loadingProgress++;
-
-        let selectedChannels = this.getSelectedChannels();
-        if(selectedChannels.length == 0){
-          return this.postingCompleted();
-        }else{
-          this.handleQueueItem(selectedChannels[0]);
-        }
-
-        // if (result === false) {
-        //   alert('An error has occurred while posting this post to groups');
-        // }
-
-        this.cd.detectChanges();
-      });
+      this.cd.detectChanges();
+    });
 
   }
 
@@ -105,22 +105,22 @@ export class PostDialogComponent implements OnInit {
 
   }
 
-  private  postingCompleted(){
+  private postingCompleted() {
     this.isLoading = false;
     this.dialogRef.close();
     this.cd.detectChanges();
     // alert('Operation Completed')
   }
 
-  async close(){
+  async close() {
     this.dialogRef.close();
     this.cd.detectChanges();
     console.log('post dialog closed');
   }
 
 
-  handleQueueItem(channel:Channel){
-    switch(channel.name){
+  handleQueueItem(channel: Channel) {
+    switch (channel.name) {
       case 'Facebook Pages':
         this.postsService.postToFacebookPages(this.post);
         break;
@@ -129,17 +129,17 @@ export class PostDialogComponent implements OnInit {
         break;
       case 'Craigslist':
         let selectedCities = channel.cities.filter(s => s.selected);
-        for(let city of selectedCities){
-          this.postsService.postToCraigslist(this.post,city.name);
+        for (let city of selectedCities) {
+          this.postsService.postToCraigslist(this.post, city.name);
         }
         break;
 
     }
   }
 
-  public setChannelSelected(channelName:string,selectedValue:boolean){
-    for(let channel of this.channels){
-      if(channel.name === channelName){
+  public setChannelSelected(channelName: string, selectedValue: boolean) {
+    for (let channel of this.channels) {
+      if (channel.name === channelName) {
         channel.selected = selectedValue;
         return true;
       }
@@ -147,50 +147,50 @@ export class PostDialogComponent implements OnInit {
     return false;
   }
 
-  private async validateChannels(){
+  private async validateChannels() {
     let selectedChannels = this.getSelectedChannels();
     let result = true;
-    for(let channel of selectedChannels){
-      switch(channel.name){
-          case 'Facebook Pages':
-            result = await this.validateFacebookPageConfig()
-            if(result == false){
-              return result;
-            }
+    for (let channel of selectedChannels) {
+      switch (channel.name) {
+        case 'Facebook Pages':
+          result = await this.validateFacebookPageConfig()
+          if (result == false) {
+            return result;
+          }
           break;
-          case 'Facebook Groups':
-            result =  await this.validateFacebookGroupConfig()
-            if(result == false){
-              return result;
-            }
+        case 'Facebook Groups':
+          result = await this.validateFacebookGroupConfig()
+          if (result == false) {
+            return result;
+          }
           break;
-          case 'Craigslist':
-            result =  await this.validateCraigslistConfig()
-            if(result == false){
-              return result;
-            }
-            if(channel.cities.find((c) => c.selected == true) == null){
-              alert('Please select at least one city!')
-              return false 
-            }
+        case 'Craigslist':
+          result = await this.validateCraigslistConfig()
+          if (result == false) {
+            return result;
+          }
+          if (channel.cities.find((c) => c.selected == true) == null) {
+            alert('Please select at least one city!')
+            return false
+          }
           break;
       }
     }
     return result;
   }
 
-  private async validateFacebookPageConfig(){
-    if(await this.configService.validateFacebookCredentials() === false){
+  private async validateFacebookPageConfig() {
+    if (await this.configService.validateFacebookCredentials() === false) {
       alert('Facebook Email/Password are not set or incorrect');
       return false;
     }
 
-    let configPages= (await this.configService.getConfigValue<Array<string>>('facebook_pages'));
-    if(Array.isArray(configPages) === false){
+    let configPages = (await this.configService.getConfigValue<Array<string>>('facebook_pages'));
+    if (Array.isArray(configPages) === false) {
       alert('Facebook Pages are not valid in Config');
       return false;
     }
-    if(configPages.length == 0){
+    if (configPages.length == 0) {
       alert('Facebook Pages are not valid in Config');
       return false;
     }
@@ -198,19 +198,19 @@ export class PostDialogComponent implements OnInit {
     return true;
   }
 
-  private async validateCraigslistConfig(){
-    if(await this.configService.validateCraigslistCredentials() === false){
+  private async validateCraigslistConfig() {
+    if (await this.configService.validateCraigslistCredentials() === false) {
       alert('Craigslist Email/Password are not set or incorrect');
       return false;
     }
-    let phoneNumber    = (await this.configService.getConfigValue<string|null>('phone_number'));
-    if(phoneNumber == null || phoneNumber.length == 0){
+    let phoneNumber = (await this.configService.getConfigValue<string | null>('phone_number'));
+    if (phoneNumber == null || phoneNumber.length == 0) {
       alert('Phone number in config is required, Please set it up');
       return false;
     }
 
-    let phoneExtension = (await this.configService.getConfigValue<string|null>('phone_number'));
-    if(phoneExtension == null || phoneExtension.length == 0){
+    let phoneExtension = (await this.configService.getConfigValue<string | null>('phone_number'));
+    if (phoneExtension == null || phoneExtension.length == 0) {
       alert('Phone extension in config is required, Please set it up');
       return false;
     }
@@ -218,43 +218,43 @@ export class PostDialogComponent implements OnInit {
     return true;
   }
 
-  private async validateFacebookGroupConfig(){
-    if(await this.configService.validateFacebookCredentials() === false){
+  private async validateFacebookGroupConfig() {
+    if (await this.configService.validateFacebookCredentials() === false) {
       alert('Facebook Email/Password are not set or incorrect');
       return false;
     }
 
-    let configPages= (await this.configService.getConfigValue<Array<string>>('facebook_groups'));
-    if(Array.isArray(configPages) === false){
+    let configPages = (await this.configService.getConfigValue<Array<string>>('facebook_groups'));
+    if (Array.isArray(configPages) === false) {
       alert('Facebook Groups are not valid in Config');
       return false;
     }
-    if(configPages.length == 0){
+    if (configPages.length == 0) {
       alert('Facebook Groups are not valid in Config');
       return false;
     }
     return true;
   }
 
-  private getSelectedChannels():Channel[]{
+  private getSelectedChannels(): Channel[] {
     return this.channels.filter((channel) => channel.selected === true);
   }
 
-  async onPostClick(){
-    let selectedChannels        = this.getSelectedChannels();
+  async onPostClick() {
+    let selectedChannels = this.getSelectedChannels();
     this.numberSelectedChannels = selectedChannels.length;
 
 
-    if(selectedChannels.length == 0){
+    if (selectedChannels.length == 0) {
       this.isLoading = false;
       alert('Please Select at least 1 channel');
     }
 
-    if(await this.validateChannels() === false){
+    if (await this.validateChannels() === false) {
       this.isLoading = false;
       return;
     }
-    
+
     this.isLoading = true;
     this.handleQueueItem(selectedChannels[0]);
     // this.channelPostingQueue;
@@ -262,4 +262,4 @@ export class PostDialogComponent implements OnInit {
 }
 
 
-interface Channel{name:string,selected:boolean,cities?:Array<{name:string,selected:boolean}>};
+interface Channel { name: string, selected: boolean, cities?: Array<{ name: string, selected: boolean }> };

@@ -86,11 +86,7 @@ var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var CraigslistPoster = /** @class */ (function (_super) {
     __extends(CraigslistPoster, _super);
-    function CraigslistPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, city) {
-        if (title === void 0) { title = 'Test Title'; }
-        if (location === void 0) { location = 'Test Location'; }
-        if (phoneExtension === void 0) { phoneExtension = '+356'; }
-        if (city === void 0) { city = 'bangkok'; }
+    function CraigslistPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, city, immediatelyPost) {
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
@@ -102,6 +98,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
         _this.phoneNumber = phoneNumber;
         _this.phoneExtension = phoneExtension;
         _this.city = city;
+        _this.immediatelyPost = immediatelyPost;
         _this.channelUrl = 'https://craigslist.com/';
         _this.channelLoginUrl = 'https://accounts.craigslist.org/login';
         _this.locationsPostUrls = [
@@ -210,116 +207,80 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 2:
                         _a.sent();
                         // page.click('.selection-list li')[6]
-                        // page = await this.clickTickbox(page,'housing offered')
-                        // page = await this.clickTickbox(page,'real estate - by broker')
-                        // await Promise.all([
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 3)];
                     case 3:
                         // page.click('.selection-list li')[6]
-                        // page = await this.clickTickbox(page,'housing offered')
-                        // page = await this.clickTickbox(page,'real estate - by broker')
-                        // await Promise.all([
                         _a.sent();
                         return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
                     case 4:
                         _a.sent();
-                        return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 5:
-                        // page.click('.selection-list li')[6]
-                        // page = await this.clickTickbox(page,'housing offered')
-                        // page = await this.clickTickbox(page,'real estate - by broker')
-                        // await Promise.all([
-                        _a.sent(),
-                            this.delay(2000);
-                        // await page.waitForNavigation({ waitUntil: 'load' }),
-                        // ]);
-                        // await Promise.all([
-                        // await page.waitForNavigation({ waitUntil: 'load' }),
+                        // await page.click('button[type=submit]');
+                        this.delay(2000);
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 5, '.option-label')];
-                    case 6:
-                        // await page.waitForNavigation({ waitUntil: 'load' }),
-                        // ]);
+                    case 5:
+                        _a.sent();
+                        // this.delay(2000);
                         // await Promise.all([
-                        // await page.waitForNavigation({ waitUntil: 'load' }),
-                        _a.sent(),
-                            // ]);
-                            this.delay(2000);
-                        // await Promise.all([
-                        return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
-                    case 7:
-                        // await Promise.all([
-                        _a.sent(), page.click('button[type=submit]');
-                        // page.waitForNavigation({ waitUntil: 'load' })
-                        // this.delay(500);
-                        // ]);
+                        // await page.waitForSelector('button[type=submit]'),
                         // await page.click('button[type=submit]');
-                        // this.delay(500);
-                        // await page.waitForNavigation(
-                        //     {
-                        //         waitUntil: "networkidle2",
-                        //         timeout: 0
-                        //     }
-                        // );
                         return [4 /*yield*/, page.waitForSelector("#PostingTitle")];
-                    case 8:
+                    case 6:
+                        // this.delay(2000);
                         // await Promise.all([
-                        // page.waitForNavigation({ waitUntil: 'load' })
-                        // this.delay(500);
-                        // ]);
+                        // await page.waitForSelector('button[type=submit]'),
                         // await page.click('button[type=submit]');
-                        // this.delay(500);
-                        // await page.waitForNavigation(
-                        //     {
-                        //         waitUntil: "networkidle2",
-                        //         timeout: 0
-                        //     }
-                        // );
                         _a.sent();
                         return [4 /*yield*/, page.type("#PostingTitle", this.title)];
-                    case 9:
+                    case 7:
                         _a.sent();
                         return [4 /*yield*/, page.type("#geographic_area", this.location)];
-                    case 10:
+                    case 8:
                         _a.sent();
                         return [4 /*yield*/, page.type("#PostingBody", this.content)];
-                    case 11:
+                    case 9:
                         _a.sent();
                         return [4 /*yield*/, page.type("input[name='price']", this.price)];
-                    case 12:
+                    case 10:
                         _a.sent();
                         return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
-                    case 13:
+                    case 11:
                         _a.sent();
                         // await page.type("input[name='surface_area']",'');
                         return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
-                    case 14:
+                    case 12:
                         // await page.type("input[name='surface_area']",'');
                         _a.sent();
                         // await this.clickTickbox(page,'show my phone number',false);
                         // this.delay(500);
                         return [4 /*yield*/, page.click('input.show_phone_ok')];
-                    case 15:
+                    case 13:
                         // await this.clickTickbox(page,'show my phone number',false);
                         // this.delay(500);
                         _a.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone']", this.phoneNumber)];
-                    case 16:
+                    case 14:
                         _a.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
-                    case 17:
+                    case 15:
                         _a.sent();
                         return [4 /*yield*/, page.click('input.is_furnished')];
-                    case 18:
+                    case 16:
                         _a.sent();
                         // await this.clickTickbox(page,'furnished',false);
                         // await this.delay(500);
                         // await page.click('button[type=submit]');
                         // await this.delay(500);
-                        return [4 /*yield*/, Promise.all([
-                                page.waitForNavigation({ waitUntil: 'load' }),
-                                page.click('button[type=submit]'),
-                                page.waitForNavigation({ waitUntil: 'load' })
-                            ])];
+                        return [4 /*yield*/, page.waitForNavigation({ waitUntil: 'load' })];
+                    case 17:
+                        // await this.clickTickbox(page,'furnished',false);
+                        // await this.delay(500);
+                        // await page.click('button[type=submit]');
+                        // await this.delay(500);
+                        _a.sent();
+                        return [4 /*yield*/, page.click('button[type=submit]')];
+                    case 18:
+                        _a.sent();
+                        return [4 /*yield*/, page.waitForNavigation({ waitUntil: 'load' })];
                     case 19:
                         // await this.clickTickbox(page,'furnished',false);
                         // await this.delay(500);
@@ -355,7 +316,15 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 27: return [4 /*yield*/, page.click('button[type=submit].done')];
                     case 28:
                         _a.sent();
-                        return [2 /*return*/, page];
+                        if (!this.immediatelyPost) return [3 /*break*/, 31];
+                        return [4 /*yield*/, page.waitForSelector("button[name='go']")];
+                    case 29:
+                        _a.sent();
+                        return [4 /*yield*/, page.click("button[name='go']")];
+                    case 30:
+                        _a.sent();
+                        _a.label = 31;
+                    case 31: return [2 /*return*/, page];
                 }
             });
         });

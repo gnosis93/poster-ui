@@ -74,6 +74,7 @@ var ConfigHelper = /** @class */ (function () {
             "chrome_executable_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             "craigslist_email": "hotdogcondos@gmail.com",
             "craigslist_password": "Miami5151+-*!!",
+            "post_immediately": false
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;

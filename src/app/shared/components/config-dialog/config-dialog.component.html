@@ -109,6 +109,13 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-10">
+               <label>Post Immediately</label>
+               <mat-checkbox [checked]="config.post_immediately" (change)="postImmediatelyValueChange($event)"></mat-checkbox>  
+            </div>
+        </div>
+
     </form>
 </mat-dialog-content>
 
@@ -124,5 +131,4 @@
             </div>
         </div>
     </div>
-   
 </mat-dialog-actions>
