@@ -126,10 +126,10 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
 
         await page.waitForSelector("#PostingTitle");
 
-        await page.type("#PostingTitle", this.title);
-        await page.type("#geographic_area", this.location);
-        await page.type("#PostingBody", this.content);
-        await page.type("input[name='price']", this.price);
+        await this.threeClickType(page,"#PostingTitle",this.title);
+        await this.threeClickType(page,"#geographic_area",this.location);
+        await this.threeClickType(page,"#PostingBody",this.content);
+        await this.threeClickType(page,"input[name='price']",this.content);
 
         await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
         // await page.type("input[name='surface_area']",'');
@@ -151,7 +151,6 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // await page.click('button[type=submit]');
         // await this.delay(500);
 
-        await page.waitForNavigation({ waitUntil: 'load' }),
         await page.click('button[type=submit]'),
         await page.waitForNavigation({ waitUntil: 'load' })
 
