@@ -132,9 +132,9 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
 
         await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
 
-        let fromEmailFieldExists = await page.$("input[name='FromEMail'][type='email']");
+        let fromEmailFieldExists = await page.$("input[name=FromEMail][type=text]");
         if(fromEmailFieldExists !== null){
-            await this.threeClickType(page, "input[name='FromEMail']", this.credentials.username);
+            await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
         }
 
 
