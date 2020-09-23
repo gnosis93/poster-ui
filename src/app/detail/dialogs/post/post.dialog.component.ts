@@ -12,8 +12,11 @@ export class PostDialogComponent implements OnInit {
 
   public isLoading: boolean = false;
   private post: Post;
+  private posts: Post[];
 
 
+  private postsQueue:{'channel':Channel,'post':Post}[] = [];
+  
   public loadingProgress: number = 0;
   public numberSelectedChannels: number = 0;
 
@@ -53,21 +56,26 @@ export class PostDialogComponent implements OnInit {
     this.isLoading = false;
 
     this.post = data.post ?? null;
-    if (!this.post) {
+    this.posts = data.posts ?? (this.post ? [this.post] : null);
+
+    if (!this.post && !this.posts) {
       this.dialogRef.close();
       alert('Invalid post')
     }
 
     this.postsService.postToFacebookPages(null).subscribe((result) => {
-      this.setChannelSelected('Facebook Pages', false);
+      // this.setChannelSelected('Facebook Pages', false);
+      let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == 'Facebook Pages');
+      this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
+      
       this.loadingProgress++;
 
-      let selectedChannels = this.getSelectedChannels();
+      let selectedChannels = this.postsQueue;
 
       if (selectedChannels.length == 0) {
         return this.postingCompleted();
       } else {
-        this.handleQueueItem(selectedChannels[0]);
+        this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
       }
 
 
@@ -79,14 +87,18 @@ export class PostDialogComponent implements OnInit {
     });
 
     this.postsService.postToFacebookGroups(null).subscribe((result) => {
-      this.setChannelSelected('Facebook Groups', false);
+      // this.setChannelSelected('Facebook Groups', false);
+      let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == 'Facebook Groups');
+      this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
+      
       this.loadingProgress++;
 
-      let selectedChannels = this.getSelectedChannels();
+      let selectedChannels = this.postsQueue;
+
       if (selectedChannels.length == 0) {
         return this.postingCompleted();
       } else {
-        this.handleQueueItem(selectedChannels[0]);
+        this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
       }
 
       // if (result === false) {
@@ -95,6 +107,31 @@ export class PostDialogComponent implements OnInit {
 
       this.cd.detectChanges();
     });
+
+
+    this.postsService.postToCraigslist(null,null).subscribe((result) => {
+      // this.setChannelSelected('Craigslist', false);
+      let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == 'Craigslist');
+      this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
+      
+      this.loadingProgress++;
+
+      let selectedChannels = this.postsQueue;
+
+      // let selectedChannels = this.getSelectedChannels();
+      if (selectedChannels.length == 0) {
+        return this.postingCompleted();
+      } else {
+        this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
+      }
+
+      // if (result === false) {
+      //   alert('An error has occurred while posting this post to groups');
+      // }
+
+      this.cd.detectChanges();
+    });
+
 
   }
 
@@ -119,18 +156,24 @@ export class PostDialogComponent implements OnInit {
   }
 
 
-  handleQueueItem(channel: Channel) {
+  handleQueueItem(post:Post,channel: Channel) {
+   
+    this.postsQueue.push({
+      channel:channel,
+      post:post
+    });
+
     switch (channel.name) {
       case 'Facebook Pages':
-        this.postsService.postToFacebookPages(this.post);
+        this.postsService.postToFacebookPages(post);
         break;
       case 'Facebook Groups':
-        this.postsService.postToFacebookGroups(this.post);
+        this.postsService.postToFacebookGroups(post);
         break;
       case 'Craigslist':
         let selectedCities = channel.cities.filter(s => s.selected);
         for (let city of selectedCities) {
-          this.postsService.postToCraigslist(this.post, city.name);
+          this.postsService.postToCraigslist(post, city.name);
         }
         break;
 
@@ -236,13 +279,17 @@ export class PostDialogComponent implements OnInit {
     return true;
   }
 
+
+
+  
   private getSelectedChannels(): Channel[] {
     return this.channels.filter((channel) => channel.selected === true);
   }
 
   async onPostClick() {
+    // this.numberSelectedChannels = selectedChannels.length;
+    this.numberSelectedChannels = 0;
     let selectedChannels = this.getSelectedChannels();
-    this.numberSelectedChannels = selectedChannels.length;
 
 
     if (selectedChannels.length == 0) {
@@ -256,7 +303,13 @@ export class PostDialogComponent implements OnInit {
     }
 
     this.isLoading = true;
-    this.handleQueueItem(selectedChannels[0]);
+    
+    for(let post of this.posts){
+      this.numberSelectedChannels++;
+      for(let selectedChannel of selectedChannels){
+        this.handleQueueItem(post,selectedChannel);
+      }
+    }
     // this.channelPostingQueue;
   }
 }

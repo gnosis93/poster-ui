@@ -10,6 +10,7 @@ import { allowedNodeEnvironmentFlags } from 'process';
 import { ImportService } from 'app/shared/services/import.service';
 import { ConfigService } from 'app/shared/services/config.service';
 import { Config } from 'electron/main';
+import { PostDialogComponent } from '../detail/dialogs/post/post.dialog.component'
 
 @Component({
   selector: 'app-home',
@@ -65,7 +66,23 @@ export class HomeComponent implements OnInit {
     })
   }
 
+  async onPostSelected(){
+    const dialogPost = new MatDialogConfig();
 
+    dialogPost.disableClose = false;
+    dialogPost.autoFocus = true;
+
+    let selectedPosts = this.posts.filter((p) => typeof p.selected != 'undefined' && p.selected === true);
+    dialogPost.data = {
+      posts:selectedPosts
+    };
+    
+    console.log('no error')
+
+    this.dialog.open(PostDialogComponent, dialogPost);
+
+  }
+  
   async onDeleteAllPosts(){
     if(confirm('Are you sure you want delete all the posts ?') === false){
       return;

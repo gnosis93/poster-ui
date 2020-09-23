@@ -253,11 +253,11 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
                     case 15:
                         _d.sent();
-                        return [4 /*yield*/, page.$("input[name='FromEMail'][type='email']")];
+                        return [4 /*yield*/, page.$("input[name=FromEMail][type=text]")];
                     case 16:
                         fromEmailFieldExists = _d.sent();
                         if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 18];
-                        return [4 /*yield*/, this.threeClickType(page, "input[name='FromEMail']", this.credentials.username)];
+                        return [4 /*yield*/, this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username)];
                     case 17:
                         _d.sent();
                         _d.label = 18;
