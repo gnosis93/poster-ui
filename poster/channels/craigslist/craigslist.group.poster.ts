@@ -63,8 +63,6 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
         return this.credentials;
     }
 
- 
-
     private async login(browser:puppeteer.Browser):Promise<puppeteer.Page>{
         let loginPage = await browser.newPage();
         let {username,password} = this.getCredentials();
@@ -114,12 +112,13 @@ export class CraigslistPoster extends ChannelBase implements IChannel{
             await this.clickTickboxByIndex(page,3),
             await page.waitForSelector('button[type=submit]'),
             await page.click('button[type=submit]'),
-                    this.delay(2000);
 
             // await page.waitForNavigation({ waitUntil: 'load' }),
         // ]);
 
         // await Promise.all([
+            await page.waitForSelector('.option-label'),
+            
             // await page.waitForNavigation({ waitUntil: 'load' }),
             await this.clickTickboxByIndex(page,5,'.option-label'),
         // ]);
