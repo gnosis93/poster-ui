@@ -16,7 +16,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         },
         {
             'city': "beijing",
-            'url': "https://post.craigslist.org/k/itFJytj86hGqeJr07S0gOQ/wsZtg?s=type&lang=zh"
+            'url': "https://post.craigslist.org/c/pek?lang=en&cc=gb"
         }
 
     ];
@@ -96,7 +96,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let count = 0;
 
         // let page = (await browser.newPage())
-        // 'https://post.craigslist.org/k/itFJytj86hGqeJr07S0gOQ/wsZtg?s=type&lang=zh'
+        // 'https://post.craigslist.org/c/pek?lang=en&cc=gb'
         //'https://post.craigslist.org/c/bkk'
         let cityPostURL = this.getCityUrl();
         await page.goto(cityPostURL, {
