@@ -94,18 +94,15 @@ ipcMain.addListener('fileExists',async (event,args) => {
   event.sender.send('fileExists', fileExists);
 });
 
-
 ipcMain.addListener('getPosts', async (event, args) => {
   let result = await PostsHelper.getListOfPosts();
   event.sender.send('getPosts', PostsHelper.redefineListOfPosts(result.postsDirs, result.postsDirPath));
 });
 
-
 ipcMain.addListener('openBrowser',async (event,link) => {
   await shell.openExternal(link);
   console.log('Browser Opened at '+link);
-})
-
+});
 
 ipcMain.addListener('deleteAllPosts', async (event, args) => {
   let result = await PostsHelper.getListOfPosts();
@@ -116,8 +113,6 @@ ipcMain.addListener('deleteAllPosts', async (event, args) => {
 
   return true;
 });
-
-
 
 ipcMain.addListener('saveConfig', async (event, args) => {
   let result = await ConfigHelper.saveConfig(args);
@@ -210,7 +205,8 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:stri
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
-      city
+      city,
+      ConfigHelper.getConfigValue('post_immediately',false)
     ); 
 
     await poster.run();
