@@ -11,7 +11,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
     private readonly locationsPostUrls = [
         {
             'city': "bangkok",
-            'url': "https://post.craigslist.org/c/bkk"
+            'url': "https://post.craigslist.org/c/bkk?lang=en&cc=gb"
 
         },
         {
@@ -115,23 +115,29 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // this.delay(2000);
         await page.waitForSelector('.option-label');
         
-        await this.clickTickboxByIndex(page, 5, '.option-label');
+        await this.clickTickboxByIndex(page, 3, '.option-label');
         // this.delay(2000);
 
         // await Promise.all([
         await page.waitForSelector('button[type=submit]');
 
-        // await page.click('button[type=submit]');
+        await page.click('button[type=submit]');
           
-
         await page.waitForSelector("#PostingTitle");
 
         await this.threeClickType(page,"#PostingTitle",this.title);
         await this.threeClickType(page,"#geographic_area",this.location);
         await this.threeClickType(page,"#PostingBody",this.content);
-        await this.threeClickType(page,"input[name='price']",this.content);
+        await this.threeClickType(page,"input[name='price']",this.price);
 
         await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
+
+        let fromEmailFieldExists = await page.$("input[name=FromEMail][type=text]");
+        if(fromEmailFieldExists !== null){
+            await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
+        }
+
+
         // await page.type("input[name='surface_area']",'');
 
         await page.select("select[name='housing_type']", '2');
@@ -150,23 +156,42 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // await this.delay(500);
         // await page.click('button[type=submit]');
         // await this.delay(500);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'load' }),
+            await page.click('button[type=submit]'),
 
-        await page.click('button[type=submit]'),
-        await page.waitForNavigation({ waitUntil: 'load' })
-
+        ])
+      
+        console.log('wating for imgcount');
         await page.waitForSelector('.imgcount')
+        console.log('READY WITH: wating for imgcount');
 
         // await page.waitForNavigation();
 
+        // let clickUpload = await page.waitForSelector('a.newupl');
+        // await clickUpload.click();
+        
+        await page.waitForSelector('input[type=file]');
         const inputUploadHandles = await page.$$('input[type=file]');
-        const inputUploadHandle = inputUploadHandles[0];
-        let filesToUpload = this.getImagesToPost();
+        const inputUploadHandle  = inputUploadHandles[0];
+        let filesToUpload        = this.getImagesToPost();
         await inputUploadHandle.uploadFile(...filesToUpload);
 
+        // const inputUploadHandle = await page.$('input[type=file]');
+        // let filesToUpload = this.getImagesToPost();
+        // console.log('files to upload',filesToUpload);
+        // for(let file of filesToUpload){
+        //     await this.delay(100);
+        //     await inputUploadHandle.uploadFile(file);
+
+        // }
+        // await inputUploadHandle.uploadFile(...filesToUpload);
+        
         let imageCount = (await this.getImageCount(page));
         while (imageCount < filesToUpload.length) {
-            await this.delay(100);
+            await this.delay(500);
             imageCount = (await this.getImageCount(page));
+            console.log('wating image count')
         }
 
 
@@ -182,6 +207,9 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
 
     private async threeClickType(page: puppeteer.Page, selector: string, value: string) {
         const input = await page.$(selector);
+        if(input === null){
+            throw 'ThreeClickType Exception: unable to find specfied selector: '+selector
+        }
         await input.click({ clickCount: 3 });//selects all text in input thus causing it to be deleted
         await input.type(value);
     }
@@ -216,7 +244,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let elements = await page.$$(querySelector);
         for (let [i, link] of (elements.entries())) {
             if (i == selectionIndex) {
-                console.log('Selected index' + selectionIndex, link);
+                // console.log('Selected index' + selectionIndex, link);
                 await link.click();
                 result = true;
                 // await page.waitForNavigation({ waitUntil: 'load' });
