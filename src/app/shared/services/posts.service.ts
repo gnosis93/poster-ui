@@ -119,7 +119,7 @@ export interface Post{
   images  : PostImage[] ,
   content : string,
   metaData:PostMetaData|null
-
+  selected?:boolean
 
 }
 export interface PostImage{

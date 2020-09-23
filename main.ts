@@ -209,7 +209,8 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:stri
       ConfigHelper.getConfigValue('post_immediately',false)
     ); 
 
-    await poster.run();
+    result = await poster.run();
+    return event.sender.send('submitPostToCraigslist', result);
 
   } catch (e) {
     result = false;
