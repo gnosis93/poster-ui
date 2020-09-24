@@ -132,7 +132,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
             },
             {
                 city: 'bologna',
-                url: 'https://bologna.craigslist.org/?lang=en&cc=us'
+                url: 'https://post.craigslist.org/c/blq?lang=en&cc=us'
             },
             {
                 city: 'rome',

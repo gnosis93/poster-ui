@@ -13,12 +13,19 @@ export class PostDialogComponent implements OnInit {
   public isLoading: boolean = false;
   private post: Post;
   private posts: Post[];
-
+  public showSettings:boolean = false;
 
   private postsQueue:{'channel':Channel,'post':Post}[] = [];
   
   public loadingProgress: number = 0;
   public numberSelectedChannels: number = 0;
+
+  public langues = [
+    'english',
+    'thai',
+    'italian',
+    'chinese'
+  ]
 
   public readonly channels: Channel[] = [
     {
@@ -173,9 +180,6 @@ export class PostDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.isLoading = false;
-
-
-
   }
 
   private postingCompleted() {

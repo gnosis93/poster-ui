@@ -11,6 +11,9 @@
         <form>
 
             <div class="row">
+                <div class="col-12">
+                    <h6>Channel Selection</h6>
+                </div>
                 <div class="col-12" *ngFor="let channel of channels">
                     <label for="">{{channel.name}}</label>
                     <mat-checkbox [checked]="channel.selected" (change)="channel.selected = !channel.selected">
@@ -23,6 +26,38 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <hr>
+            
+            <div class="row">
+
+                <div class="col-6">
+                    <h5>Settings</h5>
+                </div>
+                <hr/>
+                <div class="col-6">
+                    <button class="btn btn-warning float-right" (click)="showSettings=!showSettings">
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>                     
+                    </button>
+                </div>
+
+                <div class="col-12" *ngIf="showSettings">
+                    <label>Language</label>
+                    <select class="form-control">
+                        <option *ngFor="let lang of langues">{{lang}}</option>
+                    </select>
+                </div>
+                
+
+                <div class="col-3" *ngIf="showSettings">
+                    <label for="" class="float-right">Text Template</label>
+                </div>
+
+                <div class="col-9" *ngIf="showSettings">
+                    <textarea name="" id="" cols="30" rows="10" class="form-control"></textarea>
+                </div>
+
             </div>
 
         </form>
