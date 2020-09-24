@@ -4,7 +4,7 @@ import * as url from 'url';
 import * as fs from 'fs';
 import { PostsHelper } from './poster/helpers/posts.helper';
 import { HotDogCondosImporter } from './poster/importers/hotdogcondos.importer';
-import { Post } from './poster/models/post.interface';
+import { Post ,ChannelCity} from './poster/models/post.interface';
 import { ConfigHelper } from './poster/helpers/config.helper';
 import { FacebookGroupPoster } from './poster/channels/facebook/facebook.group.poster';
 import { FacebookPagePoster } from './poster/channels/facebook/facebook.page.poster';
@@ -186,7 +186,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
 });
 
-ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:string) => {
+ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:ChannelCity) => {
   let config = ConfigHelper.getConfig();
   let poster:IChannel|null = null;
   let result = true;
@@ -198,14 +198,14 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:stri
         password: config.craigslist_password
       },
       post.images,
-      post.content,
+      ConfigHelper.parseTextTemplate(post,city.lang),
       post?.metaData?.title,
       'Pattaya',
       post.metaData.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
-      city,
+      city.name,
       ConfigHelper.getConfigValue('post_immediately',false)
     ); 
 

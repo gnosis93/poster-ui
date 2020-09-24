@@ -54,13 +54,15 @@ export class PostsHelper{
           postsDirPath= this.getPostsDir();
         }
         let dirPath = path.join(postsDirPath, postDirName);
-        let redefined = {
+        let redefined:Post = {
             name    : postDirName,
             dirPath : dirPath,
             images  : PostsHelper.getPostImages(dirPath) ,
             content : PostsHelper.getPostContent(dirPath),
-            metaData: PostsHelper.getPostMetaData(dirPath)
-        }
+            metaData: PostsHelper.getPostMetaData(dirPath),
+            postText:[]
+        };
+
         return redefined;
     }
 

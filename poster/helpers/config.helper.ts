@@ -1,11 +1,12 @@
 //importing necessary modules
 import path = require('path');
 import fs   = require('fs');
+import { Post } from '../models/post.interface';
 
 export class ConfigHelper{
 
     private static configSingleton:any=null;
-
+    private static readonly defaultLang = 'english';
 
     public static getConfigValue<T=any>(valueKey:string,defaultValue:any=null):T{
         let config = ConfigHelper.getConfig();
@@ -84,13 +85,51 @@ export class ConfigHelper{
             "craigslist_email":"hotdogcondos@gmail.com",
             "craigslist_password":"Miami5151+-*!!",
             "post_immediately":false,
-            "english_text_template":"",
-            "italian_text_template":"",
+
+            "english_text_template":`{title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! 
+More info at : {url}
+Property Features:
+{features}
+Call for view:  {phone_extension} {phone_number')}
+            `,
+            "italian_text_template":`{title} è un nuovo progetto che può essere una nuova grande opportunità di investimento o un posto da chiamare casa. Situato a Pattaya, una città altamente turistica con tutti i comfort che puoi immaginare!
+            Maggiori informazioni su: {url}
+            Chiamaci al numero: {phone_extension} {phone_number ')}`,
             "chinese_text_template":"",
+            "russian_text_template":"",
             "thai_text_template":"",
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
+    }
+
+    public static parseTextTemplate(post:Post,lang:string):string{
+        if(Array.isArray(post.postText) === false){
+            return post.content;
+        }
+        let templateText = post.postText.find(p => p.language === lang);
+        //handle no text in template
+        if(!templateText || templateText.text.length === 0){
+            //if no text is defined for the given lang use default
+            templateText = post.postText.find(p => p.language === this.defaultLang);
+            //if default template text empty , than use default content 
+            if(!templateText){
+                return post.content;
+            }
+        }
+
+        let textParsed  = String(templateText.text);
+        textParsed      = textParsed.replace('{title}',post.metaData.title);
+        textParsed      = textParsed.replace('{beds}',post.metaData.beds);
+        textParsed      = textParsed.replace('{bathrooms}',post.metaData.baths);
+        textParsed      = textParsed.replace('{floorNumber}',post.metaData.floorNumber);
+        textParsed      = textParsed.replace('{size}',post.metaData.size);
+        textParsed      = textParsed.replace('{url}',post.metaData.url);
+        textParsed      = textParsed.replace('{features}',post.metaData.features);
+        textParsed      = textParsed.replace('{phone_extension}',ConfigHelper.getConfigValue('phone_extension'));
+        textParsed      = textParsed.replace('{phone_number}',ConfigHelper.getConfigValue('phone_number'));
+
+        return textParsed;
     }
 
 

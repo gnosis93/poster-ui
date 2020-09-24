@@ -75,13 +75,41 @@ var ConfigHelper = /** @class */ (function () {
             "craigslist_email": "hotdogcondos@gmail.com",
             "craigslist_password": "Miami5151+-*!!",
             "post_immediately": false,
-            "english_text_template": "",
-            "italian_text_template": "",
+            "english_text_template": "{title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! \nMore info at : {url}\nProperty Features:\n{features}\nCall for view:  {phone_extension} {phone_number')}\n            ",
+            "italian_text_template": "{title} \u00E8 un nuovo progetto che pu\u00F2 essere una nuova grande opportunit\u00E0 di investimento o un posto da chiamare casa. Situato a Pattaya, una citt\u00E0 altamente turistica con tutti i comfort che puoi immaginare!\n            Maggiori informazioni su: {url}\n            Chiamaci al numero: {phone_extension} {phone_number ')}",
             "chinese_text_template": "",
+            "russian_text_template": "",
             "thai_text_template": "",
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
+    };
+    ConfigHelper.parseTextTemplate = function (post, lang) {
+        var _this = this;
+        if (Array.isArray(post.postText) === false) {
+            return post.content;
+        }
+        var templateText = post.postText.find(function (p) { return p.language === lang; });
+        //handle no text in template
+        if (!templateText || templateText.text.length === 0) {
+            //if no text is defined for the given lang use default
+            templateText = post.postText.find(function (p) { return p.language === _this.defaultLang; });
+            //if default template text empty , than use default content 
+            if (!templateText) {
+                return post.content;
+            }
+        }
+        var textParsed = String(templateText.text);
+        textParsed = textParsed.replace('{title}', post.metaData.title);
+        textParsed = textParsed.replace('{beds}', post.metaData.beds);
+        textParsed = textParsed.replace('{bathrooms}', post.metaData.baths);
+        textParsed = textParsed.replace('{floorNumber}', post.metaData.floorNumber);
+        textParsed = textParsed.replace('{size}', post.metaData.size);
+        textParsed = textParsed.replace('{url}', post.metaData.url);
+        textParsed = textParsed.replace('{features}', post.metaData.features);
+        textParsed = textParsed.replace('{phone_extension}', ConfigHelper.getConfigValue('phone_extension'));
+        textParsed = textParsed.replace('{phone_number}', ConfigHelper.getConfigValue('phone_number'));
+        return textParsed;
     };
     ConfigHelper.saveConfig = function (newConfigContent) {
         ConfigHelper.configSingleton = null;
@@ -105,6 +133,7 @@ var ConfigHelper = /** @class */ (function () {
         return dirPath;
     };
     ConfigHelper.configSingleton = null;
+    ConfigHelper.defaultLang = 'english';
     return ConfigHelper;
 }());
 exports.ConfigHelper = ConfigHelper;

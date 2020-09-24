@@ -3,6 +3,7 @@ import { ElectronService } from 'app/core/services';
 import { MatDialogRef } from '@angular/material/dialog';
 import { ipcMain } from 'electron';
 import { ConfigService } from 'app/shared/services/config.service';
+import { CommonConstants } from 'app/shared/common-const';
 
 
 type ConfigSection = "Facebook Credentials"      | 
@@ -11,7 +12,8 @@ type ConfigSection = "Facebook Credentials"      |
                      "Facebook Pages Channel"    |
                      "Facebook Groups Channel"   |
                      "General Channels Settings" |
-                     "Behavior"
+                     "Behavior"                  |
+                     "Text Templates"            
 ;
 
 @Component({
@@ -24,6 +26,7 @@ export class ConfigDialogComponent implements OnInit {
   public config:any;
 
   public selectedTemplate:ConfigSection = 'Facebook Credentials'
+  public languages = CommonConstants.languages;
 
   constructor(
     private configService:ConfigService,
@@ -51,7 +54,6 @@ export class ConfigDialogComponent implements OnInit {
    this.getConfig();
 
   }
-
 
   private getConfig(){
     this.configService.getConfig();
@@ -89,7 +91,15 @@ export class ConfigDialogComponent implements OnInit {
   onSidebarClick(selectedItem:ConfigSection){
     this.selectedTemplate = selectedItem;
   }
+
+  onTextTemplateChange($event,lang){
+    this.config[lang+'_text_template'] = $event.target.value;
+    console.log($event);
+  }
   
+  
+
+
   onDeletePageClick(pageUrl:string){
     if(confirm('Are you sure you want to delete this page ?') === false){
       return;

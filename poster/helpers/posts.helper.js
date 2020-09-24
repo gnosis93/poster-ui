@@ -69,7 +69,8 @@ var PostsHelper = /** @class */ (function () {
             dirPath: dirPath,
             images: PostsHelper.getPostImages(dirPath),
             content: PostsHelper.getPostContent(dirPath),
-            metaData: PostsHelper.getPostMetaData(dirPath)
+            metaData: PostsHelper.getPostMetaData(dirPath),
+            postText: []
         };
         return redefined;
     };

@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, ChangeDetectorRef } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PostsService, Post } from 'app/shared/services/posts.service';
 import { ConfigService } from 'app/shared/services/config.service';
+import { CommonConstants } from 'app/shared/common-const';
 
 @Component({
   selector: 'app-post',
@@ -10,22 +11,17 @@ import { ConfigService } from 'app/shared/services/config.service';
 })
 export class PostDialogComponent implements OnInit {
 
-  public isLoading: boolean = false;
+  public  isLoading: boolean = false;
   private post: Post;
   private posts: Post[];
-  public showSettings:boolean = false;
+  public  showSettings:boolean = false;
 
   private postsQueue:{'channel':Channel,'post':Post}[] = [];
   
   public loadingProgress: number = 0;
   public numberSelectedChannels: number = 0;
 
-  public langues = [
-    'english',
-    'thai',
-    'italian',
-    'chinese'
-  ]
+  public languages = CommonConstants.languages;
 
   public readonly channels: Channel[] = [
     {
@@ -42,51 +38,65 @@ export class PostDialogComponent implements OnInit {
       'cities': [
         {
           name: 'bangkok',
-          selected: false
+          selected: false,
+          lang:'thai'
         },
         {
           name: 'beijing',
-          selected: false
+          selected: false,
+          lang:'chinese'
         },
         {
           name: 'shanghai',
-          selected: false
+          selected: false,
+          lang:'chinese'
         },
         {
           name: 'hong kong',
-          selected: false
+          selected: false,
+          lang:'chinese'
         },
         {
           name:'moscow',
-          selected:false
+          selected:false,
+          lang:'russian'
         },
         {
           name:'st petersburg',
-          selected:false
+          selected:false,
+          lang:'russian'
         },
         {
           name:'mumbai',
-          selected:false
+          selected:false,
+          lang:'english'
         },
         {
           name:'bologna',
-          selected:false
+          selected:false,
+          lang:'italian'
         },
         {
           name:'rome',
-          selected:false
+          selected:false,
+          lang:'italian'
         },
         {
           name:'firenze',
-          selected:false
+          selected:false,
+          lang:'italian'
         },
         {
           name:'bangladesh',
-          selected:false
+          selected:false,
+          lang:'english'
         }
       ]
     }
   ];
+
+  public currentLangTextTemplate:string = '';
+  public currentSelectedLang:string = CommonConstants.defaultLang;
 
 
   constructor(
@@ -168,15 +178,20 @@ export class PostDialogComponent implements OnInit {
         this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
       }
 
-      // if (result === false) {
-      //   alert('An error has occurred while posting this post to groups');
-      // }
-
       this.cd.detectChanges();
     });
 
-
+    this.setPostTemplateTextArea(this.posts[0],CommonConstants.defaultLang);
   }
+
+  private setPostTemplateTextArea(post:Post,lang:string){
+    return this.postsService.getPostTemplateText(lang ,post)
+    .then((text)=> {
+      this.currentLangTextTemplate = text.text
+      this.cd.detectChanges();
+    });
+  }
+
 
   ngOnInit(): void {
     this.isLoading = false;
@@ -197,7 +212,6 @@ export class PostDialogComponent implements OnInit {
 
 
   handleQueueItem(post:Post,channel: Channel) {
-   
     this.postsQueue.push({
       channel:channel,
       post:post
@@ -213,7 +227,7 @@ export class PostDialogComponent implements OnInit {
       case 'Craigslist':
         let selectedCities = channel.cities.filter(s => s.selected);
         for (let city of selectedCities) {
-          this.postsService.postToCraigslist(post, city.name);
+          this.postsService.postToCraigslist(post, city);
         }
         break;
 
@@ -319,11 +333,28 @@ export class PostDialogComponent implements OnInit {
     return true;
   }
 
-
-
-  
   private getSelectedChannels(): Channel[] {
     return this.channels.filter((channel) => channel.selected === true);
+  }
+
+  async onTextLangChange(event){
+    let selectedLanguage = event.target.value;
+    let previousSelectedLang = this.currentSelectedLang;
+    this.currentSelectedLang = selectedLanguage;
+
+    //set previous Language text to what the user selected
+    for(let post of this.posts){
+      let postTextToUpdateIndex = post.postText.findIndex((i) => i.language == previousSelectedLang);
+      if(postTextToUpdateIndex >= 0){
+        post.postText[postTextToUpdateIndex].text = this.currentLangTextTemplate;
+        break;
+      }
+    }
+
+    //set textarea with the current selected Language text content 
+    await this.setPostTemplateTextArea(this.post,selectedLanguage);
+     
+    // let currentLanguage  = 
   }
 
   async onPostClick() {
@@ -355,4 +386,12 @@ export class PostDialogComponent implements OnInit {
 }
 
 
-interface Channel { name: string, selected: boolean, cities?: Array<{ name: string, selected: boolean }> };
+export interface Channel { 
+  name: string, 
+  selected: boolean, 
+  cities?: Array<ChannelCity> 
+};
+
+export interface ChannelCity{
+  name: string, selected: boolean, lang:string 
+}

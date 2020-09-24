@@ -18,7 +18,7 @@
                     <label for="">{{channel.name}}</label>
                     <mat-checkbox [checked]="channel.selected" (change)="channel.selected = !channel.selected">
                     </mat-checkbox>
-                    <div class="row" *ngIf="channel.cities && channel.selected" >
+                    <div class="row" *ngIf="channel.cities && channel.selected">
                         <div class="col-3" *ngFor="let city of channel.cities">
                             <label for="">{{city.name}}</label>
                             <mat-checkbox [checked]="city.selected" (change)="city.selected = !city.selected">
@@ -29,33 +29,33 @@
             </div>
 
             <hr>
-            
+
             <div class="row">
 
                 <div class="col-6">
                     <h5>Settings</h5>
                 </div>
-                <hr/>
+                <hr />
                 <div class="col-6">
                     <button class="btn btn-warning float-right" (click)="showSettings=!showSettings">
-                        <i class="fa fa-chevron-down" aria-hidden="true"></i>                     
+                        <i class="fa fa-chevron-down" aria-hidden="true"></i>
                     </button>
                 </div>
 
                 <div class="col-12" *ngIf="showSettings">
                     <label>Language</label>
-                    <select class="form-control">
-                        <option *ngFor="let lang of langues">{{lang}}</option>
+                    <select (change)="onTextLangChange($event)">
+                        <option [value]="lang" *ngFor="let lang of languages">{{lang}}</option>
                     </select>
                 </div>
-                
+
 
                 <div class="col-3" *ngIf="showSettings">
                     <label for="" class="float-right">Text Template</label>
                 </div>
 
                 <div class="col-9" *ngIf="showSettings">
-                    <textarea name="" id="" cols="30" rows="10" class="form-control"></textarea>
+                    <textarea [(ngModel)]="currentLangTextTemplate" id="" cols="30" rows="10" class="form-control"></textarea>
                 </div>
 
             </div>
@@ -78,5 +78,3 @@
     </div>
 
 </mat-dialog-actions>
-
-

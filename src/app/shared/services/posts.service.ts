@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'app/core/services';
 import { Subject } from 'rxjs';
-
+import { ConfigService } from './config.service';
+import { CommonConstants } from '../common-const';
+import {ChannelCity} from '../../detail/dialogs/post/post.dialog.component'
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +19,7 @@ export class PostsService {
 
   constructor(
     private electron: ElectronService,
+    private configService:ConfigService
   ) {
 
     this.$postsSubject                = new Subject<Post[]>();
@@ -102,13 +105,33 @@ export class PostsService {
     return this.$postToFacebookGroupsSubject.asObservable();
   }
 
-  public postToCraigslist(post:Post | null,city:string|null){
+  public postToCraigslist(post:Post | null,city:ChannelCity|null){
     if(post != null && city != null){
       this.electron.ipcRenderer.send('submitPostToCraigslist',post,city);
     }
     return this.$postToCraigslistSubject.asObservable();
   }
 
+  public async getPostTemplateText(lang:string,post:Post):Promise<PostText>{
+    let postText = post.postText.find(p => p.language == lang);
+    if(!postText){
+      let languageText      = await this.configService.getConfigValue<string|null>(lang+'_text_template');
+      let defaultLangText   = await this.configService.getConfigValue<string|null>(CommonConstants.defaultLang+'_text_text_template');
+      if(!languageText || languageText.length == 0){
+        languageText = defaultLangText;
+      }
+
+      postText = {
+        language:lang,
+        text:languageText
+      }
+
+      post.postText.push(postText);
+      return postText;
+
+    }
+    return postText;
+  }
 
 
 }
@@ -120,8 +143,14 @@ export interface Post{
   content : string,
   metaData:PostMetaData|null
   selected?:boolean
-
+  postText:PostText[]
 }
+
+export interface PostText{
+  text:string;
+  language:string;
+}
+
 export interface PostImage{
   imageURL: string,
   selected:boolean
