@@ -71,12 +71,10 @@ export class ConfigDialogComponent implements OnInit {
 
   headlessValueChange(value:{checked:boolean}){
     this.config.headless = value.checked;
-    console.log(value);
   }
 
   postImmediatelyValueChange(value:{checked:boolean}){
     this.config.post_immediately = value.checked;
-    console.log(value);
   }
 
   facebookStyleValueChange(value:{checked:boolean}){
@@ -94,10 +92,13 @@ export class ConfigDialogComponent implements OnInit {
 
   onTextTemplateChange($event,lang){
     this.config[lang+'_text_template'] = $event.target.value;
-    console.log($event);
   }
   
-  
+  closeBrowserValueChange(value:{checked:boolean}){
+    this.config.close_browser = value.checked;
+    console.log(value);
+
+  }
 
 
   onDeletePageClick(pageUrl:string){

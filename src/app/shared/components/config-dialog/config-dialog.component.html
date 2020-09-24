@@ -155,18 +155,21 @@
                         <div class="col-3"><span class="badge badge-secondary">{{'{'}}size{{'}'}}</span></div>
                         <div class="col-3"><span class="badge badge-secondary">{{'{'}}url{{'}'}}</span></div>
                         <div class="col-3"><span class="badge badge-secondary">{{'{'}}features{{'}'}}</span></div>
-                        <div class="col-3"><span class="badge badge-secondary">{{'{'}}phone_extension{{'}'}}</span></div>
+                        <div class="col-3"><span class="badge badge-secondary">{{'{'}}phone_extension{{'}'}}</span>
+                        </div>
                         <div class="col-3"><span class="badge badge-secondary">{{'{'}}phone_number{{'}'}}</span></div>
                     </div>
                     <br>
-                    
+
                     <div class="row" *ngFor="let lang of languages">
                         <div class="col-12">
                             <label for="" class="float-right"><strong>{{lang}} Text Template</strong></label>
                         </div>
 
                         <div class="col-12">
-                            <textarea style="margin-bottom: 10px;" name="" id="" cols="30" rows="10" class="form-control" (change)="onTextTemplateChange($event,lang)">{{config[lang+'_text_template']}}</textarea>
+                            <textarea style="margin-bottom: 10px;" name="" id="" cols="30" rows="10"
+                                class="form-control"
+                                (change)="onTextTemplateChange($event,lang)">{{config[lang+'_text_template']}}</textarea>
                         </div>
                     </div>
 
@@ -198,6 +201,16 @@
                                 (change)="postImmediatelyValueChange($event)"></mat-checkbox>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-10">
+                            <label>Close Browser</label>
+                            <mat-checkbox [checked]="config.close_browser" (change)="closeBrowserValueChange($event)">
+                            </mat-checkbox>
+                        </div>
+                    </div>
+
+
                 </span>
 
             </form>

@@ -158,7 +158,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.postToPages(browser, onPageUploadedCallback)];
                     case 3:
                         postedPages = _a.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true)) return [3 /*break*/, 5];
+                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 5];
                         return [4 /*yield*/, browser.close()];
                     case 4:
                         _a.sent();

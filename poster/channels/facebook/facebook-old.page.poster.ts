@@ -51,7 +51,7 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel{
         let browser     = await this.lunchBrowser();
         let loginPage   = await this.login(browser);
         let postedPages = await this.postToPages(browser,onPageUploadedCallback);
-        if((ConfigHelper.getConfigValue('headless',false) ) === true){
+        if((ConfigHelper.getConfigValue('headless',false) ) === true|| ConfigHelper.getConfigValue('close_browser')){
             await browser.close();
         }
         return true;

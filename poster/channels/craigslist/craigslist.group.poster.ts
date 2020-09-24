@@ -119,7 +119,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
 
-        if ((ConfigHelper.getConfigValue('headless', false)) === true) {
+        if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();
         }
 
@@ -241,6 +241,9 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
             await page.waitForSelector("button[name='go']");
             await page.click("button[name='go']");
         }
+        
+
+
         
         return page;
     }
