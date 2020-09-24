@@ -12,13 +12,47 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         {
             'city': "bangkok",
             'url': "https://post.craigslist.org/c/bkk?lang=en&cc=gb"
-
         },
         {
             'city': "beijing",
             'url': "https://post.craigslist.org/c/pek?lang=en&cc=gb"
+        },
+        {
+            city:'shanghai',
+            url:'https://post.craigslist.org/c/sha?lang=en&cc=us'
+        },
+        {
+            city:'hong kong',
+            url:'https://post.craigslist.org/c/hkg?lang=en&cc=us'
+        },
+        {
+            city:'moscow',
+            url:'https://post.craigslist.org/c/mos?lang=en&cc=us'
+        }, 
+        {
+            city:'mumbai',
+            url:'https://post.craigslist.org/c/mum'
+        },
+        {
+            city:'st petersburg',
+            url:'https://post.craigslist.org/c/stp?lang=en&cc=us'
+        },
+        {
+            city:'bologna',
+            url:'https://post.craigslist.org/c/blq?lang=en&cc=us'
+        },
+        {
+            city:'rome',
+            url:'https://post.craigslist.org/c/rom?lang=en&cc=gb'
+        },
+        {
+            city:'firenze',
+            url:'https://post.craigslist.org/c/flr?lang=en&cc=gb'
+        },
+        {
+            city:'bangladesh',
+            url:'https://post.craigslist.org/c/bgl?lang=en&cc=gb'   
         }
-
     ];
 
 
@@ -140,7 +174,10 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
 
         // await page.type("input[name='surface_area']",'');
 
-        await page.select("select[name='housing_type']", '2');
+        let housingTypeSelectorExists = await page.$("select[name='housing_type']") !== null ? true: false;
+        if(housingTypeSelectorExists === true){
+            await page.select("select[name='housing_type']", '2');
+        }
 
         // await this.clickTickbox(page,'show my phone number',false);
         // this.delay(500);
@@ -150,7 +187,10 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         await page.type("input[name='contact_phone']", this.phoneNumber);
         await page.type("input[name='contact_phone_extension']", this.phoneExtension);
 
-        await page.click('input.is_furnished');
+        let isFurnishedSelectorExists = await page.$("input.is_furnished") !== null ? true: false;
+        if(isFurnishedSelectorExists){
+            await page.click('input.is_furnished');
+        }
 
         // await this.clickTickbox(page,'furnished',false);
         // await this.delay(500);

@@ -40,6 +40,42 @@ export class PostDialogComponent implements OnInit {
         {
           name: 'beijing',
           selected: false
+        },
+        {
+          name: 'shanghai',
+          selected: false
+        },
+        {
+          name: 'hong kong',
+          selected: false
+        },
+        {
+          name:'moscow',
+          selected:false
+        },
+        {
+          name:'st petersburg',
+          selected:false
+        },
+        {
+          name:'mumbai',
+          selected:false
+        },
+        {
+          name:'bologna',
+          selected:false
+        },
+        {
+          name:'rome',
+          selected:false
+        },
+        {
+          name:'firenze',
+          selected:false
+        },
+        {
+          name:'bangladesh',
+          selected:false
         }
       ]
     }

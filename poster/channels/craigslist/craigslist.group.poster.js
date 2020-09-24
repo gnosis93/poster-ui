@@ -109,6 +109,42 @@ var CraigslistPoster = /** @class */ (function (_super) {
             {
                 'city': "beijing",
                 'url': "https://post.craigslist.org/c/pek?lang=en&cc=gb"
+            },
+            {
+                city: 'shanghai',
+                url: 'https://post.craigslist.org/c/sha?lang=en&cc=us'
+            },
+            {
+                city: 'hong kong',
+                url: 'https://post.craigslist.org/c/hkg?lang=en&cc=us'
+            },
+            {
+                city: 'moscow',
+                url: 'https://post.craigslist.org/c/mos?lang=en&cc=us'
+            },
+            {
+                city: 'mumbai',
+                url: 'https://post.craigslist.org/c/mum'
+            },
+            {
+                city: 'st petersburg',
+                url: 'https://post.craigslist.org/c/stp?lang=en&cc=us'
+            },
+            {
+                city: 'bologna',
+                url: 'https://bologna.craigslist.org/?lang=en&cc=us'
+            },
+            {
+                city: 'rome',
+                url: 'https://post.craigslist.org/c/rom?lang=en&cc=gb'
+            },
+            {
+                city: 'firenze',
+                url: 'https://post.craigslist.org/c/flr?lang=en&cc=gb'
+            },
+            {
+                city: 'bangladesh',
+                url: 'https://post.craigslist.org/c/bgl?lang=en&cc=gb'
             }
         ];
         if (!credentials || !credentials.username || !credentials.password) {
@@ -191,7 +227,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
     CraigslistPoster.prototype.postToPages = function (page, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var count, cityPostURL, fromEmailFieldExists, _a, _b, _c, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount;
+            var count, cityPostURL, fromEmailFieldExists, housingTypeSelectorExists, isFurnishedSelectorExists, _a, _b, _c, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -261,32 +297,41 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 17:
                         _d.sent();
                         _d.label = 18;
-                    case 18: 
-                    // await page.type("input[name='surface_area']",'');
-                    return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
+                    case 18: return [4 /*yield*/, page.$("select[name='housing_type']")];
                     case 19:
-                        // await page.type("input[name='surface_area']",'');
-                        _d.sent();
-                        // await this.clickTickbox(page,'show my phone number',false);
-                        // this.delay(500);
-                        return [4 /*yield*/, page.click('input.show_phone_ok')];
+                        housingTypeSelectorExists = (_d.sent()) !== null ? true : false;
+                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 21];
+                        return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
                     case 20:
+                        _d.sent();
+                        _d.label = 21;
+                    case 21: 
+                    // await this.clickTickbox(page,'show my phone number',false);
+                    // this.delay(500);
+                    return [4 /*yield*/, page.click('input.show_phone_ok')];
+                    case 22:
                         // await this.clickTickbox(page,'show my phone number',false);
                         // this.delay(500);
                         _d.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone']", this.phoneNumber)];
-                    case 21:
-                        _d.sent();
-                        return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
-                    case 22:
-                        _d.sent();
-                        return [4 /*yield*/, page.click('input.is_furnished')];
                     case 23:
                         _d.sent();
+                        return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
+                    case 24:
+                        _d.sent();
+                        return [4 /*yield*/, page.$("input.is_furnished")];
+                    case 25:
+                        isFurnishedSelectorExists = (_d.sent()) !== null ? true : false;
+                        if (!isFurnishedSelectorExists) return [3 /*break*/, 27];
+                        return [4 /*yield*/, page.click('input.is_furnished')];
+                    case 26:
+                        _d.sent();
+                        _d.label = 27;
+                    case 27:
                         _b = (_a = Promise).all;
                         _c = [page.waitForNavigation({ waitUntil: 'load' })];
                         return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 24: 
+                    case 28: 
                     // await this.clickTickbox(page,'furnished',false);
                     // await this.delay(500);
                     // await page.click('button[type=submit]');
@@ -294,7 +339,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     return [4 /*yield*/, _b.apply(_a, [_c.concat([
                                 _d.sent()
                             ])])];
-                    case 25:
+                    case 29:
                         // await this.clickTickbox(page,'furnished',false);
                         // await this.delay(500);
                         // await page.click('button[type=submit]');
@@ -302,52 +347,52 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         _d.sent();
                         console.log('wating for imgcount');
                         return [4 /*yield*/, page.waitForSelector('.imgcount')];
-                    case 26:
+                    case 30:
                         _d.sent();
                         console.log('READY WITH: wating for imgcount');
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         return [4 /*yield*/, page.waitForSelector('input[type=file]')];
-                    case 27:
+                    case 31:
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         _d.sent();
                         return [4 /*yield*/, page.$$('input[type=file]')];
-                    case 28:
+                    case 32:
                         inputUploadHandles = _d.sent();
                         inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 29:
-                        _d.sent();
-                        return [4 /*yield*/, this.getImageCount(page)];
-                    case 30:
-                        imageCount = (_d.sent());
-                        _d.label = 31;
-                    case 31:
-                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 34];
-                        return [4 /*yield*/, this.delay(500)];
-                    case 32:
-                        _d.sent();
-                        return [4 /*yield*/, this.getImageCount(page)];
                     case 33:
-                        imageCount = (_d.sent());
-                        console.log('wating image count');
-                        return [3 /*break*/, 31];
-                    case 34: return [4 /*yield*/, page.click('button[type=submit].done')];
-                    case 35:
                         _d.sent();
-                        if (!this.immediatelyPost) return [3 /*break*/, 38];
-                        return [4 /*yield*/, page.waitForSelector("button[name='go']")];
+                        return [4 /*yield*/, this.getImageCount(page)];
+                    case 34:
+                        imageCount = (_d.sent());
+                        _d.label = 35;
+                    case 35:
+                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 38];
+                        return [4 /*yield*/, this.delay(500)];
                     case 36:
                         _d.sent();
-                        return [4 /*yield*/, page.click("button[name='go']")];
+                        return [4 /*yield*/, this.getImageCount(page)];
                     case 37:
+                        imageCount = (_d.sent());
+                        console.log('wating image count');
+                        return [3 /*break*/, 35];
+                    case 38: return [4 /*yield*/, page.click('button[type=submit].done')];
+                    case 39:
                         _d.sent();
-                        _d.label = 38;
-                    case 38: return [2 /*return*/, page];
+                        if (!this.immediatelyPost) return [3 /*break*/, 42];
+                        return [4 /*yield*/, page.waitForSelector("button[name='go']")];
+                    case 40:
+                        _d.sent();
+                        return [4 /*yield*/, page.click("button[name='go']")];
+                    case 41:
+                        _d.sent();
+                        _d.label = 42;
+                    case 42: return [2 /*return*/, page];
                 }
             });
         });
