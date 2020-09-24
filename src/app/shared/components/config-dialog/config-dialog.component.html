@@ -8,115 +8,156 @@
 </div>
 <hr/>
 <mat-dialog-content>
-    <form *ngIf="config">
-        <h5>Facebook Credentials</h5>
-        <br>
-        <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" [(ngModel)]="config.facebook_email"  name="facebook_email" class="form-control" id="email">
-        </div>
-        <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" [(ngModel)]="config.facebook_password" name="facebook_password" class="form-control" id="pwd">
-        </div>
+    <div class="row">
+        <div class="col-3 content-left" style="min-width: 230px;">
 
-        <div class="form-group">
-            <label for="pwd">Old Facebook template:</label>
-            <mat-checkbox [checked]="config.facebook_old_style" (change)="facebookStyleValueChange($event)"></mat-checkbox>
-        </div>
-        
-        <div class="row">
-            <div class="col-12">
-                <label><strong>Facebook Pages</strong></label>
-                <ul>
-                    <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}} <button class="btn btn-danger" (click)="onDeletePageClick(pageUrl)">Delete</button></li>
-                </ul>
-            </div>
-            <div class="col-10">
-                <input class="form-control" #txtNewFBPageURL type="text"/>
-            </div>
-            <div class="col-2">
-                <button (click)="addFaceBookPage(txtNewFBPageURL)" class="btn btn-primary">Add</button>
-            </div>
-        </div>
-        
-        <br/>
-       
-        <h5>Phone Number</h5>
-        
-        <div class="row">
-            <div class="col-3">
-                <label for="text">Phone Extension:</label>
-            </div>
-            <div class="col-3">
-                <input type="text" [(ngModel)]="config.phone_extension"  name="phone_extension" class="form-control" id="phone_extension">
-            </div>
-            <div class="col-3">
-                <label for="v">Phone Number:</label>
-            </div>
-            <div class="col-3">
-                <input type="text" [(ngModel)]="config.phone_number"  name="phone_number" class="form-control" id="phone_number">
-            </div>
-        </div>
+            <h5>General Settings</h5>
+            <ul class="sideBarList">
+                <li (click)="onSidebarClick('Facebook Credentials')">Facebook Credentials</li>
+                <li (click)="onSidebarClick('Craigslist Credentials')">Craigslist Credentials</li>
+                <li (click)="onSidebarClick('Behavior')">Behavior</li>
+                <li (click)="onSidebarClick('Behavior')">Text Templates</li>
+            </ul>
 
-        <br/>
+            <h5>Channel Settings</h5>
+            <ul class="sideBarList">
+                <li (click)="onSidebarClick('General Channels Settings')">General Settings</li>
+                <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
+                <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li>
+                <li (click)="onSidebarClick('Craigslist Channel')">Craigslist</li>
+            </ul>
 
-        <div class="row">
+
             
-            <div class="col-12">
-                <label><strong>Facebook Groups</strong></label>
-                <ul>
-                    <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}} <button class="btn btn-danger" (click)="onDeleteGroupClick(pageUrl)">Delete</button></li>
-                </ul>
-            </div>
-
-            <div class="col-10">
-                <input  class="form-control" #txtNewFBGroupURL  type="text"/>
-            </div>
-
-            <div class="col-2">
-                <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
-            </div>
         </div>
+       
+        <div class="col-8 ">
+            <form *ngIf="config" style="min-width: 500px;" >
+                <span *ngIf="selectedTemplate == 'Facebook Credentials' ">
+                    <h5>Facebook Credentials</h5>
+                    <br>
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" [(ngModel)]="config.facebook_email"  name="facebook_email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" [(ngModel)]="config.facebook_password" name="facebook_password" class="form-control" id="pwd">
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="pwd">Old Facebook template:</label>
+                        <mat-checkbox [checked]="config.facebook_old_style" (change)="facebookStyleValueChange($event)"></mat-checkbox>
+                    </div>
+                </span>
+
+                <span *ngIf="selectedTemplate == 'Facebook Pages Channel' ">
+                    <div class="row">
+                        <div class="col-12">
+                            <label><strong>Facebook Pages</strong></label>
+                            <ul>
+                                <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}} <button class="btn btn-danger" (click)="onDeletePageClick(pageUrl)">Delete</button></li>
+                            </ul>
+                        </div>
+                        <div class="col-10">
+                            <input class="form-control" #txtNewFBPageURL type="text"/>
+                        </div>
+                        <div class="col-2">
+                            <button (click)="addFaceBookPage(txtNewFBPageURL)" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    
+                    <br/>
+               </span>
+
+               <span *ngIf="selectedTemplate == 'General Channels Settings'">
+                    <h5>Phone Number</h5>
+                    
+                    <div class="row">
+                        <div class="col-3">
+                            <label for="text">Phone Extension:</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" [(ngModel)]="config.phone_extension"  name="phone_extension" class="form-control" id="phone_extension">
+                        </div>
+                        <div class="col-3">
+                            <label for="v">Phone Number:</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" [(ngModel)]="config.phone_number"  name="phone_number" class="form-control" id="phone_number">
+                        </div>
+                    </div>
+            
+                    <br/>
+               </span>
         
-        <br>
+               <span *ngIf="selectedTemplate == 'Facebook Groups Channel'">
 
-        <h5>Craigslist Credentials</h5>
-        <br>
-        <div class="form-group">
-            <label for="email">Email address:</label>
-            <input type="email" [(ngModel)]="config.craigslist_email"  name="craigslist_email" class="form-control" id="email">
+                   <div class="row">
+                       
+                       <div class="col-12">
+                           <label><strong>Facebook Groups</strong></label>
+                           <ul>
+                               <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}} <button class="btn btn-danger" (click)="onDeleteGroupClick(pageUrl)">Delete</button></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-10">
+                            <input  class="form-control" #txtNewFBGroupURL  type="text"/>
+                        </div>
+                        
+                        <div class="col-2">
+                            <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+                    
+                    <br>
+                </span>
+                
+                <span *ngIf="selectedTemplate == 'Craigslist Credentials'">
+                    <h5>Craigslist Credentials</h5>
+                    <br>
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" [(ngModel)]="config.craigslist_email"  name="craigslist_email" class="form-control" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" [(ngModel)]="config.craigslist_password" name="craigslist_password" class="form-control" id="pwd">
+                    </div>
+                    
+                    <br>
+                </span>
+
+                <span *ngIf="selectedTemplate == 'Behavior'">
+                    <h5>Config Behavior</h5>
+                    <br>
+            
+                    <div class="form-group">
+                        <label for="chrome_executable_path">Chrome Executable Path:</label>
+                        <input type="email" [(ngModel)]="config.chrome_executable_path"  name="chrome_executable_path" class="form-control" id="chrome_executable_path">
+                    </div>
+            
+            
+                    <div class="row">
+                        <div class="col-10">
+                        <label>Headless</label>
+                        <mat-checkbox [checked]="config.headless" (change)="headlessValueChange($event)"></mat-checkbox>  
+                        </div>
+                    </div>
+            
+                    <div class="row">
+                        <div class="col-10">
+                        <label>Post Immediately</label>
+                        <mat-checkbox [checked]="config.post_immediately" (change)="postImmediatelyValueChange($event)"></mat-checkbox>  
+                        </div>
+                    </div>
+                </span>
+
+            </form>
         </div>
-        <div class="form-group">
-            <label for="pwd">Password:</label>
-            <input type="password" [(ngModel)]="config.craigslist_password" name="craigslist_password" class="form-control" id="pwd">
-        </div>
-        
-        <br>
-        <h5>Config Behavior</h5>
-        <br>
-
-        <div class="form-group">
-            <label for="chrome_executable_path">Chrome Executable Path:</label>
-            <input type="email" [(ngModel)]="config.chrome_executable_path"  name="chrome_executable_path" class="form-control" id="chrome_executable_path">
-        </div>
-
-
-        <div class="row">
-            <div class="col-10">
-               <label>Headless</label>
-               <mat-checkbox [checked]="config.headless" (change)="headlessValueChange($event)"></mat-checkbox>  
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-10">
-               <label>Post Immediately</label>
-               <mat-checkbox [checked]="config.post_immediately" (change)="postImmediatelyValueChange($event)"></mat-checkbox>  
-            </div>
-        </div>
-
-    </form>
+    </div>
+  
 </mat-dialog-content>
 
 <mat-dialog-actions>

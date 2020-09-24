@@ -2,3 +2,21 @@
 .mat-dialog-actions {
     display: inline;
 }
+
+// .verticalLine{
+//     border-left: thick solid #969292;
+// }
+
+.content-left {
+    border-right: 1px solid #969292;
+}
+
+.sideBarList > li{
+    cursor: pointer;
+    color: rgb(45, 155, 245);
+    margin-bottom: 5px;
+}
+
+ul{
+    list-style-type: none;
+}

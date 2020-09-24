@@ -4,6 +4,16 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ipcMain } from 'electron';
 import { ConfigService } from 'app/shared/services/config.service';
 
+
+type ConfigSection = "Facebook Credentials"      | 
+                     "Craigslist Credentials"    | 
+                     "Craigslist Channel"        |
+                     "Facebook Pages Channel"    |
+                     "Facebook Groups Channel"   |
+                     "General Channels Settings" |
+                     "Behavior"
+;
+
 @Component({
   selector: 'app-config-dialog',
   templateUrl: './config-dialog.component.html',
@@ -12,6 +22,8 @@ import { ConfigService } from 'app/shared/services/config.service';
 export class ConfigDialogComponent implements OnInit {
 
   public config:any;
+
+  public selectedTemplate:ConfigSection = 'Facebook Credentials'
 
   constructor(
     private configService:ConfigService,
@@ -74,6 +86,9 @@ export class ConfigDialogComponent implements OnInit {
     this.configService.restoreConfig();
   }
 
+  onSidebarClick(selectedItem:ConfigSection){
+    this.selectedTemplate = selectedItem;
+  }
   
   onDeletePageClick(pageUrl:string){
     if(confirm('Are you sure you want to delete this page ?') === false){
