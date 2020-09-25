@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as https from 'https';
 import { ConfigHelper } from '../helpers/config.helper';
 import { PostMetaData } from '../models/post.interface';
+import { PostsHelper } from '../helpers/posts.helper';
 const Stream = require('stream').Transform;                                
 
 
@@ -18,15 +19,20 @@ export class HotDogCondosImporter{
         let mainPage = await browser.newPage();
 
         let pagesUrls   = await this.scrapePagesUrls(mainPage);
-        let propertiesUrls:Array<string> = [];
         
-
+        let propertiesUrls:Array<string> = [];
+      
         for(let pageUrl of pagesUrls){
             let pagePropertiesUrls = await this.scrapeListingURLS(mainPage,pageUrl);
             propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
         }
 
-        for(let propertyUrl of propertiesUrls){
+        const existingUrls = await this.getExistingPostsUrls();
+     
+        let newUrls = propertiesUrls.filter(url => existingUrls.includes(url) === false)
+        newUrls = newUrls.filter((v, i, a) => a.indexOf(v) === i);//remove duplicates
+
+        for(let propertyUrl of newUrls){
             await this.scrapeProperty(propertyUrl,mainPage);
         }
 
@@ -37,11 +43,26 @@ export class HotDogCondosImporter{
         return true;
     }
 
+    private async getExistingPostsUrls(){
+        let posts = await PostsHelper.getListOfPosts();
+        let urls = [];
+        
+        for(let postName of posts.postsDirs){
+            let post = await PostsHelper.getPostByName(postName);
+            let postUrl = post?.metaData?.url ?? null;
+            if(postUrl !== null){
+                urls.push(postUrl);
+            }
+        }
+        return urls;
+    }
+
     private async scrapePagesUrls(page:puppeteer.Page):Promise<Array<string>>{
         // let page      = await browser.newPage();
         await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL,{ waitUntil: 'networkidle2' });
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.pagination li a'), element => element.getAttribute('href')));
         urls.pop();
+       
         return urls;
         // 
     }
