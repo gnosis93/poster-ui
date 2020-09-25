@@ -202,6 +202,15 @@
                         </div>
                     </div>
 
+
+                    <div class="row">
+                        <div class="col-10">
+                            <label>Post In Sequential Order (Chain avoids opening multiple browsers)</label>
+                            <mat-checkbox [checked]="config.post_in_sequential_order"
+                                (change)="postInSequentialOrderValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col-10">
                             <label>Close Browser</label>

@@ -3,6 +3,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { PostsService, Post } from 'app/shared/services/posts.service';
 import { ConfigService } from 'app/shared/services/config.service';
 import { CommonConstants } from 'app/shared/common-const';
+import { config } from 'process';
 
 @Component({
   selector: 'app-post',
@@ -162,24 +163,7 @@ export class PostDialogComponent implements OnInit {
     });
 
 
-    this.postsService.postToCraigslist(null,null).subscribe((result) => {
-      // this.setChannelSelected('Craigslist', false);
-      let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == 'Craigslist');
-      this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
-      
-      this.loadingProgress++;
-
-      let selectedChannels = this.postsQueue;
-
-      // let selectedChannels = this.getSelectedChannels();
-      if (selectedChannels.length == 0) {
-        return this.postingCompleted();
-      } else {
-        this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
-      }
-
-      this.cd.detectChanges();
-    });
+   
 
     this.setPostTemplateTextArea(this.posts[0],CommonConstants.defaultLang);
   }
@@ -211,12 +195,14 @@ export class PostDialogComponent implements OnInit {
   }
 
 
-  handleQueueItem(post:Post,channel: Channel) {
+  async handleQueueItem(post:Post,channel: Channel) {
     this.postsQueue.push({
       channel:channel,
       post:post
     });
 
+    let postInSequentialOrder = await this.configService.getConfigValue<boolean>('post_in_sequential_order') ?? true;
+    
     switch (channel.name) {
       case 'Facebook Pages':
         this.postsService.postToFacebookPages(post);
@@ -227,12 +213,60 @@ export class PostDialogComponent implements OnInit {
       case 'Craigslist':
         let selectedCities = channel.cities.filter(s => s.selected);
         for (let city of selectedCities) {
-          this.postsService.postToCraigslist(post, city);
+          try{
+            if(postInSequentialOrder === true){
+              await this.postsService.submitPostToCraigslist(post, city);
+              await this.handlePostSubmitted(channel.name);
+            }else{
+              this.postsService.submitPostToCraigslist(post,city).then(()=> this.handlePostSubmitted(channel.name))
+            }
+          }catch(e){
+            alert('error as occurred')
+          }
+
         }
         break;
 
     }
   }
+
+  private async handlePostSubmitted(channelName){
+      let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == channelName);
+      this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
+      
+      this.loadingProgress++;
+
+      let selectedChannels = this.postsQueue;
+
+      // let selectedChannels = this.getSelectedChannels();
+      if (selectedChannels.length == 0) {
+        return this.postingCompleted();
+      } else {
+        await this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
+      }
+
+      this.cd.detectChanges();
+  }
+
+   // this.postsService.postToCraigslist(null,null).subscribe((result) => {
+    //   // this.setChannelSelected('Craigslist', false);
+    //   let thisPostIndex = this.postsQueue.findIndex((c) => c.channel.name == 'Craigslist');
+    //   this.postsQueue = this.postsQueue.filter((p,i) => i != thisPostIndex);
+      
+    //   this.loadingProgress++;
+
+    //   let selectedChannels = this.postsQueue;
+
+    //   // let selectedChannels = this.getSelectedChannels();
+    //   if (selectedChannels.length == 0) {
+    //     return this.postingCompleted();
+    //   } else {
+    //     this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
+    //   }
+
+    //   this.cd.detectChanges();
+    // });
+
 
   public setChannelSelected(channelName: string, selectedValue: boolean) {
     for (let channel of this.channels) {
@@ -359,7 +393,7 @@ export class PostDialogComponent implements OnInit {
 
   async onPostClick() {
     // this.numberSelectedChannels = selectedChannels.length;
-    this.numberSelectedChannels = 0;
+    // this.numberSelectedChannels = 0;
     let selectedChannels = this.getSelectedChannels();
 
 
@@ -375,10 +409,20 @@ export class PostDialogComponent implements OnInit {
 
     this.isLoading = true;
     
+    let postsTotalCities = 0;
+    for(let channel of this.channels){
+      if(typeof channel.cities === 'undefined'){
+        continue;
+      }
+      let selectedCities = channel.cities.filter(s => s.selected);
+      postsTotalCities += selectedCities.length;
+    }
+
+    this.numberSelectedChannels  = (this.posts.length * selectedChannels.length) +  postsTotalCities;
+    
     for(let post of this.posts){
-      this.numberSelectedChannels++;
       for(let selectedChannel of selectedChannels){
-        this.handleQueueItem(post,selectedChannel);
+        await this.handleQueueItem(post,selectedChannel);
       }
     }
     // this.channelPostingQueue;

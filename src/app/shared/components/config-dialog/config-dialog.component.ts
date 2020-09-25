@@ -73,6 +73,10 @@ export class ConfigDialogComponent implements OnInit {
     this.config.headless = value.checked;
   }
 
+  postInSequentialOrderValueChange(value:{checked:boolean}){
+    this.config.post_in_sequential_order = value.checked;
+  }
+  
   postImmediatelyValueChange(value:{checked:boolean}){
     this.config.post_immediately = value.checked;
   }

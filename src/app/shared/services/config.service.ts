@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from 'app/core/services';
 import { Subject } from 'rxjs';
-import { ipcMain } from 'electron';
 
 @Injectable({
   providedIn: 'root'

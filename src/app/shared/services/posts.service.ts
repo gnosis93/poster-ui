@@ -15,7 +15,6 @@ export class PostsService {
   private $deleteSubject:Subject<boolean>;
   private $deleteAllPostsSubject:Subject<boolean>;
   private $postToFacebookGroupsSubject:Subject<boolean>;
-  private $postToCraigslistSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
@@ -26,7 +25,6 @@ export class PostsService {
     this.$postSubject                 = new Subject<Post>();
     this.$postToFacebookPagesSubject  = new Subject<boolean>();
     this.$postToFacebookGroupsSubject = new Subject<boolean>();
-    this.$postToCraigslistSubject     = new Subject<boolean>();
     this.$deleteAllPostsSubject       = new Subject<boolean>();
     this.$deleteSubject               = new Subject<boolean>();
 
@@ -50,9 +48,7 @@ export class PostsService {
       this.$postToFacebookGroupsSubject.next(message);
     });
 
-    this.electron.ipcRenderer.addListener('postToCraigslistSubject',(sender,message)=>{
-      this.$postToCraigslistSubject.next(message);
-    });   
+
     
     this.electron.ipcRenderer.addListener('deleteAllPosts',(sender,message)=>{
       this.$deleteAllPostsSubject.next(true);
@@ -60,6 +56,27 @@ export class PostsService {
 
 
 
+
+  }
+
+
+   // public postToCraigslist(post:Post | null,city:ChannelCity|null){
+  //   if(post != null && city != null){
+  //     this.electron.ipcRenderer.send('submitPostToCraigslist',post,city);
+  //   }
+  //   return this.$postToCraigslistSubject.asObservable();
+  // }s
+
+  public async submitPostToCraigslist(post:Post | null,city:ChannelCity|null) {
+    let channelName = 'submitPostToCraigslist';
+    return new Promise((resolutionFunc, rejectionFunc) => {
+      var handler = (sender, message) => {
+        this.electron.ipcRenderer.removeListener(channelName,handler);
+        resolutionFunc(message);
+      };
+      this.electron.ipcRenderer.addListener(channelName, handler);
+      this.electron.ipcRenderer.send(channelName,post,city);
+    });
 
   }
 
@@ -105,12 +122,7 @@ export class PostsService {
     return this.$postToFacebookGroupsSubject.asObservable();
   }
 
-  public postToCraigslist(post:Post | null,city:ChannelCity|null){
-    if(post != null && city != null){
-      this.electron.ipcRenderer.send('submitPostToCraigslist',post,city);
-    }
-    return this.$postToCraigslistSubject.asObservable();
-  }
+ 
 
   public async getPostTemplateText(lang:string,post:Post):Promise<PostText>{
     let postText = post.postText.find(p => p.language == lang);

@@ -80,7 +80,8 @@ var ConfigHelper = /** @class */ (function () {
             "chinese_text_template": "",
             "russian_text_template": "",
             "thai_text_template": "",
-            "close_browser": true
+            "close_browser": true,
+            "post_in_sequential_order": true
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
