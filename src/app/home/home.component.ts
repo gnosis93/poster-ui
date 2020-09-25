@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ElectronService } from 'app/core/services';
 import { MatDialogRef, MatDialog, MatDialogConfig } from '@angular/material/dialog';
@@ -64,6 +64,44 @@ export class HomeComponent implements OnInit {
       this.posts = posts;
       this.hideSpinner();
     })
+  }
+  
+  onRandomSelectClick(numberOfRandomElemInput){
+    if(!numberOfRandomElemInput){
+      return alert('error');
+    }
+
+    let value = numberOfRandomElemInput.value ?? null;
+    if(isNaN(value) || value < 1 || value > 30 || value > this.posts.length){
+      return alert('Invalid number of random posts given. Value should be between 1 - 30');
+    }
+    
+    //unselect any post
+    for(let postIndex in this.posts){
+        this.posts[postIndex].selected = false;
+    }
+
+    let selectedRandomIndexes = [];
+    for(let i = 1; i < value;i++){
+      let randomIndex =  this.getRandomArbitrary(0,this.posts.length);//Math.floor((Math.random() * this.posts.length) + 1); ;
+      while(selectedRandomIndexes.includes(randomIndex)){
+        randomIndex =  this.getRandomArbitrary(0,this.posts.length);//Math.floor((Math.random() * this.posts.length) + 1); ;
+      }
+      selectedRandomIndexes.push(randomIndex);
+    }
+
+    for(let randomIndex of selectedRandomIndexes){
+      this.posts[randomIndex].selected = true;
+    }
+  }
+  /**
+   * Returns a random number between min (inclusive) and max (exclusive)
+   */
+  private getRandomArbitrary(min, max) {
+    // return Math.floor(Math.random() * (max - min) + min);
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   async onPostSelected(){
