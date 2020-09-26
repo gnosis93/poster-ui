@@ -192,6 +192,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
   let result = true;
 
   try {
+    // let price = await PostsHelper.handlePostPrice(post,city.currency);
     poster = new CraigslistPoster(
       {
         username: config.craigslist_email,
@@ -201,7 +202,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
       ConfigHelper.parseTextTemplate(post,city.lang),
       post?.metaData?.title,
       'Pattaya',
-      post.metaData.price,
+      post.metaData?.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),

@@ -130,6 +130,7 @@ Call for view:  {phone_extension} {phone_number')}
         textParsed      = textParsed.replace('{features}',post.metaData.features);
         textParsed      = textParsed.replace('{phone_extension}',ConfigHelper.getConfigValue('phone_extension'));
         textParsed      = textParsed.replace('{phone_number}',ConfigHelper.getConfigValue('phone_number'));
+        textParsed      = textParsed.replace('null','');
 
         return textParsed;
     }

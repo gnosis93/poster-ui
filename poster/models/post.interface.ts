@@ -27,5 +27,5 @@ export interface PostMetaData{
 }
 
 export interface ChannelCity{
-  name: string, selected: boolean, lang:string 
+  name: string, selected: boolean, lang:string ,currency:string
 }

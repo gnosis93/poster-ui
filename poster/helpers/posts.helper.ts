@@ -19,6 +19,19 @@ export class PostsHelper{
         return dirPath;
     }
 
+    public static async handlePostPrice(post:Post,cityCurrency:string):Promise<number>{
+        if(!post || !cityCurrency || cityCurrency == 'THB'){ //thb is the default currency
+            return Number(post.metaData.price) ?? 0;
+        }
+        
+        // const convertCurrency = require('nodejs-currency-converter');
+        // let convertedPrice = await convertCurrency(1, 'THB', cityCurrency)
+        // return convertedPrice;
+
+        var fx = require("money");
+        let price = Number((post.metaData.price.trim() as any).replaceAll(',',''));
+        return fx(price ?? 0).from("THB").to(cityCurrency); 
+    }
 
     public static getListOfPosts(){
         let dirPath = this.getPostsDir();

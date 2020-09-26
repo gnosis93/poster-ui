@@ -25,73 +25,90 @@ export class PostDialogComponent implements OnInit {
   public languages = CommonConstants.languages;
 
   public readonly channels: Channel[] = [
-    {
-      "name": 'Facebook Pages',
-      "selected": false,
-    },
-    {
-      "name": 'Facebook Groups',
-      "selected": false,
-    },
+    // {
+    //   "name": 'Facebook Pages',
+    //   "selected": false,
+    // },
+    // {
+    //   "name": 'Facebook Groups',
+    //   "selected": false,
+    // },
     {
       "name": 'Craigslist',
-      "selected": false,
+      "selected": true,
       'cities': [
         {
           name: 'bangkok',
-          selected: false,
-          lang:'thai'
+          selected: true,
+          lang:'thai',
+          currency:'THB'
         },
-        {
-          name: 'beijing',
-          selected: false,
-          lang:'chinese'
-        },
-        {
-          name: 'shanghai',
-          selected: false,
-          lang:'chinese'
-        },
-        {
-          name: 'hong kong',
-          selected: false,
-          lang:'chinese'
-        },
-        {
-          name:'moscow',
-          selected:false,
-          lang:'russian'
-        },
-        {
-          name:'st petersburg',
-          selected:false,
-          lang:'russian'
-        },
-        {
-          name:'mumbai',
-          selected:false,
-          lang:'english'
-        },
-        {
-          name:'bologna',
-          selected:false,
-          lang:'italian'
-        },
-        {
-          name:'rome',
-          selected:false,
-          lang:'italian'
-        },
-        {
-          name:'firenze',
-          selected:false,
-          lang:'italian'
-        },
-        {
-          name:'bangladesh',
-          selected:false,
-          lang:'english'
-        }
+        // {
+        //   name: 'beijing',
+        //   selected: false,
+        //   lang:'chinese',
+        //   currency:'CNY'
+        // },
+        // {
+        //   name: 'shanghai',
+        //   selected: false,
+        //   lang:'chinese',
+        // currency:'CNY'
+        // },
+        // {
+        //   name: 'hong kong',
+        //   selected: false,
+        //   lang:'chinese',
+        // currency:'CNY'
+        // },
+        // {
+        //   name:'moscow',
+        //   selected:false,
+        //   lang:'russian',
+        // currency:'RUB'
+
+        // },
+        // {
+        //   name:'st petersburg',
+        //   selected:false,
+        //   lang:'russian',
+                // currency:'RUB'
+
+        // },
+        // {
+        //   name:'mumbai',
+        //   selected:false,
+        //   lang:'english',
+                // currency:'INR'
+        // },
+        // {
+        //   name:'bologna',
+        //   selected:false,
+        //   lang:'italian',
+                // currency:'EUR'
+
+        // },
+        // {
+        //   name:'rome',
+        //   selected:false,
+        //   lang:'italian',
+                // currency:'EUR'
+
+        // },
+        // {
+        //   name:'firenze',
+        //   selected:false,
+        //   lang:'italian'
+                // currency:'EUR'
+
+        // },
+        // {
+        //   name:'bangladesh',
+        //   selected:false,
+        //   lang:'english',
+                // currency:'BDT'
+
+        // }
       ]
     }
   ];
@@ -445,5 +462,5 @@ export interface Channel {
 };
 
 export interface ChannelCity{
-  name: string, selected: boolean, lang:string 
+  name: string, selected: boolean, lang:string , currency:string
 }
