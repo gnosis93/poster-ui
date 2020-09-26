@@ -81,6 +81,11 @@ export class ConfigDialogComponent implements OnInit {
     this.config.post_immediately = value.checked;
   }
 
+  enableSchedulerValueChange(value:{checked:boolean}){
+    this.config.enable_scheduler = value.checked;
+  }
+  
+
   facebookStyleValueChange(value:{checked:boolean}){
     this.config.facebook_old_style = value.checked;
     console.log(value);

@@ -201,14 +201,8 @@
                         </div>
                     </div>
 
+                  
 
-                    <div class="row">
-                        <div class="col-10">
-                            <label>Post In Sequential Order (Chain avoids opening multiple browsers)</label>
-                            <mat-checkbox [checked]="config.post_in_sequential_order"
-                                (change)="postInSequentialOrderValueChange($event)"></mat-checkbox>
-                        </div>
-                    </div>
 
                     <div class="row">
                         <div class="col-10">
@@ -218,6 +212,34 @@
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col-10">
+                            <label>Post In Sequential Order (Chain avoids opening multiple browsers)</label>
+                            <mat-checkbox [checked]="config.post_in_sequential_order"
+                                (change)="postInSequentialOrderValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
+                    <h5>Scheduler Settings</h5>
+                    <strong>NB: Restart application for scheduler settings updates to take effect</strong>
+
+                    <div class="row">
+                        <div class="col-10">
+                            <label>Enable Scheduler</label>
+                            <mat-checkbox [checked]="config.enable_scheduler"
+                                (change)="enableSchedulerValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scheduler_cron">Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.scheduler_cron" name="scheduler_cron"
+                           id="scheduler_cron">
+                    </div>
+
+                  
+
+                  
 
                 </span>
 

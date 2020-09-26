@@ -81,7 +81,9 @@ var ConfigHelper = /** @class */ (function () {
             "russian_text_template": "",
             "thai_text_template": "",
             "close_browser": true,
-            "post_in_sequential_order": true
+            "post_in_sequential_order": true,
+            "enable_scheduler": false,
+            "scheduler_cron": "0 * * * *",
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
         return true;
@@ -111,6 +113,7 @@ var ConfigHelper = /** @class */ (function () {
         textParsed = textParsed.replace('{features}', post.metaData.features);
         textParsed = textParsed.replace('{phone_extension}', ConfigHelper.getConfigValue('phone_extension'));
         textParsed = textParsed.replace('{phone_number}', ConfigHelper.getConfigValue('phone_number'));
+        textParsed = textParsed.replace('null', '');
         return textParsed;
     };
     ConfigHelper.saveConfig = function (newConfigContent) {

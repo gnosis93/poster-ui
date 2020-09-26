@@ -13,6 +13,9 @@ import { IChannel } from './poster/channels/channel.interface';
 import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
 import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
 import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.poster';
+import * as schedule from 'node-schedule';
+import { QueueScheduler } from './poster/scheduler/QueueScheduler';
+
 //importing necessary modules
 
 let win: BrowserWindow = null;
@@ -208,7 +211,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
       ConfigHelper.getConfigValue('phone_extension'),
       city.name,
       ConfigHelper.getConfigValue('post_immediately',false)
-    ); 
+    );
 
     result = await poster.run();
     return event.sender.send('submitPostToCraigslist', result);
@@ -296,4 +299,15 @@ try {
 } catch (e) {
   // Catch Error
   // throw e;
+}
+
+
+var queueScheduler = new QueueScheduler();
+var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
+var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron',false);
+
+if(schedulerEnabled === true){
+  schedule.scheduleJob(schedulerCRONConfig, ()=>{
+    queueScheduler.handleQueue();
+  });
 }
