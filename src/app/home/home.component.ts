@@ -82,7 +82,7 @@ export class HomeComponent implements OnInit {
     }
 
     let selectedRandomIndexes = [];
-    for(let i = 1; i < value;i++){
+    for(let i = 1; i <= value;i++){
       let randomIndex =  this.getRandomArbitrary(0,this.posts.length);//Math.floor((Math.random() * this.posts.length) + 1); ;
       while(selectedRandomIndexes.includes(randomIndex)){
         randomIndex =  this.getRandomArbitrary(0,this.posts.length);//Math.floor((Math.random() * this.posts.length) + 1); ;

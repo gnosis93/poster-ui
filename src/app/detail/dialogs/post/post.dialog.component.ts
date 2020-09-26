@@ -196,10 +196,10 @@ export class PostDialogComponent implements OnInit {
 
 
   async handleQueueItem(post:Post,channel: Channel) {
-    this.postsQueue.push({
-      channel:channel,
-      post:post
-    });
+    // this.postsQueue.push({
+    //   channel:channel,
+    //   post:post
+    // });
 
     let postInSequentialOrder = await this.configService.getConfigValue<boolean>('post_in_sequential_order') ?? true;
     
@@ -415,15 +415,23 @@ export class PostDialogComponent implements OnInit {
         continue;
       }
       let selectedCities = channel.cities.filter(s => s.selected);
-      postsTotalCities += selectedCities.length;
+      postsTotalCities += selectedCities.length - 1 ;
     }
 
-    this.numberSelectedChannels  = (this.posts.length * selectedChannels.length) +  postsTotalCities;
-    
+    this.numberSelectedChannels  = (this.posts.length * selectedChannels.length) +  (postsTotalCities );
+
+    this.postsQueue = [];
+
+    //create queue
     for(let post of this.posts){
       for(let selectedChannel of selectedChannels){
-        await this.handleQueueItem(post,selectedChannel);
+        this.postsQueue.push({post:post,channel:selectedChannel});
       }
+    }
+
+    for(let postQueue of this.postsQueue){
+        await this.handleQueueItem(postQueue.post,postQueue.channel);
+      
     }
     // this.channelPostingQueue;
   }
