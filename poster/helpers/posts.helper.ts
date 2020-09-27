@@ -23,14 +23,14 @@ export class PostsHelper{
         if(!post || !cityCurrency || cityCurrency == 'THB'){ //thb is the default currency
             return Number(post.metaData.price) ?? 0;
         }
-        
+
         // const convertCurrency = require('nodejs-currency-converter');
         // let convertedPrice = await convertCurrency(1, 'THB', cityCurrency)
         // return convertedPrice;
 
         var fx = require("money");
         let price = Number((post.metaData.price.trim() as any).replaceAll(',',''));
-        return fx(price ?? 0).from("THB").to(cityCurrency); 
+        return fx(price ?? 0).from("THB").to(cityCurrency);
     }
 
     public static getListOfPosts(){
@@ -124,11 +124,14 @@ export class PostsHelper{
 
         let filesInDir = fs.readdirSync(postDirPath);
         let imageFiles = Array();
+        let count = 0;
         for(let file of filesInDir ){
 
             if(!file || file.indexOf('.') === -1){
                 continue;
             }
+
+            count ++;
 
             let fileNameExploded = file.split('.');
             let fileExtension    = fileNameExploded.length > 1 ? fileNameExploded[fileNameExploded.length-1] : null;
@@ -138,7 +141,7 @@ export class PostsHelper{
 
             imageFiles.push({
               imageURL:path.join(postDirPath,file),
-              selected:true
+              selected:count <=8 ? true : false
             });
         }
 
