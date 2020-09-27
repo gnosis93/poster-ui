@@ -178,7 +178,7 @@ export class PostDialogComponent implements OnInit {
 
       this.cd.detectChanges();
     });
-    
+
     this.setPostTemplateTextArea(this.posts[0],CommonConstants.defaultLang);
   }
 
@@ -443,10 +443,14 @@ export class PostDialogComponent implements OnInit {
       }
     }
 
-    for(let postQueue of this.postsQueue){
-        await this.handleQueueItem(postQueue.post,postQueue.channel);
-      
+
+    if(this.postsQueue && this.postsQueue.length > 0){
+      await this.handleQueueItem(this.postsQueue[0].post,this.postsQueue[0].channel);
     }
+
+    // for(let postQueue of this.postsQueue){
+      
+    // }
     // this.channelPostingQueue;
   }
 }
