@@ -68,7 +68,7 @@ var ConfigHelper = /** @class */ (function () {
                 "https://www.facebook.com/groups/317055712850966"
             ],
             "headless": false,
-            "phone_number": '090 048 9999',
+            "phone_number": '900 489999',
             "phone_extension": '+66',
             "facebook_old_style": true,
             "chrome_executable_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -90,6 +90,7 @@ var ConfigHelper = /** @class */ (function () {
     };
     ConfigHelper.parseTextTemplate = function (post, lang) {
         var _this = this;
+        var _a, _b, _c, _d, _e, _f, _g;
         if (Array.isArray(post.postText) === false) {
             return post.content;
         }
@@ -104,15 +105,15 @@ var ConfigHelper = /** @class */ (function () {
             }
         }
         var textParsed = String(templateText.text);
-        textParsed = textParsed.replace('{title}', post.metaData.title);
-        textParsed = textParsed.replace('{beds}', post.metaData.beds);
-        textParsed = textParsed.replace('{bathrooms}', post.metaData.baths);
-        textParsed = textParsed.replace('{floorNumber}', post.metaData.floorNumber);
-        textParsed = textParsed.replace('{size}', post.metaData.size);
-        textParsed = textParsed.replace('{url}', post.metaData.url);
-        textParsed = textParsed.replace('{features}', post.metaData.features);
-        textParsed = textParsed.replace('{phone_extension}', ConfigHelper.getConfigValue('phone_extension'));
-        textParsed = textParsed.replace('{phone_number}', ConfigHelper.getConfigValue('phone_number'));
+        textParsed = textParsed.replace('{title}', (_a = post.metaData.title) !== null && _a !== void 0 ? _a : '');
+        textParsed = textParsed.replace('{beds}', (_b = post.metaData.beds) !== null && _b !== void 0 ? _b : '');
+        textParsed = textParsed.replace('{bathrooms}', (_c = post.metaData.baths) !== null && _c !== void 0 ? _c : '');
+        textParsed = textParsed.replace('{floorNumber}', (_d = post.metaData.floorNumber) !== null && _d !== void 0 ? _d : '');
+        textParsed = textParsed.replace('{size}', (_e = post.metaData.size) !== null && _e !== void 0 ? _e : '');
+        textParsed = textParsed.replace('{url}', (_f = post.metaData.url) !== null && _f !== void 0 ? _f : '');
+        textParsed = textParsed.replace('{features}', (_g = post.metaData.features) !== null && _g !== void 0 ? _g : '');
+        textParsed = textParsed.replace('{phone_extension}', ConfigHelper.getConfigValue('phone_extension', ''));
+        textParsed = textParsed.replace('{phone_number}', ConfigHelper.getConfigValue('phone_number', ''));
         textParsed = textParsed.replace('null', '');
         return textParsed;
     };

@@ -163,12 +163,14 @@ var PostsHelper = /** @class */ (function () {
         }
         var filesInDir = fs.readdirSync(postDirPath);
         var imageFiles = Array();
+        var count = 0;
         try {
             for (var filesInDir_1 = __values(filesInDir), filesInDir_1_1 = filesInDir_1.next(); !filesInDir_1_1.done; filesInDir_1_1 = filesInDir_1.next()) {
                 var file = filesInDir_1_1.value;
                 if (!file || file.indexOf('.') === -1) {
                     continue;
                 }
+                count++;
                 var fileNameExploded = file.split('.');
                 var fileExtension = fileNameExploded.length > 1 ? fileNameExploded[fileNameExploded.length - 1] : null;
                 if (!fileExtension || PostsHelper.ACCEPTED_IMAGES.indexOf(String(fileExtension)) === -1) {
@@ -176,7 +178,7 @@ var PostsHelper = /** @class */ (function () {
                 }
                 imageFiles.push({
                     imageURL: path.join(postDirPath, file),
-                    selected: true
+                    selected: count <= 8 ? true : false
                 });
             }
         }

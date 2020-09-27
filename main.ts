@@ -25,7 +25,6 @@ const args = process.argv.slice(1),
 ConfigHelper.createConfigFile();
 
 function createWindow(): BrowserWindow {
-
   const electronScreen = screen;
   const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
@@ -302,8 +301,8 @@ try {
 }
 
 
-var queueScheduler = new QueueScheduler();
-var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
+var queueScheduler      = new QueueScheduler();
+var schedulerEnabled    = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
 var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron',false);
 
 if(schedulerEnabled === true){

@@ -78,7 +78,7 @@ export class ConfigHelper{
                 "https://www.facebook.com/groups/317055712850966"
             ],
             "headless":false,
-            "phone_number":'090 048 9999',
+            "phone_number":'900 489999',
             "phone_extension":'+66',
             "facebook_old_style":true,
             "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
@@ -124,15 +124,15 @@ Call for view:  {phone_extension} {phone_number')}
         }
 
         let textParsed  = String(templateText.text);
-        textParsed      = textParsed.replace('{title}',post.metaData.title);
-        textParsed      = textParsed.replace('{beds}',post.metaData.beds);
-        textParsed      = textParsed.replace('{bathrooms}',post.metaData.baths);
-        textParsed      = textParsed.replace('{floorNumber}',post.metaData.floorNumber);
-        textParsed      = textParsed.replace('{size}',post.metaData.size);
-        textParsed      = textParsed.replace('{url}',post.metaData.url);
-        textParsed      = textParsed.replace('{features}',post.metaData.features);
-        textParsed      = textParsed.replace('{phone_extension}',ConfigHelper.getConfigValue('phone_extension'));
-        textParsed      = textParsed.replace('{phone_number}',ConfigHelper.getConfigValue('phone_number'));
+        textParsed      = textParsed.replace('{title}',post.metaData.title ?? '');
+        textParsed      = textParsed.replace('{beds}',post.metaData.beds ?? '');
+        textParsed      = textParsed.replace('{bathrooms}',post.metaData.baths ?? '');
+        textParsed      = textParsed.replace('{floorNumber}',post.metaData.floorNumber ?? '');
+        textParsed      = textParsed.replace('{size}',post.metaData.size ?? '');
+        textParsed      = textParsed.replace('{url}',post.metaData.url ?? '');
+        textParsed      = textParsed.replace('{features}',post.metaData.features ?? '');
+        textParsed      = textParsed.replace('{phone_extension}',ConfigHelper.getConfigValue('phone_extension',''));
+        textParsed      = textParsed.replace('{phone_number}',ConfigHelper.getConfigValue('phone_number',''));
         textParsed      = textParsed.replace('null','');
 
         return textParsed;

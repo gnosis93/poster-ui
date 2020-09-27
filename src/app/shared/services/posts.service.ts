@@ -47,16 +47,11 @@ export class PostsService {
     this.electron.ipcRenderer.addListener('submitPostToFacebookGroups',(sender,message)=>{
       this.$postToFacebookGroupsSubject.next(message);
     });
-
-
     
     this.electron.ipcRenderer.addListener('deleteAllPosts',(sender,message)=>{
       this.$deleteAllPostsSubject.next(true);
     });
-
-
-
-
+  
   }
 
 
@@ -65,7 +60,7 @@ export class PostsService {
   //     this.electron.ipcRenderer.send('submitPostToCraigslist',post,city);
   //   }
   //   return this.$postToCraigslistSubject.asObservable();
-  // }s
+  // }
 
   public async submitPostToCraigslist(post:Post | null,city:ChannelCity|null) {
     let channelName = 'submitPostToCraigslist';
@@ -121,8 +116,6 @@ export class PostsService {
     }
     return this.$postToFacebookGroupsSubject.asObservable();
   }
-
- 
 
   public async getPostTemplateText(lang:string,post:Post):Promise<PostText>{
     let postText = post.postText.find(p => p.language == lang);

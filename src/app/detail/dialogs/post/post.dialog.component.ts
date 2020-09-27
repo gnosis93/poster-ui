@@ -178,10 +178,7 @@ export class PostDialogComponent implements OnInit {
 
       this.cd.detectChanges();
     });
-
-
-   
-
+    
     this.setPostTemplateTextArea(this.posts[0],CommonConstants.defaultLang);
   }
 
