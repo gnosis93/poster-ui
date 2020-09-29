@@ -52,6 +52,7 @@ var config_helper_1 = require("../helpers/config.helper");
 var craigslist_group_poster_1 = require("../channels/craigslist/craigslist.group.poster");
 var posts_helper_1 = require("../helpers/posts.helper");
 var logger_helper_1 = require("../helpers/logger.helper");
+var moment = require("moment");
 var QueueScheduler = /** @class */ (function () {
     function QueueScheduler() {
         this.queuedPosts = [];
@@ -99,11 +100,17 @@ var QueueScheduler = /** @class */ (function () {
         if (QueueScheduler.allLogs.length == 0) {
             QueueScheduler.allLogs = logger_helper_1.LoggerHelper.getAllLogs(logger_helper_1.LogChannel.scheduler);
         }
+        if (this.postExpiryTime === null) {
+            this.postExpiryTime = config_helper_1.ConfigHelper.getConfigValue('post_expiry_time', 30);
+        }
         try {
             for (var _c = __values(QueueScheduler.allLogs), _d = _c.next(); !_d.done; _d = _c.next()) {
                 var log = _d.value;
                 if ((log === null || log === void 0 ? void 0 : log.logSeverity) == logger_helper_1.LogSeverity.info && (log === null || log === void 0 ? void 0 : log.message) === QueueScheduler.LOG_MESSAGE && ((_b = log === null || log === void 0 ? void 0 : log.additionalData) === null || _b === void 0 ? void 0 : _b.name) == post.name) {
-                    return true;
+                    var logISRecent = moment(log.date).add(this.postExpiryTime, 'days').isAfter(moment()); //log is recent if it hasn't expired (as per POST_EXPIRY_DAYS const)
+                    if (logISRecent) {
+                        return true;
+                    }
                 }
             }
         }
@@ -117,20 +124,32 @@ var QueueScheduler = /** @class */ (function () {
         return false;
     };
     QueueScheduler.prototype.handleQueue = function () {
+        var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var currentPost;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var postingsPerCronTrigger, i, currentPost;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
                         if (!(this.queuedPosts.length === 0)) return [3 /*break*/, 2];
                         return [4 /*yield*/, this.buildQueue()];
                     case 1:
-                        _a.sent();
-                        _a.label = 2;
+                        _b.sent();
+                        _b.label = 2;
                     case 2:
+                        postingsPerCronTrigger = (_a = config_helper_1.ConfigHelper.getConfigValue('postings_per_trigger')) !== null && _a !== void 0 ? _a : 1;
+                        i = 1;
+                        _b.label = 3;
+                    case 3:
+                        if (!(i <= postingsPerCronTrigger)) return [3 /*break*/, 6];
                         currentPost = this.queuedPosts.pop();
-                        this.handleQueueItem(currentPost, this.defaultPost);
-                        return [2 /*return*/];
+                        return [4 /*yield*/, this.handleQueueItem(currentPost, this.defaultPost)];
+                    case 4:
+                        _b.sent();
+                        _b.label = 5;
+                    case 5:
+                        i++;
+                        return [3 /*break*/, 3];
+                    case 6: return [2 /*return*/];
                 }
             });
         });
@@ -186,7 +205,7 @@ var QueueScheduler = /** @class */ (function () {
     };
     QueueScheduler.LOG_MESSAGE = 'Scheduler posted successfully';
     QueueScheduler.LOG_MESSAGE_FAIL = 'Scheduler posted failed';
-    QueueScheduler.POST_EXPIRY = 60 * 60 * 24 * 2;
+    QueueScheduler.postExpiryTime = null;
     QueueScheduler.allLogs = [];
     return QueueScheduler;
 }());

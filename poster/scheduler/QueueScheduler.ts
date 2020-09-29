@@ -2,7 +2,9 @@ import { Post, ChannelCity } from "../models/post.interface";
 import { ConfigHelper } from "../helpers/config.helper";
 import { CraigslistPoster } from "../channels/craigslist/craigslist.group.poster";
 import { PostsHelper } from "../helpers/posts.helper";
-import {LoggerHelper, LogChannel, LogEntry, LogSeverity} from '../helpers/logger.helper'
+import {LoggerHelper, LogChannel, LogEntry, LogSeverity} from '../helpers/logger.helper';
+import * as moment from 'moment';
+
 export class QueueScheduler {
   public queuedPosts: Array<Post> = [];
   private readonly defaultPost = {
@@ -14,7 +16,7 @@ export class QueueScheduler {
 
   private static readonly LOG_MESSAGE = 'Scheduler posted successfully'
   private static readonly LOG_MESSAGE_FAIL = 'Scheduler posted failed'
-  private static readonly POST_EXPIRY = 60 * 60 * 24 * 2;
+  private static postExpiryTime = null;
 
   private static allLogs:LogEntry[] = [];
 
@@ -35,9 +37,16 @@ export class QueueScheduler {
       QueueScheduler.allLogs = LoggerHelper.getAllLogs(LogChannel.scheduler);
     }
 
+    if(this.postExpiryTime === null){
+      this.postExpiryTime = ConfigHelper.getConfigValue<number>('post_expiry_time',30);
+    }
+
     for(let log of QueueScheduler.allLogs){
       if(log?.logSeverity == LogSeverity.info && log?.message === QueueScheduler.LOG_MESSAGE && log?.additionalData?.name == post.name){
-        return true;
+        let logISRecent =  moment(log.date).add(this.postExpiryTime,'days').isAfter(moment());//log is recent if it hasn't expired (as per POST_EXPIRY_DAYS const)
+        if(logISRecent){
+          return true;
+        }
       }
     }
     return false;
@@ -47,8 +56,11 @@ export class QueueScheduler {
     if (this.queuedPosts.length === 0) {
      await this.buildQueue();
     }
-    let currentPost = this.queuedPosts.pop();
-    this.handleQueueItem(currentPost, this.defaultPost);
+    let postingsPerCronTrigger = ConfigHelper.getConfigValue<number>('postings_per_trigger') ?? 1;
+    for(let i=1;i<=postingsPerCronTrigger;i++){
+      let currentPost = this.queuedPosts.pop();
+      await this.handleQueueItem(currentPost, this.defaultPost);
+    }
   }
 
   private async handleQueueItem(post: Post, city: ChannelCity) {

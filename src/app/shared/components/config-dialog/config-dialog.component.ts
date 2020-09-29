@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { ipcMain } from 'electron';
 import { ConfigService } from 'app/shared/services/config.service';
 import { CommonConstants } from 'app/shared/common-const';
+import { PostsService } from 'app/shared/services/posts.service';
 
 
 type ConfigSection = "Facebook Credentials"      | 
@@ -14,7 +15,8 @@ type ConfigSection = "Facebook Credentials"      |
                      "Facebook Groups Channel"   |
                      "General Channels Settings" |
                      "Behavior"                  |
-                     "Text Templates"            
+                     "Text Templates"            |
+                     "Scheduler"
 ;
 
 @Component({
@@ -31,6 +33,7 @@ export class ConfigDialogComponent implements OnInit {
 
   constructor(
     private configService:ConfigService,
+    private postsService:PostsService,
     private dialogRef:MatDialogRef<ConfigDialogComponent>,
     private zone:NgZone
   ) { }
@@ -70,48 +73,46 @@ export class ConfigDialogComponent implements OnInit {
     urlToAddElement.value = "";
   }
 
-  headlessValueChange(value:{checked:boolean}){
+  public headlessValueChange(value:{checked:boolean}){
     this.config.headless = value.checked;
   }
 
-  postInSequentialOrderValueChange(value:{checked:boolean}){
+  public postInSequentialOrderValueChange(value:{checked:boolean}){
     this.config.post_in_sequential_order = value.checked;
   }
   
-  postImmediatelyValueChange(value:{checked:boolean}){
+  public postImmediatelyValueChange(value:{checked:boolean}){
     this.config.post_immediately = value.checked;
   }
 
-  enableSchedulerValueChange(value:{checked:boolean}){
+  public enableSchedulerValueChange(value:{checked:boolean}){
     this.config.enable_scheduler = value.checked;
   }
   
 
-  facebookStyleValueChange(value:{checked:boolean}){
+  public facebookStyleValueChange(value:{checked:boolean}){
     this.config.facebook_old_style = value.checked;
     console.log(value);
   }
   
-  onRestoreConfigToDefaults(){
+  public onRestoreConfigToDefaults(){
     this.configService.restoreConfig();
   }
 
-  onSidebarClick(selectedItem:ConfigSection){
+  public onSidebarClick(selectedItem:ConfigSection){
     this.selectedTemplate = selectedItem;
   }
 
-  onTextTemplateChange($event,lang){
+  public onTextTemplateChange($event,lang){
     this.config[lang+'_text_template'] = $event.target.value;
   }
   
-  closeBrowserValueChange(value:{checked:boolean}){
+  public closeBrowserValueChange(value:{checked:boolean}){
     this.config.close_browser = value.checked;
     console.log(value);
-
   }
 
-
-  onDeletePageClick(pageUrl:string){
+  public onDeletePageClick(pageUrl:string){
     if(confirm('Are you sure you want to delete this page ?') === false){
       return;
     }
@@ -131,7 +132,7 @@ export class ConfigDialogComponent implements OnInit {
     this.config.facebook_pages = pagesRedefined;
   }
 
-  onDeleteGroupClick(groupUrl:string){
+  public onDeleteGroupClick(groupUrl:string){
     if(confirm('Are you sure you want to delete this group ?') === false){
       return;
     }
@@ -149,13 +150,17 @@ export class ConfigDialogComponent implements OnInit {
     this.config.facebook_groups = groupsRedefined;
   }
 
-  close(){
+  public async onTriggerCronClick(){
+    await this.postsService.triggerCronPost();
+  }
+
+  public close(){
     this.dialogRef.close();
   }
 
-  save(){
+  public save(){
     this.configService.saveConfig(this.config);//TODO: consider subscribe and add loader
     this.dialogRef.close();
-
   }
+
 }

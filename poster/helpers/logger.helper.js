@@ -60,6 +60,7 @@ var LoggerHelper = /** @class */ (function (_super) {
             additionalData: additionalData,
             date: new Date().getTime()
         };
+        console.log('logger event', newLog);
         allLogs.push(newLog);
         var logChannelPath = LoggerHelper.getLogChannelPath(logChannel);
         return fs.writeFileSync(logChannelPath, JSON.stringify(allLogs));

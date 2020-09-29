@@ -71,6 +71,18 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
+//handle Queue
+var queueScheduler      = new QueueScheduler();
+var schedulerEnabled    = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
+var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron',false);
+
+if(schedulerEnabled === true){
+  schedule.scheduleJob(schedulerCRONConfig, ()=>{
+    queueScheduler.handleQueue();
+  });
+}
+
+
 ipcMain.addListener('getPostByName', async (event, args) => {
   let result = PostsHelper.getPostByName(args);
   event.sender.send('getPostByName', result);
@@ -123,10 +135,10 @@ ipcMain.addListener('saveConfig', async (event, args) => {
   event.sender.send('saveConfig', true);
 });
 
-// ipcMain.addListener('validateConfig', async (event, args) => {
-//   let errorMessage = await ConfigHelper.validateConfigData(args);
-//   event.sender.send('validateConfig', errorMessage);
-// });
+ipcMain.addListener('triggerCronPost', async (event, args) => {
+  await queueScheduler.handleQueue();
+  event.sender.send('triggerCronPost', true);
+});
 
 
 ipcMain.addListener('websiteImport', async (event, args) => {
@@ -341,15 +353,4 @@ try {
 } catch (e) {
   // Catch Error
   // throw e;
-}
-
-
-var queueScheduler      = new QueueScheduler();
-var schedulerEnabled    = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
-var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron',false);
-
-if(schedulerEnabled === true){
-  schedule.scheduleJob(schedulerCRONConfig, ()=>{
-    queueScheduler.handleQueue();
-  });
 }

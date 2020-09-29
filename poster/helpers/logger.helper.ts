@@ -29,6 +29,7 @@ export class LoggerHelper extends BaseHelper {
             additionalData: additionalData,
             date: new Date().getTime()
         };
+        console.log('logger event',newLog);
         allLogs.push(newLog);
         let logChannelPath = LoggerHelper.getLogChannelPath(logChannel);
         return fs.writeFileSync(logChannelPath ,JSON.stringify(allLogs));

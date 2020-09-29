@@ -103,6 +103,7 @@ Call for view:  {phone_extension} {phone_number')}
             "post_in_sequential_order":true,
             "enable_scheduler":false,
             "scheduler_cron":"0 * * * *",
+            'postings_per_trigger':1
 
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));

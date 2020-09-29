@@ -75,6 +75,21 @@ export class PostsService {
 
   }
 
+
+  public async triggerCronPost() {
+    let channelName = 'triggerCronPost';
+    return new Promise((resolutionFunc, rejectionFunc) => {
+      var handler = (sender, message) => {
+        this.electron.ipcRenderer.removeListener(channelName,handler);
+        resolutionFunc(message);
+      };
+      this.electron.ipcRenderer.addListener(channelName, handler);
+      this.electron.ipcRenderer.send(channelName);
+    });
+
+  }
+
+
   public async submitPostToLivinginsider(post:Post) {
     let channelName = 'submitPostToLivinginsider';
     return new Promise((resolutionFunc, rejectionFunc) => {

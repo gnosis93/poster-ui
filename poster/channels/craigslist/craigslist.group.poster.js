@@ -148,7 +148,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
             }
         ];
         if (!credentials || !credentials.username || !credentials.password) {
-            throw "Invalid Credentials Object given to FacebookGroupPoster";
+            throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
         return _this;
     }

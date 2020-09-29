@@ -5,7 +5,7 @@ import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
 
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
-    private readonly channelUrl: string = 'https://livinginsider.com/';
+    private readonly channelUrl: string = 'https://livinginsider.com/en';
     private readonly channelLoginUrl: string = '';
 
     constructor(
@@ -42,6 +42,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 120000 }); //its ok for me now
+        
+        await loginPage.setDefaultNavigationTimeout(10000);
+
         await this.clickTickboxByIndex(loginPage, 1, 'a[data-target="#loginModal"]');
         await loginPage.type('#login_username', username);
         await loginPage.type('#password', password);

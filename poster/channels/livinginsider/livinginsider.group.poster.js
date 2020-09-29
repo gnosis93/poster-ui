@@ -86,83 +86,26 @@ var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var LivinginsiderPoster = /** @class */ (function (_super) {
     __extends(LivinginsiderPoster, _super);
-    function LivinginsiderPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, city, immediatelyPost) {
+    function LivinginsiderPoster(credentials, imagesToPost, thaiContent, englishContent, title, location, price, surfaceArea, phoneNumber, phoneExtension, immediatelyPost) {
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
-        _this.content = content;
+        _this.thaiContent = thaiContent;
+        _this.englishContent = englishContent;
         _this.title = title;
         _this.location = location;
         _this.price = price;
         _this.surfaceArea = surfaceArea;
         _this.phoneNumber = phoneNumber;
         _this.phoneExtension = phoneExtension;
-        _this.city = city;
         _this.immediatelyPost = immediatelyPost;
-        _this.channelUrl = 'https://livinginsider.com/';
+        _this.channelUrl = 'https://livinginsider.com/en';
         _this.channelLoginUrl = '';
-        _this.locationsPostUrls = [
-            {
-                'city': "bangkok",
-                'url': ""
-            },
-            {
-                'city': "beijing",
-                'url': ""
-            },
-            {
-                city: 'shanghai',
-                url: ''
-            },
-            {
-                city: 'hong kong',
-                url: ''
-            },
-            {
-                city: 'moscow',
-                url: ''
-            },
-            {
-                city: 'mumbai',
-                url: ''
-            },
-            {
-                city: 'st petersburg',
-                url: ''
-            },
-            {
-                city: 'bologna',
-                url: ''
-            },
-            {
-                city: 'rome',
-                url: ''
-            },
-            {
-                city: 'firenze',
-                url: ''
-            },
-            {
-                city: 'bangladesh',
-                url: ''
-            }
-        ];
         if (!credentials || !credentials.username || !credentials.password) {
-            throw "Invalid Credentials Object given to FacebookGroupPoster";
+            throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
         }
         return _this;
     }
-    LivinginsiderPoster.prototype.getCityUrl = function () {
-        var _this = this;
-        if (!this.city || this.city.length === 0) {
-            throw 'City in Criagslist poster is a required param';
-        }
-        var city = this.locationsPostUrls.find(function (c) { return c.city == _this.city; });
-        if (!city) {
-            throw 'Invalid City given to Criagslist poster, given INVALID city name: ' + this.city;
-        }
-        return city.url;
-    };
     LivinginsiderPoster.prototype.getImagesToPost = function () {
         return this.imagesToPost.filter(function (i) { return i.selected == true; }).map(function (i) { return i.imageURL; });
     };
@@ -181,17 +124,23 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 2:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' })];
+                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 120000 })];
                     case 3:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#inputEmailHandle', username)];
+                        _b.sent(); //its ok for me now
+                        return [4 /*yield*/, loginPage.setDefaultNavigationTimeout(10000)];
                     case 4:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.type('#inputPassword', password)];
+                        return [4 /*yield*/, this.clickTickboxByIndex(loginPage, 1, 'a[data-target="#loginModal"]')];
                     case 5:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.click('#login')];
+                        return [4 /*yield*/, loginPage.type('#login_username', username)];
                     case 6:
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.type('#password', password)];
+                    case 7:
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.click('#btn-signin')];
+                    case 8:
                         _b.sent();
                         // await loginPage.waitForNavigation();
                         return [2 /*return*/, loginPage];
@@ -227,111 +176,103 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     LivinginsiderPoster.prototype.postToPages = function (page, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var count, cityPostURL, fromEmailFieldExists, housingTypeSelectorExists, isFurnishedSelectorExists, _a, _b, _c, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount;
+            var count, fromEmailFieldExists, housingTypeSelectorExists, isFurnishedSelectorExists, _a, _b, _c, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
                         count = 0;
-                        cityPostURL = this.getCityUrl();
-                        return [4 /*yield*/, page.goto(cityPostURL, {
-                                waitUntil: "networkidle2",
-                                timeout: 0
-                            })];
-                    case 1:
-                        _d.sent();
                         return [4 /*yield*/, page.setDefaultNavigationTimeout(10000)];
-                    case 2:
+                    case 1:
                         _d.sent();
                         // page.click('.selection-list li')[6]
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 3)];
-                    case 3:
+                    case 2:
                         // page.click('.selection-list li')[6]
                         _d.sent();
                         return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
-                    case 4:
+                    case 3:
                         _d.sent();
                         return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 5:
+                    case 4:
                         _d.sent();
                         // this.delay(2000);
                         return [4 /*yield*/, page.waitForSelector('.option-label')];
-                    case 6:
+                    case 5:
                         // this.delay(2000);
                         _d.sent();
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 3, '.option-label')];
-                    case 7:
+                    case 6:
                         _d.sent();
                         // this.delay(2000);
                         // await Promise.all([
                         return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
-                    case 8:
+                    case 7:
                         // this.delay(2000);
                         // await Promise.all([
                         _d.sent();
                         return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 9:
+                    case 8:
                         _d.sent();
                         return [4 /*yield*/, page.waitForSelector("#PostingTitle")];
-                    case 10:
+                    case 9:
                         _d.sent();
                         return [4 /*yield*/, this.threeClickType(page, "#PostingTitle", this.title)];
-                    case 11:
+                    case 10:
                         _d.sent();
                         return [4 /*yield*/, this.threeClickType(page, "#geographic_area", this.location)];
-                    case 12:
+                    case 11:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#PostingBody", this.content)];
-                    case 13:
-                        _d.sent();
+                        //await this.threeClickType(page,"#PostingBody",this.content);
                         return [4 /*yield*/, this.threeClickType(page, "input[name='price']", this.price)];
-                    case 14:
+                    case 12:
+                        //await this.threeClickType(page,"#PostingBody",this.content);
                         _d.sent();
                         return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
-                    case 15:
+                    case 13:
                         _d.sent();
                         return [4 /*yield*/, page.$("input[name=FromEMail][type=text]")];
-                    case 16:
+                    case 14:
                         fromEmailFieldExists = _d.sent();
-                        if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 18];
+                        if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 16];
                         return [4 /*yield*/, this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username)];
+                    case 15:
+                        _d.sent();
+                        _d.label = 16;
+                    case 16: return [4 /*yield*/, page.$("select[name='housing_type']")];
                     case 17:
-                        _d.sent();
-                        _d.label = 18;
-                    case 18: return [4 /*yield*/, page.$("select[name='housing_type']")];
-                    case 19:
                         housingTypeSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 21];
+                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 19];
                         return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
-                    case 20:
+                    case 18:
                         _d.sent();
-                        _d.label = 21;
-                    case 21: 
+                        _d.label = 19;
+                    case 19: 
                     // await this.clickTickbox(page,'show my phone number',false);
                     // this.delay(500);
                     return [4 /*yield*/, page.click('input.show_phone_ok')];
-                    case 22:
+                    case 20:
                         // await this.clickTickbox(page,'show my phone number',false);
                         // this.delay(500);
                         _d.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone']", this.phoneNumber)];
-                    case 23:
+                    case 21:
                         _d.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
-                    case 24:
+                    case 22:
                         _d.sent();
                         return [4 /*yield*/, page.$("input.is_furnished")];
-                    case 25:
+                    case 23:
                         isFurnishedSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!isFurnishedSelectorExists) return [3 /*break*/, 27];
+                        if (!isFurnishedSelectorExists) return [3 /*break*/, 25];
                         return [4 /*yield*/, page.click('input.is_furnished')];
-                    case 26:
+                    case 24:
                         _d.sent();
-                        _d.label = 27;
-                    case 27:
+                        _d.label = 25;
+                    case 25:
                         _b = (_a = Promise).all;
                         _c = [page.waitForNavigation({ waitUntil: 'load' })];
                         return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 28: 
+                    case 26: 
                     // await this.clickTickbox(page,'furnished',false);
                     // await this.delay(500);
                     // await page.click('button[type=submit]');
@@ -339,7 +280,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                     return [4 /*yield*/, _b.apply(_a, [_c.concat([
                                 _d.sent()
                             ])])];
-                    case 29:
+                    case 27:
                         // await this.clickTickbox(page,'furnished',false);
                         // await this.delay(500);
                         // await page.click('button[type=submit]');
@@ -347,52 +288,52 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         _d.sent();
                         console.log('wating for imgcount');
                         return [4 /*yield*/, page.waitForSelector('.imgcount')];
-                    case 30:
+                    case 28:
                         _d.sent();
                         console.log('READY WITH: wating for imgcount');
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         return [4 /*yield*/, page.waitForSelector('input[type=file]')];
-                    case 31:
+                    case 29:
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         _d.sent();
                         return [4 /*yield*/, page.$$('input[type=file]')];
-                    case 32:
+                    case 30:
                         inputUploadHandles = _d.sent();
                         inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 33:
+                    case 31:
                         _d.sent();
                         return [4 /*yield*/, this.getImageCount(page)];
-                    case 34:
+                    case 32:
                         imageCount = (_d.sent());
-                        _d.label = 35;
-                    case 35:
-                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 38];
+                        _d.label = 33;
+                    case 33:
+                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 36];
                         return [4 /*yield*/, this.delay(500)];
-                    case 36:
+                    case 34:
                         _d.sent();
                         return [4 /*yield*/, this.getImageCount(page)];
-                    case 37:
+                    case 35:
                         imageCount = (_d.sent());
                         console.log('wating image count');
-                        return [3 /*break*/, 35];
-                    case 38: return [4 /*yield*/, page.click('button[type=submit].done')];
-                    case 39:
+                        return [3 /*break*/, 33];
+                    case 36: return [4 /*yield*/, page.click('button[type=submit].done')];
+                    case 37:
                         _d.sent();
-                        if (!this.immediatelyPost) return [3 /*break*/, 42];
+                        if (!this.immediatelyPost) return [3 /*break*/, 40];
                         return [4 /*yield*/, page.waitForSelector("button[name='go']")];
-                    case 40:
+                    case 38:
                         _d.sent();
                         return [4 /*yield*/, page.click("button[name='go']")];
-                    case 41:
+                    case 39:
                         _d.sent();
-                        _d.label = 42;
-                    case 42: return [2 /*return*/, page];
+                        _d.label = 40;
+                    case 40: return [2 /*return*/, page];
                 }
             });
         });

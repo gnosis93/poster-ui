@@ -24,6 +24,7 @@
                 <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
                 <li (click)="onSidebarClick('Behavior')">Behavior</li>
                 <li (click)="onSidebarClick('Text Templates')">Text Templates</li>
+                <li (click)="onSidebarClick('Scheduler')">Scheduler</li>
             </ul>
 
             <h5>Channel Settings</h5>
@@ -207,6 +208,44 @@
 
                 </span>
 
+                <span *ngIf="selectedTemplate == 'Scheduler'">
+                    <h5>Scheduler Settings</h5>
+                    <br>
+
+                    <strong>NB: Restart application for scheduler settings updates to take effect</strong>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Enable Scheduler</label>
+                            <mat-checkbox [checked]="config.enable_scheduler"
+                                (change)="enableSchedulerValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="scheduler_cron">Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.scheduler_cron" name="scheduler_cron"
+                            id="scheduler_cron" [disabled]="config?.enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="scheduler_cron">Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.enable_scheduler == false" [(ngModel)]="config.post_expiry_time" name="post_expiry_time" id="post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="postings_per_trigger">How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.enable_scheduler == false" [(ngModel)]="config.postings_per_trigger" name="postings_per_trigger" id="postings_per_trigger">
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-warning" (click)="onTriggerCronClick()">Trigger Cron</button>
+                    </div>
+
+
+                </span>
+                
                 <span *ngIf="selectedTemplate == 'Behavior'">
                     <h5>Config Behavior</h5>
                     <br>
@@ -249,23 +288,7 @@
                         </div>
                     </div>
 
-                    <h5>Scheduler Settings</h5>
-                    <strong>NB: Restart application for scheduler settings updates to take effect</strong>
-
-                    <div class="row">
-                        <div class="col-10">
-                            <label>Enable Scheduler</label>
-                            <mat-checkbox [checked]="config.enable_scheduler"
-                                (change)="enableSchedulerValueChange($event)"></mat-checkbox>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="scheduler_cron">Scheduler Cron</label>
-                        <input type="text" [(ngModel)]="config.scheduler_cron" name="scheduler_cron"
-                            id="scheduler_cron">
-                    </div>
-
+                    
                 </span>
 
             </form>
