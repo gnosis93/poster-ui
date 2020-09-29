@@ -194,7 +194,6 @@ export class PostDialogComponent implements OnInit {
     });
   }
 
-
   ngOnInit(): void {
     this.isLoading = false;
   }
@@ -480,7 +479,10 @@ export class PostDialogComponent implements OnInit {
     //create queue
     for(let post of this.posts){
       for(let selectedChannel of selectedChannels){
-        this.postsQueue.push({post:post,channel:selectedChannel});
+        this.postsQueue.push({
+          post:post,
+          channel:selectedChannel
+        });
       }
     }
 

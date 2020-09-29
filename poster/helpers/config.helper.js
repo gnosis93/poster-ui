@@ -1,11 +1,27 @@
 "use strict";
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ConfigHelper = void 0;
 //importing necessary modules
 var path = require("path");
 var fs = require("fs");
-var ConfigHelper = /** @class */ (function () {
+var helper_base_1 = require("./helper.base");
+var ConfigHelper = /** @class */ (function (_super) {
+    __extends(ConfigHelper, _super);
     function ConfigHelper() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
     ConfigHelper.getConfigValue = function (valueKey, defaultValue) {
         if (defaultValue === void 0) { defaultValue = null; }
@@ -27,8 +43,8 @@ var ConfigHelper = /** @class */ (function () {
     ConfigHelper.getConfig = function () {
         if (ConfigHelper.configSingleton === null) {
             var configFilePath = ConfigHelper.getConfigFilePath();
-            var rawdata = fs.readFileSync(configFilePath);
-            ConfigHelper.configSingleton = JSON.parse(rawdata.toString());
+            var rawData = fs.readFileSync(configFilePath);
+            ConfigHelper.configSingleton = JSON.parse(rawData.toString());
         }
         return ConfigHelper.configSingleton;
     };
@@ -134,15 +150,9 @@ var ConfigHelper = /** @class */ (function () {
         console.log(configFilePath);
         return configFilePath;
     };
-    ConfigHelper.getPostsDir = function () {
-        var app = require('electron').app;
-        var homedir = app.getPath('userData');
-        var dirPath = path.join(homedir, 'posts');
-        return dirPath;
-    };
     ConfigHelper.configSingleton = null;
     ConfigHelper.defaultLang = 'english';
     return ConfigHelper;
-}());
+}(helper_base_1.BaseHelper));
 exports.ConfigHelper = ConfigHelper;
 //# sourceMappingURL=config.helper.js.map

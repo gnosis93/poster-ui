@@ -2,8 +2,9 @@
 import path = require('path');
 import fs   = require('fs');
 import { Post } from '../models/post.interface';
+import { BaseHelper } from './helper.base';
 
-export class ConfigHelper{
+export class ConfigHelper extends BaseHelper{
 
     private static configSingleton:any=null;
     private static readonly defaultLang = 'english';
@@ -24,16 +25,14 @@ export class ConfigHelper{
         }
         ConfigHelper.createConfigFile();
         return true;
-
     }
 
     public static getConfig():any{
         if(ConfigHelper.configSingleton === null){
             let configFilePath  = ConfigHelper.getConfigFilePath();
-            let rawdata         = fs.readFileSync(configFilePath);
-            ConfigHelper.configSingleton   = JSON.parse(rawdata.toString());
+            let rawData         = fs.readFileSync(configFilePath);
+            ConfigHelper.configSingleton   = JSON.parse(rawData.toString());
         }
-       
         return ConfigHelper.configSingleton;
     }
 
@@ -158,10 +157,5 @@ Call for view:  {phone_extension} {phone_number')}
         return configFilePath;
     }
 
-    public static getPostsDir(){
-        const {app}   = require('electron');
-        const homedir = app.getPath('userData');
-        let dirPath   = path.join(homedir, 'posts');
-        return dirPath;
-    }
+    
 }

@@ -16,6 +16,7 @@
             d="M16 15.5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1 0-1h3.793L6.146 6.854a.5.5 0 1 1 .708-.708L15 14.293V10.5a.5.5 0 0 1 1 0v5z" />
         </svg>
         <span>&nbsp;</span>
+        
         <a routerLink="/" style="cursor: pointer;" (click)="onConfigClick()">Config</a>
 
         <span>&nbsp;&nbsp;</span>
@@ -41,22 +42,23 @@
       <div class="float-left">
 
         <input min=1 maxlength=30 minlength=1 max=30 type="number" #numberOfRandomInput value="5" />
-        
-        <button class="btn btn-warning" (click)="onRandomSelectClick(numberOfRandomInput)">
-          Random Select 
-        </button>
 
+        <button class="btn btn-warning" (click)="onRandomSelectClick(numberOfRandomInput)">
+          Random Select
+        </button>
 
       </div>
       <div class="float-right">
 
-        
+
         <button class="btn btn-primary" (click)="onPostSelected()">
           Post Selected
         </button>
+
         <button class="btn btn-danger" (click)="onDeleteAllPosts()">
           Delete All Posts
         </button>
+
       </div>
     </div>
     <hr>

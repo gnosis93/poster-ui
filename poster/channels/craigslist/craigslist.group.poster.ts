@@ -197,7 +197,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // await page.click('button[type=submit]');
         // await this.delay(500);
         await Promise.all([
-            page.waitForNavigation({ waitUntil: 'load' }),
+            page.waitForNavigation({ waitUntil: 'load'}),
             await page.click('button[type=submit]'),
 
         ])

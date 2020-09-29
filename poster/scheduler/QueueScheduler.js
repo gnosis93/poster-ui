@@ -51,6 +51,7 @@ exports.QueueScheduler = void 0;
 var config_helper_1 = require("../helpers/config.helper");
 var craigslist_group_poster_1 = require("../channels/craigslist/craigslist.group.poster");
 var posts_helper_1 = require("../helpers/posts.helper");
+var logger_helper_1 = require("../helpers/logger.helper");
 var QueueScheduler = /** @class */ (function () {
     function QueueScheduler() {
         this.queuedPosts = [];
@@ -75,7 +76,9 @@ var QueueScheduler = /** @class */ (function () {
                             for (_a = __values(postsFetch.postsDirs), _b = _a.next(); !_b.done; _b = _a.next()) {
                                 postDir = _b.value;
                                 post = posts_helper_1.PostsHelper.getPostByName(postDir);
-                                this.queuedPosts.push(post);
+                                if (QueueScheduler.postExistsInLogs(post) === false) {
+                                    this.queuedPosts.push(post);
+                                }
                             }
                         }
                         catch (e_1_1) { e_1 = { error: e_1_1 }; }
@@ -85,32 +88,63 @@ var QueueScheduler = /** @class */ (function () {
                             }
                             finally { if (e_1) throw e_1.error; }
                         }
-                        this.queuedPosts = this.shuffle(this.queuedPosts);
                         return [2 /*return*/];
                 }
             });
         });
     };
+    QueueScheduler.postExistsInLogs = function (post) {
+        var e_2, _a;
+        var _b;
+        if (QueueScheduler.allLogs.length == 0) {
+            QueueScheduler.allLogs = logger_helper_1.LoggerHelper.getAllLogs(logger_helper_1.LogChannel.scheduler);
+        }
+        try {
+            for (var _c = __values(QueueScheduler.allLogs), _d = _c.next(); !_d.done; _d = _c.next()) {
+                var log = _d.value;
+                if ((log === null || log === void 0 ? void 0 : log.logSeverity) == logger_helper_1.LogSeverity.info && (log === null || log === void 0 ? void 0 : log.message) === QueueScheduler.LOG_MESSAGE && ((_b = log === null || log === void 0 ? void 0 : log.additionalData) === null || _b === void 0 ? void 0 : _b.name) == post.name) {
+                    return true;
+                }
+            }
+        }
+        catch (e_2_1) { e_2 = { error: e_2_1 }; }
+        finally {
+            try {
+                if (_d && !_d.done && (_a = _c.return)) _a.call(_c);
+            }
+            finally { if (e_2) throw e_2.error; }
+        }
+        return false;
+    };
     QueueScheduler.prototype.handleQueue = function () {
         return __awaiter(this, void 0, void 0, function () {
             var currentPost;
             return __generator(this, function (_a) {
-                if (this.queuedPosts.length === 0) {
-                    this.buildQueue();
+                switch (_a.label) {
+                    case 0:
+                        if (!(this.queuedPosts.length === 0)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.buildQueue()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        currentPost = this.queuedPosts.pop();
+                        this.handleQueueItem(currentPost, this.defaultPost);
+                        return [2 /*return*/];
                 }
-                currentPost = this.queuedPosts.pop();
-                this.handleQueueItem(currentPost, this.defaultPost);
-                return [2 /*return*/];
             });
         });
     };
     QueueScheduler.prototype.handleQueueItem = function (post, city) {
         var _a, _b, _c;
         return __awaiter(this, void 0, void 0, function () {
-            var config, result, poster, e_2;
+            var config, result, poster, e_3;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
+                        if (typeof post == 'undefined' || !post) {
+                            logger_helper_1.LoggerHelper.err('Invalid post given to handleQueueItem()', null, logger_helper_1.LogChannel.scheduler);
+                        }
                         config = config_helper_1.ConfigHelper.getConfig();
                         result = false;
                         _d.label = 1;
@@ -123,11 +157,13 @@ var QueueScheduler = /** @class */ (function () {
                         return [4 /*yield*/, poster.run()];
                     case 2:
                         result = _d.sent();
+                        logger_helper_1.LoggerHelper.info(QueueScheduler.LOG_MESSAGE, post, logger_helper_1.LogChannel.scheduler);
                         return [3 /*break*/, 4];
                     case 3:
-                        e_2 = _d.sent();
+                        e_3 = _d.sent();
                         result = false;
-                        console.error(e_2);
+                        console.error(e_3);
+                        logger_helper_1.LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL + ' exepction: ' + e_3.toString(), post, logger_helper_1.LogChannel.scheduler);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/, result];
                 }
@@ -148,6 +184,10 @@ var QueueScheduler = /** @class */ (function () {
         }
         return array;
     };
+    QueueScheduler.LOG_MESSAGE = 'Scheduler posted successfully';
+    QueueScheduler.LOG_MESSAGE_FAIL = 'Scheduler posted failed';
+    QueueScheduler.POST_EXPIRY = 60 * 60 * 24 * 2;
+    QueueScheduler.allLogs = [];
     return QueueScheduler;
 }());
 exports.QueueScheduler = QueueScheduler;

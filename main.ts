@@ -16,6 +16,7 @@ import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.
 import * as schedule from 'node-schedule';
 import { QueueScheduler } from './poster/scheduler/QueueScheduler';
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
+import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.helper';
 
 //importing necessary modules
 
@@ -303,6 +304,12 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
 
 });
 
+
+ipcMain.addListener('log',async (event,log:LogEntry,logChannel:LogChannel) => {
+  let logEntry = LoggerHelper.writeLog(log.message,log.additionalData,logChannel,log.logSeverity);
+  console.log('Log From Render Process',logEntry);
+  return event.sender.send('log', logEntry);
+});
 
 try {
   // This method will be called when Electron has finished

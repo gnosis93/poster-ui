@@ -66,6 +66,7 @@ export class HomeComponent implements OnInit {
     })
   }
   
+  
   onRandomSelectClick(numberOfRandomElemInput){
     if(!numberOfRandomElemInput){
       return alert('error');
@@ -94,6 +95,7 @@ export class HomeComponent implements OnInit {
       this.posts[randomIndex].selected = true;
     }
   }
+
   /**
    * Returns a random number between min (inclusive) and max (exclusive)
    */
@@ -138,7 +140,6 @@ export class HomeComponent implements OnInit {
 
     this.showProgressSpinner();
     this.importService.importHotdogCondos();
-
   }
 
   async onDeleteClick(post:Post|null){

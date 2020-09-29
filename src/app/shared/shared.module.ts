@@ -13,13 +13,15 @@ import { ConfigDialogComponent } from './components/config-dialog/config-dialog.
 import {PostsService} from './services/posts.service';
 import {ImportService} from './services/import.service';
 import {ConfigService} from './services/config.service';
+import {LogService} from './services/log.service';
 
 
 @NgModule({
   providers:[
     PostsService,
     ConfigService,
-    ImportService
+    ImportService,
+    LogService
   ],
 
   declarations: [
