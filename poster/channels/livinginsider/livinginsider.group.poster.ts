@@ -8,65 +8,17 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/';
     private readonly channelLoginUrl: string = '';
 
-    private readonly locationsPostUrls = [
-        {
-            'city': "bangkok",
-            'url': ""
-        },
-        {
-            'city': "beijing",
-            'url': ""
-        },
-        {
-            city:'shanghai',
-            url:''
-        },
-        {
-            city:'hong kong',
-            url:''
-        },
-        {
-            city:'moscow',
-            url:''
-        }, 
-        {
-            city:'mumbai',
-            url:''
-        },
-        {
-            city:'st petersburg',
-            url:''
-        },
-        {
-            city:'bologna',
-            url:''
-        },
-        {
-            city:'rome',
-            url:''
-        },
-        {
-            city:'firenze',
-            url:''
-        },
-        {
-            city:'bangladesh',
-            url:''   
-        }
-    ];
-
-
     constructor(
         private credentials: { username: string, password: string },
         private imagesToPost: PostImage[],
-        private content: string,
+        private thaiContent: string,
+        private englishContent: string,
         private title: string,
         private location: string,
         private price: string,
         private surfaceArea: string,
         private phoneNumber: string,
         private phoneExtension: string,
-        private city: string,
         private immediatelyPost
     ) {
         super();
@@ -74,19 +26,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to FacebookGroupPoster";
         }
-    }
-
-    private getCityUrl(): string {
-        if (!this.city || this.city.length === 0) {
-            throw 'City in Criagslist poster is a required param'
-        }
-
-        let city = this.locationsPostUrls.find((c) => c.city == this.city);
-        if (!city) {
-            throw 'Invalid City given to Criagslist poster, given INVALID city name: ' + this.city;
-        }
-
-        return city.url;
     }
 
     public getImagesToPost() {
@@ -129,13 +68,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private async postToPages(page: puppeteer.Page, onPageUploadedCallback: Function | null = null): Promise<puppeteer.Page> {
         let count = 0;
 
-        // let page = (await browser.newPage())
-        let cityPostURL = this.getCityUrl();
-        await page.goto(cityPostURL, {
-            waitUntil: "networkidle2",
-            timeout: 0
-        });
-
         await page.setDefaultNavigationTimeout(10000);
         // page.click('.selection-list li')[6]
 
@@ -159,7 +91,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         await this.threeClickType(page,"#PostingTitle",this.title);
         await this.threeClickType(page,"#geographic_area",this.location);
-        await this.threeClickType(page,"#PostingBody",this.content);
+        //await this.threeClickType(page,"#PostingBody",this.content);
         await this.threeClickType(page,"input[name='price']",this.price);
 
         await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);

@@ -224,7 +224,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
   return event.sender.send('submitPostToCraigslist', result);
 });
 
-ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post,city:ChannelCity) => {
+ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
   let config = ConfigHelper.getConfig();
   let poster:IChannel|null = null;
   let result = true;
@@ -237,14 +237,14 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post,city:C
         password: config.livinginsider_password
       },
       post.images,
-      ConfigHelper.parseTextTemplate(post,city.lang),
+      ConfigHelper.parseTextTemplate(post,'thai'),
+      ConfigHelper.parseTextTemplate(post,'english'),
       post?.metaData?.title,
       'Pattaya',
       post.metaData?.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
-      city.name,
       ConfigHelper.getConfigValue('post_immediately',false)
     );
 

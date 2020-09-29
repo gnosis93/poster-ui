@@ -15,8 +15,6 @@ export class PostsService {
   private $deleteSubject:Subject<boolean>;
   private $deleteAllPostsSubject:Subject<boolean>;
   private $postToFacebookGroupsSubject:Subject<boolean>;
-  private $postToCraigslistSubject:Subject<boolean>;
-  private $postToLivinginsiderSubject:Subject<boolean>;
 
   constructor(
     private electron: ElectronService,
@@ -29,8 +27,6 @@ export class PostsService {
     this.$postToFacebookGroupsSubject   = new Subject<boolean>();
     this.$deleteAllPostsSubject         = new Subject<boolean>();
     this.$deleteSubject                 = new Subject<boolean>();
-    this.$postToCraigslistSubject       = new Subject<boolean>();
-    this.$postToLivinginsiderSubject    = new Subject<boolean>();
 
     this.electron.ipcRenderer.addListener('getPostByName',(sender,message)=>{
       this.$postSubject.next(message);
@@ -50,14 +46,6 @@ export class PostsService {
 
     this.electron.ipcRenderer.addListener('submitPostToFacebookGroups',(sender,message)=>{
       this.$postToFacebookGroupsSubject.next(message);
-    });
-
-    this.electron.ipcRenderer.addListener('submitPostToCraigslist',(sender,message)=>{
-      this.$postToCraigslistSubject.next(message);
-    });
-
-    this.electron.ipcRenderer.addListener('submitPostToLivinginsider',(sender,message)=>{
-      this.$postToLivinginsiderSubject.next(message);
     });
     
     this.electron.ipcRenderer.addListener('deleteAllPosts',(sender,message)=>{
@@ -87,7 +75,7 @@ export class PostsService {
 
   }
 
-  public async submitPostToLivinginsider(post:Post | null,city:ChannelCity|null) {
+  public async submitPostToLivinginsider(post:Post) {
     let channelName = 'submitPostToLivinginsider';
     return new Promise((resolutionFunc, rejectionFunc) => {
       var handler = (sender, message) => {
@@ -95,7 +83,7 @@ export class PostsService {
         resolutionFunc(message);
       };
       this.electron.ipcRenderer.addListener(channelName, handler);
-      this.electron.ipcRenderer.send(channelName,post,city);
+      this.electron.ipcRenderer.send(channelName,post);
     });
 
   }

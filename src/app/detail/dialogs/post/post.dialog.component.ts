@@ -113,15 +113,7 @@ export class PostDialogComponent implements OnInit {
     },
     {
       "name": 'Livinginsider',
-      "selected": true,
-      'cities': [
-        {
-          name: 'bangkok',
-          selected: true,
-          lang:'thai',
-          currency:'THB'
-        }
-      ]
+      "selected": true
     }
   ];
 
@@ -252,19 +244,16 @@ export class PostDialogComponent implements OnInit {
         }
         break;
       case 'Livinginsider':
-      let selectedCitiesForLivinginsider = channel.cities.filter(s => s.selected);
-      for (let city of selectedCitiesForLivinginsider) {
         try{
           if(postInSequentialOrder === true){
-            await this.postsService.submitPostToLivinginsider(post, city);
+            await this.postsService.submitPostToLivinginsider(post);
             await this.handlePostSubmitted(channel.name);
           }else{
-            this.postsService.submitPostToLivinginsider(post,city).then(()=> this.handlePostSubmitted(channel.name))
+            this.postsService.submitPostToLivinginsider(post).then(()=> this.handlePostSubmitted(channel.name))
           }
         }catch(e){
           alert('error as occurred')
         }
-      }
       break;
 
     }
@@ -349,10 +338,6 @@ export class PostDialogComponent implements OnInit {
           result = await this.validateLivinginsiderConfig()
           if (result == false) {
             return result;
-          }
-          if (channel.cities.find((c) => c.selected == true) == null) {
-            alert('Please select at least one city!')
-            return false
           }
           break;
       }
