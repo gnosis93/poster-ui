@@ -120,6 +120,21 @@ export class ConfigService {
     return true;
   }
 
+  async validateLivinginsiderCredentials(){
+    let livinginsiderEmail    = await this.getConfigValue<string>('livinginsider_email');
+    let livinginsiderPassword = await this.getConfigValue<string>('livinginsider_password');
+
+    if(!livinginsiderEmail || livinginsiderEmail.indexOf('@') == -1){
+      return false;
+    }
+
+    if(!livinginsiderPassword || livinginsiderPassword.length <= 1){
+      return false;
+    }
+
+    return true;
+  }
+
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
     let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')

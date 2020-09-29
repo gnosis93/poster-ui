@@ -110,6 +110,18 @@ export class PostDialogComponent implements OnInit {
 
         // }
       ]
+    },
+    {
+      "name": 'Livinginsider',
+      "selected": true,
+      'cities': [
+        {
+          name: 'bangkok',
+          selected: true,
+          lang:'thai',
+          currency:'THB'
+        }
+      ]
     }
   ];
 
@@ -225,8 +237,8 @@ export class PostDialogComponent implements OnInit {
         this.postsService.postToFacebookGroups(post);
         break;
       case 'Craigslist':
-        let selectedCities = channel.cities.filter(s => s.selected);
-        for (let city of selectedCities) {
+        let selectedCitiesForCraigslist = channel.cities.filter(s => s.selected);
+        for (let city of selectedCitiesForCraigslist) {
           try{
             if(postInSequentialOrder === true){
               await this.postsService.submitPostToCraigslist(post, city);
@@ -237,9 +249,23 @@ export class PostDialogComponent implements OnInit {
           }catch(e){
             alert('error as occurred')
           }
-
         }
         break;
+      case 'Livinginsider':
+      let selectedCitiesForLivinginsider = channel.cities.filter(s => s.selected);
+      for (let city of selectedCitiesForLivinginsider) {
+        try{
+          if(postInSequentialOrder === true){
+            await this.postsService.submitPostToLivinginsider(post, city);
+            await this.handlePostSubmitted(channel.name);
+          }else{
+            this.postsService.submitPostToLivinginsider(post,city).then(()=> this.handlePostSubmitted(channel.name))
+          }
+        }catch(e){
+          alert('error as occurred')
+        }
+      }
+      break;
 
     }
   }
@@ -319,6 +345,16 @@ export class PostDialogComponent implements OnInit {
             return false
           }
           break;
+        case 'Livinginsider':
+          result = await this.validateLivinginsiderConfig()
+          if (result == false) {
+            return result;
+          }
+          if (channel.cities.find((c) => c.selected == true) == null) {
+            alert('Please select at least one city!')
+            return false
+          }
+          break;
       }
     }
     return result;
@@ -346,6 +382,26 @@ export class PostDialogComponent implements OnInit {
   private async validateCraigslistConfig() {
     if (await this.configService.validateCraigslistCredentials() === false) {
       alert('Craigslist Email/Password are not set or incorrect');
+      return false;
+    }
+    let phoneNumber = (await this.configService.getConfigValue<string | null>('phone_number'));
+    if (phoneNumber == null || phoneNumber.length == 0) {
+      alert('Phone number in config is required, Please set it up');
+      return false;
+    }
+
+    let phoneExtension = (await this.configService.getConfigValue<string | null>('phone_number'));
+    if (phoneExtension == null || phoneExtension.length == 0) {
+      alert('Phone extension in config is required, Please set it up');
+      return false;
+    }
+
+    return true;
+  }
+
+  private async validateLivinginsiderConfig() {
+    if (await this.configService.validateLivinginsiderCredentials() === false) {
+      alert('Livinginsider Email/Password are not set or incorrect');
       return false;
     }
     let phoneNumber = (await this.configService.getConfigValue<string | null>('phone_number'));

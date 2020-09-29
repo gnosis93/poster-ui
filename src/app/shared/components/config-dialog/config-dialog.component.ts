@@ -9,6 +9,7 @@ import { CommonConstants } from 'app/shared/common-const';
 type ConfigSection = "Facebook Credentials"      | 
                      "Craigslist Credentials"    | 
                      "Craigslist Channel"        |
+                     "Livinginsider Credentials" |
                      "Facebook Pages Channel"    |
                      "Facebook Groups Channel"   |
                      "General Channels Settings" |

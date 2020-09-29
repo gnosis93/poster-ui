@@ -15,6 +15,7 @@ import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.
 import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.poster';
 import * as schedule from 'node-schedule';
 import { QueueScheduler } from './poster/scheduler/QueueScheduler';
+import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
 
 //importing necessary modules
 
@@ -221,6 +222,41 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
   }
 
   return event.sender.send('submitPostToCraigslist', result);
+});
+
+ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post,city:ChannelCity) => {
+  let config = ConfigHelper.getConfig();
+  let poster:IChannel|null = null;
+  let result = true;
+
+  try {
+    // let price = await PostsHelper.handlePostPrice(post,city.currency);
+    poster = new LivinginsiderPoster(
+      {
+        username: config.livinginsider_email,
+        password: config.livinginsider_password
+      },
+      post.images,
+      ConfigHelper.parseTextTemplate(post,city.lang),
+      post?.metaData?.title,
+      'Pattaya',
+      post.metaData?.price,
+      post?.metaData?.size,
+      ConfigHelper.getConfigValue('phone_number'),
+      ConfigHelper.getConfigValue('phone_extension'),
+      city.name,
+      ConfigHelper.getConfigValue('post_immediately',false)
+    );
+
+    result = await poster.run();
+    return event.sender.send('submitPostToLivinginsider', result);
+
+  } catch (e) {
+    result = false;
+    console.error(e);
+  }
+
+  return event.sender.send('submitPostToLivinginsider', result);
 });
 
 ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {

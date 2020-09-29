@@ -1,6 +1,7 @@
 import { Post, ChannelCity } from "../models/post.interface";
 import { ConfigHelper } from "../helpers/config.helper";
 import { CraigslistPoster } from "../channels/craigslist/craigslist.group.poster";
+import { LivinginsiderPoster } from "../channels/livinginsider/livinginsider.group.poster";
 import { PostsHelper } from "../helpers/posts.helper";
 
 export class QueueScheduler{

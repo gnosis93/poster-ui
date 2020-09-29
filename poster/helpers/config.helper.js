@@ -74,6 +74,8 @@ var ConfigHelper = /** @class */ (function () {
             "chrome_executable_path": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             "craigslist_email": "hotdogcondos@gmail.com",
             "craigslist_password": "Miami5151+-*!!",
+            "livinginsider_email": "hotdogcondos@gmail.com",
+            "livinginsider_password": "Miami5151+-*!!",
             "post_immediately": false,
             "english_text_template": "{title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! \nMore info at : {url}\nProperty Features:\n{features}\nCall for view:  {phone_extension} {phone_number')}\n            ",
             "italian_text_template": "{title} \u00E8 un nuovo progetto che pu\u00F2 essere una nuova grande opportunit\u00E0 di investimento o un posto da chiamare casa. Situato a Pattaya, una citt\u00E0 altamente turistica con tutti i comfort che puoi immaginare!\n            Maggiori informazioni su: {url}\n            Chiamaci al numero: {phone_extension} {phone_number ')}",
