@@ -72,7 +72,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         super();
 
         if (!credentials || !credentials.username || !credentials.password) {
-            throw "Invalid Credentials Object given to FacebookGroupPoster";
+            throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
     }
 

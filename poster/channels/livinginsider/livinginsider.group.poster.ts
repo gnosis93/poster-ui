@@ -24,7 +24,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         super();
 
         if (!credentials || !credentials.username || !credentials.password) {
-            throw "Invalid Credentials Object given to FacebookGroupPoster";
+            throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
         }
     }
 
@@ -36,21 +36,19 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         return this.credentials;
     }
 
-
-
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
         let loginPage = await browser.newPage();
         let { username, password } = this.getCredentials();
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' });
-        await loginPage.type('#inputEmailHandle', username);
-        await loginPage.type('#inputPassword', password);
-        await loginPage.click('#login');
+        await loginPage.goto(this.channelUrl, { waitUntil: 'networkidle2' });
+        await loginPage.click('#none_login_zone');
+        await loginPage.type('#login_username', username);
+        await loginPage.type('#password', password);
+        await loginPage.click('#btn-signin');
         // await loginPage.waitForNavigation();
 
         return loginPage;
-
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
