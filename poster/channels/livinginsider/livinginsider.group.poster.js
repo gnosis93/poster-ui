@@ -101,7 +101,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
         _this.immediatelyPost = immediatelyPost;
         _this.channelUrl = 'https://livinginsider.com/en';
         _this.channelLoginUrl = '';
-        _this.chromeSessionPath = '/tmp/LivinginsiderSession'; //this will not work on windows , will work fine on UNIX like OSes
+        _this.chromeSessionPath = 'LivinginsiderSession'; //this will not work on windows , will work fine on UNIX like OSes
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
         }
@@ -528,7 +528,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
                         defaultViewport: null,
                         args: ['--start-maximized', "--disable-notifications"],
-                        userDataDir: this.chromeSessionPath
+                        userDataDir: this.getPathInUserData(this.chromeSessionPath)
                     })];
             });
         });

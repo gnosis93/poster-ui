@@ -49,12 +49,15 @@ var __values = (this && this.__values) || function(o) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelBase = void 0;
 var path = require("path");
+var app = require('electron').app;
 var ChannelBase = /** @class */ (function () {
     function ChannelBase() {
     }
+    ChannelBase.prototype.getPathInUserData = function (pathToFile) {
+        return path.join(app.getPath('userData'), pathToFile);
+    };
     ChannelBase.prototype.getPostsDir = function (additonalPath) {
         if (additonalPath === void 0) { additonalPath = null; }
-        var app = require('electron').app;
         if (additonalPath == null) {
             return path.join(app.getPath('userData'), 'posts');
         }
