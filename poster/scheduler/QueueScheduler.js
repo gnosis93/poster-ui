@@ -182,7 +182,7 @@ var QueueScheduler = /** @class */ (function () {
                         e_3 = _d.sent();
                         result = false;
                         console.error(e_3);
-                        logger_helper_1.LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL + ' exepction: ' + e_3.toString(), post, logger_helper_1.LogChannel.scheduler);
+                        logger_helper_1.LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL + ' exception: ' + e_3.toString(), post, logger_helper_1.LogChannel.scheduler);
                         return [3 /*break*/, 4];
                     case 4: return [2 /*return*/, result];
                 }

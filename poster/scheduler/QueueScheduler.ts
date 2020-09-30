@@ -95,7 +95,7 @@ export class QueueScheduler {
     } catch (e) {
       result = false;
       console.error(e);
-      LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL+' exepction: '+e.toString() ,post,LogChannel.scheduler);
+      LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
     }
 
     return result;

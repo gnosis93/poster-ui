@@ -114,34 +114,57 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     };
     LivinginsiderPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var loginPage, _a, username, password, closeAdModal, _b, _c, _d, openLoginSelector, _e, _f, _g, loginUsernameSelector;
+            return __generator(this, function (_h) {
+                switch (_h.label) {
                     case 0: return [4 /*yield*/, browser.newPage()];
                     case 1:
-                        loginPage = _b.sent();
+                        loginPage = _h.sent();
                         _a = this.getCredentials(), username = _a.username, password = _a.password;
                         return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 2:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 120000 })];
+                        _h.sent();
+                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
                     case 3:
-                        _b.sent(); //its ok for me now
-                        return [4 /*yield*/, loginPage.setDefaultNavigationTimeout(10000)];
-                    case 4:
-                        _b.sent();
-                        return [4 /*yield*/, this.clickTickboxByIndex(loginPage, 1, 'a[data-target="#loginModal"]')];
+                        _h.sent(); //its ok for me now
+                        closeAdModal = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+                        _c = (_b = Promise).all;
+                        _d = [loginPage.waitForSelector(closeAdModal)];
+                        return [4 /*yield*/, loginPage.click(closeAdModal)];
+                    case 4: return [4 /*yield*/, _c.apply(_b, [_d.concat([
+                                _h.sent(),
+                                this.delay(500)
+                            ])])];
                     case 5:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#login_username', username)];
-                    case 6:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#password', password)];
+                        _h.sent();
+                        openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
+                        _f = (_e = Promise).all;
+                        _g = [
+                            // loginPage.waitForNavigation({ waitUntil: 'load' }),
+                            loginPage.waitForSelector(openLoginSelector)];
+                        return [4 /*yield*/, loginPage.click(openLoginSelector)];
+                    case 6: 
+                    // await this.delay(500);
+                    return [4 /*yield*/, _f.apply(_e, [_g.concat([
+                                _h.sent(),
+                                this.delay(500)
+                            ])])];
                     case 7:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.click('#btn-signin')];
+                        // await this.delay(500);
+                        _h.sent();
+                        loginUsernameSelector = '#login_username';
+                        return [4 /*yield*/, loginPage.waitForSelector('#login_username')];
                     case 8:
-                        _b.sent();
+                        _h.sent();
+                        return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
+                    case 9:
+                        _h.sent();
+                        return [4 /*yield*/, loginPage.type('#password', password)];
+                    case 10:
+                        _h.sent();
+                        return [4 /*yield*/, loginPage.click('#btn-signin')];
+                    case 11:
+                        _h.sent();
                         // await loginPage.waitForNavigation();
                         return [2 /*return*/, loginPage];
                 }
@@ -160,15 +183,12 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.login(browser)];
                     case 2:
                         loginPage = _a.sent();
-                        return [4 /*yield*/, this.postToPages(loginPage, onPageUploadedCallback)];
+                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 4];
+                        return [4 /*yield*/, browser.close()];
                     case 3:
                         _a.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 5];
-                        return [4 /*yield*/, browser.close()];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/, true];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, true];
                 }
             });
         });

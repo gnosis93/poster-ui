@@ -41,12 +41,32 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         let { username, password } = this.getCredentials();
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 120000 }); //its ok for me now
+        await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 }); //its ok for me now
         
-        await loginPage.setDefaultNavigationTimeout(10000);
+        let closeAdModal = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+        await Promise.all([
+            loginPage.waitForSelector(closeAdModal),
+            await loginPage.click(closeAdModal),
+            this.delay(500)
+        ]);
 
-        await this.clickTickboxByIndex(loginPage, 1, 'a[data-target="#loginModal"]');
-        await loginPage.type('#login_username', username);
+        let openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
+
+        // await this.delay(500);
+        await Promise.all([
+            // loginPage.waitForNavigation({ waitUntil: 'load' }),
+            loginPage.waitForSelector(openLoginSelector),
+            await loginPage.click(openLoginSelector),
+            this.delay(500)
+        ]);
+      
+
+       
+
+        let loginUsernameSelector = '#login_username';
+        await loginPage.waitForSelector('#login_username');
+
+        await loginPage.type(loginUsernameSelector, username);
         await loginPage.type('#password', password);
         await loginPage.click('#btn-signin');
         // await loginPage.waitForNavigation();
@@ -57,7 +77,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
-        await this.postToPages(loginPage, onPageUploadedCallback);
+        // await this.postToPages(loginPage, onPageUploadedCallback);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();
@@ -130,8 +150,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await Promise.all([
             page.waitForNavigation({ waitUntil: 'load' }),
             await page.click('button[type=submit]'),
-
-        ])
+        ]);
       
         console.log('wating for imgcount');
         await page.waitForSelector('.imgcount')

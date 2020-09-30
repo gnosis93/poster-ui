@@ -107,12 +107,18 @@ export class HomeComponent implements OnInit {
   }
 
   async onPostSelected(){
+    
+    let selectedPosts = this.posts.filter((p) => typeof p.selected != 'undefined' && p.selected === true);
+
+    if(selectedPosts.length == 0){
+      alert('No Posts selected');
+      return;
+    }
     const dialogPost = new MatDialogConfig();
 
     dialogPost.disableClose = false;
     dialogPost.autoFocus = true;
 
-    let selectedPosts = this.posts.filter((p) => typeof p.selected != 'undefined' && p.selected === true);
     dialogPost.data = {
       posts:selectedPosts
     };
