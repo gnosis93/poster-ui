@@ -28,6 +28,8 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         }
     }
 
+    
+
     public getImagesToPost() {
         return this.imagesToPost.filter((i) => i.selected == true).map((i) => i.imageURL);
     }
@@ -38,7 +40,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
         let loginPage = await browser.newPage();
+        //let loginPage = await this.newPageWithNewContext(browser); WITH NEW CODES
         let { username, password } = this.getCredentials();
+
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 }); //its ok for me now
@@ -72,6 +76,22 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         // await loginPage.waitForNavigation();
 
         return loginPage;
+    }
+
+    private async newPageWithNewContext(browser) {
+        const {browserContextId} = await browser._connection.send('Target.createBrowserContext');
+        const {targetId} = await browser._connection.send('Target.createTarget', {url: 'about:blank', browserContextId});
+        const client = await browser._connection.createSession(targetId);
+        const page = await browser.create(client, browser._ignoreHTTPSErrors, browser._screenshotTaskQueue);
+        page.browserContextId = browserContextId;
+        return page;
+      }
+      
+      private async closePage(browser, page) {
+        if (page.browserContextId != undefined) {
+          await browser._connection.send('Target.disposeBrowserContext', {browserContextId: page.browserContextId});
+        }
+        await page.close();
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
