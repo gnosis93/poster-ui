@@ -1,7 +1,22 @@
 import * as puppeteer from 'puppeteer';
+import * as path from 'path';
+const {app} = require('electron');
 
 export abstract class ChannelBase {
-    
+
+
+
+    protected getPathInUserData(pathToFile:string){
+        return path.join( app.getPath('userData'),pathToFile)
+    }
+
+    protected getPostsDir(additonalPath:string|null=null):string{
+        if(additonalPath == null){
+            return path.join( app.getPath('userData'),'posts')
+        }else{
+            return path.join( app.getPath('userData'),'posts',additonalPath)
+        }
+    }
     /**
      * Helper function to delay the process , used to await loading of elements/html 
      * @param time time in miliseconds 

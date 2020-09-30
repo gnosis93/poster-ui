@@ -101,6 +101,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
         _this.immediatelyPost = immediatelyPost;
         _this.channelUrl = 'https://livinginsider.com/en';
         _this.channelLoginUrl = '';
+        _this.chromeSessionPath = 'LivinginsiderSession'; //this will not work on windows , will work fine on UNIX like OSes
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
         }
@@ -114,7 +115,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     };
     LivinginsiderPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, closeAdModal, _b, _c, _d, openLoginSelector, _e, _f, _g, loginUsernameSelector;
+            var loginPage, _a, username, password, closeAdModalSelector, _b, _c, _d, e_1, openLoginSelector, _e, _f, _g, loginUsernameSelector;
             return __generator(this, function (_h) {
                 switch (_h.label) {
                     case 0: return [4 /*yield*/, browser.newPage()];
@@ -127,46 +128,76 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
                     case 3:
                         _h.sent(); //its ok for me now
-                        closeAdModal = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+                        closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+                        return [4 /*yield*/, this.delay(1000)];
+                    case 4:
+                        _h.sent();
+                        _h.label = 5;
+                    case 5:
+                        _h.trys.push([5, 8, , 9]);
                         _c = (_b = Promise).all;
-                        _d = [loginPage.waitForSelector(closeAdModal)];
-                        return [4 /*yield*/, loginPage.click(closeAdModal)];
-                    case 4: return [4 /*yield*/, _c.apply(_b, [_d.concat([
+                        _d = [loginPage.waitForSelector(closeAdModalSelector)];
+                        return [4 /*yield*/, loginPage.click(closeAdModalSelector)];
+                    case 6: return [4 /*yield*/, _c.apply(_b, [_d.concat([
                                 _h.sent(),
                                 this.delay(500)
                             ])])];
-                    case 5:
+                    case 7:
                         _h.sent();
+                        return [3 /*break*/, 9];
+                    case 8:
+                        e_1 = _h.sent();
+                        console.log('Exception raised, no ad modal popup to close found');
+                        return [3 /*break*/, 9];
+                    case 9:
                         openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
                         _f = (_e = Promise).all;
                         _g = [
                             // loginPage.waitForNavigation({ waitUntil: 'load' }),
                             loginPage.waitForSelector(openLoginSelector)];
                         return [4 /*yield*/, loginPage.click(openLoginSelector)];
-                    case 6: 
+                    case 10: 
                     // await this.delay(500);
                     return [4 /*yield*/, _f.apply(_e, [_g.concat([
                                 _h.sent(),
                                 this.delay(500)
                             ])])];
-                    case 7:
+                    case 11:
                         // await this.delay(500);
                         _h.sent();
                         loginUsernameSelector = '#login_username';
                         return [4 /*yield*/, loginPage.waitForSelector('#login_username')];
-                    case 8:
+                    case 12:
                         _h.sent();
                         return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
-                    case 9:
+                    case 13:
                         _h.sent();
                         return [4 /*yield*/, loginPage.type('#password', password)];
-                    case 10:
+                    case 14:
                         _h.sent();
                         return [4 /*yield*/, loginPage.click('#btn-signin')];
-                    case 11:
+                    case 15:
                         _h.sent();
                         // await loginPage.waitForNavigation();
                         return [2 /*return*/, loginPage];
+                }
+            });
+        });
+    };
+    LivinginsiderPoster.prototype.closePage = function (browser, page) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!(page.browserContextId != undefined)) return [3 /*break*/, 2];
+                        return [4 /*yield*/, browser._connection.send('Target.disposeBrowserContext', { browserContextId: page.browserContextId })];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2: return [4 /*yield*/, page.close()];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });
@@ -183,12 +214,11 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.login(browser)];
                     case 2:
                         loginPage = _a.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 4];
-                        return [4 /*yield*/, browser.close()];
-                    case 3:
-                        _a.sent();
-                        _a.label = 4;
-                    case 4: return [2 /*return*/, true];
+                        // await this.postToPages(loginPage, onPageUploadedCallback);
+                        if ((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser')) {
+                            // await browser.close();
+                        }
+                        return [2 /*return*/, true];
                 }
             });
         });
@@ -426,8 +456,8 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
         if (querySelector === void 0) { querySelector = ".selection-list>li>label>.right-side"; }
         if (awaitNavigation === void 0) { awaitNavigation = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, elements, _a, _b, _c, i, link, e_1_1;
-            var e_1, _d;
+            var result, elements, _a, _b, _c, i, link, e_2_1;
+            var e_2, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -462,14 +492,14 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [3 /*break*/, 3];
                     case 7: return [3 /*break*/, 10];
                     case 8:
-                        e_1_1 = _e.sent();
-                        e_1 = { error: e_1_1 };
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
                         return [3 /*break*/, 10];
                     case 9:
                         try {
                             if (_b && !_b.done && (_d = _a.return)) _d.call(_a);
                         }
-                        finally { if (e_1) throw e_1.error; }
+                        finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
                     case 10:
                         if (!result) return [3 /*break*/, 11];
@@ -497,7 +527,8 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
                         headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
                         defaultViewport: null,
-                        args: ['--start-maximized', "--disable-notifications"]
+                        args: ['--start-maximized', "--disable-notifications"],
+                        userDataDir: this.getPostsDir(this.chromeSessionPath)
                     })];
             });
         });
