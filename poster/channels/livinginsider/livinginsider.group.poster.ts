@@ -7,7 +7,7 @@ import { PostImage } from '../../models/post.interface';
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/en';
     private readonly channelLoginUrl: string = '';
-    private readonly chromeSessionPath = '/tmp/LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
+    private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
 
     constructor(
         private credentials: { username: string, password: string },
@@ -135,8 +135,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         if(fromEmailFieldExists !== null){
             await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
         }
-
-
         // await page.type("input[name='surface_area']",'');
 
         let housingTypeSelectorExists = await page.$("select[name='housing_type']") !== null ? true: false;
@@ -161,6 +159,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         // await this.delay(500);
         // await page.click('button[type=submit]');
         // await this.delay(500);
+        
         await Promise.all([
             page.waitForNavigation({ waitUntil: 'load' }),
             await page.click('button[type=submit]'),
@@ -281,7 +280,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
             headless: ConfigHelper.getConfigValue('headless', false),
             defaultViewport: null,
             args: ['--start-maximized', "--disable-notifications"],
-            userDataDir:this.chromeSessionPath
+            userDataDir: this.getPathInUserData(this.chromeSessionPath)
         });
 
     }

@@ -242,9 +242,6 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
             await page.click("button[name='go']");
         }
         
-
-
-        
         return page;
     }
 

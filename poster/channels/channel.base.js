@@ -48,9 +48,20 @@ var __values = (this && this.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelBase = void 0;
+var path = require("path");
 var ChannelBase = /** @class */ (function () {
     function ChannelBase() {
     }
+    ChannelBase.prototype.getPostsDir = function (additonalPath) {
+        if (additonalPath === void 0) { additonalPath = null; }
+        var app = require('electron').app;
+        if (additonalPath == null) {
+            return path.join(app.getPath('userData'), 'posts');
+        }
+        else {
+            return path.join(app.getPath('userData'), 'posts', additonalPath);
+        }
+    };
     /**
      * Helper function to delay the process , used to await loading of elements/html
      * @param time time in miliseconds
