@@ -7,6 +7,7 @@ import { PostImage } from '../../models/post.interface';
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/en';
     private readonly channelLoginUrl: string = '';
+    private readonly chromeSessionPath = '/tmp/LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
 
     constructor(
         private credentials: { username: string, password: string },
@@ -47,15 +48,20 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 }); //its ok for me now
         
-        let closeAdModal = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
-        await Promise.all([
-            loginPage.waitForSelector(closeAdModal),
-            await loginPage.click(closeAdModal),
-            this.delay(500)
-        ]);
-
+        let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+        await this.delay(1000)
+        
+        try{
+            await Promise.all([
+                loginPage.waitForSelector(closeAdModalSelector),
+                await loginPage.click(closeAdModalSelector),
+                this.delay(500)
+            ]);
+        }catch(e){
+            console.log('Exception raised, no ad modal popup to close found')
+        }
+            
         let openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
-
         // await this.delay(500);
         await Promise.all([
             // loginPage.waitForNavigation({ waitUntil: 'load' }),
@@ -63,9 +69,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
             await loginPage.click(openLoginSelector),
             this.delay(500)
         ]);
-      
-
-       
 
         let loginUsernameSelector = '#login_username';
         await loginPage.waitForSelector('#login_username');
@@ -77,17 +80,8 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         return loginPage;
     }
-
-    private async newPageWithNewContext(browser) {
-        const {browserContextId} = await browser._connection.send('Target.createBrowserContext');
-        const {targetId} = await browser._connection.send('Target.createTarget', {url: 'about:blank', browserContextId});
-        const client = await browser._connection.createSession(targetId);
-        const page = await browser.create(client, browser._ignoreHTTPSErrors, browser._screenshotTaskQueue);
-        page.browserContextId = browserContextId;
-        return page;
-      }
-      
-      private async closePage(browser, page) {
+    
+    private async closePage(browser, page) {
         if (page.browserContextId != undefined) {
           await browser._connection.send('Target.disposeBrowserContext', {browserContextId: page.browserContextId});
         }
@@ -100,7 +94,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         // await this.postToPages(loginPage, onPageUploadedCallback);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
-            await browser.close();
+            // await browser.close();
         }
 
         return true;
@@ -286,7 +280,8 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
             executablePath: ConfigHelper.getConfigValue('chrome_executable_path'),
             headless: ConfigHelper.getConfigValue('headless', false),
             defaultViewport: null,
-            args: ['--start-maximized', "--disable-notifications"]
+            args: ['--start-maximized', "--disable-notifications"],
+            userDataDir:this.chromeSessionPath
         });
 
     }
