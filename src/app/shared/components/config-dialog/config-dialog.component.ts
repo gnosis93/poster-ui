@@ -16,7 +16,8 @@ type ConfigSection = "Facebook Credentials"      |
                      "General Channels Settings" |
                      "Behavior"                  |
                      "Text Templates"            |
-                     "Scheduler"
+                     "Scheduler"                 |
+                     "Bathsold Credentials"
 ;
 
 @Component({

@@ -211,15 +211,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         return page;
     }
 
-    private async threeClickType(page: puppeteer.Page, selector: string, value: string) {
-        const input = await page.$(selector);
-        if(input === null){
-            throw 'ThreeClickType Exception: unable to find specfied selector: '+selector
-        }
-        await input.click({ clickCount: 3 });//selects all text in input thus causing it to be deleted
-        await input.type(value);
-    }
-
     private async getImageCount(page: puppeteer.Page) {
         let element = await page.$('.imgcount')
         let value = await page.evaluate(el => el.textContent, element)

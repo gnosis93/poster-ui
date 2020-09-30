@@ -388,28 +388,6 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
             });
         });
     };
-    LivinginsiderPoster.prototype.threeClickType = function (page, selector, value) {
-        return __awaiter(this, void 0, void 0, function () {
-            var input;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, page.$(selector)];
-                    case 1:
-                        input = _a.sent();
-                        if (input === null) {
-                            throw 'ThreeClickType Exception: unable to find specfied selector: ' + selector;
-                        }
-                        return [4 /*yield*/, input.click({ clickCount: 3 })];
-                    case 2:
-                        _a.sent(); //selects all text in input thus causing it to be deleted
-                        return [4 /*yield*/, input.type(value)];
-                    case 3:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
     LivinginsiderPoster.prototype.getImageCount = function (page) {
         return __awaiter(this, void 0, void 0, function () {
             var element, value;

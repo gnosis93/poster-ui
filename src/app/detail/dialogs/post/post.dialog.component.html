@@ -11,13 +11,17 @@
         <form>
 
             <div class="row">
+                
                 <div class="col-12">
                     <h6>Channel Selection</h6>
                 </div>
+                
                 <div class="col-12" *ngFor="let channel of channels">
                     <label for="">{{channel.name}}</label>
+                    
                     <mat-checkbox [checked]="channel.selected" (change)="channel.selected = !channel.selected">
                     </mat-checkbox>
+                    
                     <div class="row" *ngIf="channel.cities && channel.selected">
                         <div class="col-3" *ngFor="let city of channel.cities">
                             <label for="">{{city.name}}</label>
@@ -25,7 +29,9 @@
                             </mat-checkbox>
                         </div>
                     </div>
+                    
                 </div>
+            
             </div>
 
             <hr>
@@ -35,7 +41,9 @@
                 <div class="col-6">
                     <h5>Settings</h5>
                 </div>
+                
                 <hr />
+
                 <div class="col-6">
                     <button class="btn btn-warning float-right" (click)="showSettings=!showSettings">
                         <i class="fa fa-chevron-down" aria-hidden="true"></i>

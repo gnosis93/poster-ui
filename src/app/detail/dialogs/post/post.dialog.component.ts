@@ -114,6 +114,10 @@ export class PostDialogComponent implements OnInit {
     {
       "name": 'Livinginsider',
       "selected": true
+    },
+    {
+      "name": 'bahtsold',
+      "selected": true
     }
   ];
 
@@ -219,8 +223,8 @@ export class PostDialogComponent implements OnInit {
     // });
 
     let postInSequentialOrder = await this.configService.getConfigValue<boolean>('post_in_sequential_order') ?? true;
-    
-    switch (channel.name) {
+    let channelName = channel.name;
+    switch (channelName) {
       case 'Facebook Pages':
         this.postsService.postToFacebookPages(post);
         break;
@@ -254,7 +258,21 @@ export class PostDialogComponent implements OnInit {
           alert('error as occurred')
         }
       break;
-
+      case 'bahtsold':
+        try{
+          if(postInSequentialOrder === true){
+            await this.postsService.submitPostBathSold(post);
+            await this.handlePostSubmitted(channel.name);
+          }else{
+            this.postsService.submitPostBathSold(post).then(()=> this.handlePostSubmitted(channel.name))
+          }
+        }catch(e){
+          alert('error as occurred')
+        }
+      break;
+      default:
+        alert('Invalid channel selected')
+        break;
     }
   }
 

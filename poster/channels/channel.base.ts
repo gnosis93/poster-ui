@@ -5,6 +5,14 @@ const {app} = require('electron');
 export abstract class ChannelBase {
 
 
+    protected async threeClickType(page: puppeteer.Page, selector: string, value: string) {
+        const input = await page.$(selector);
+        if(input === null){
+            throw 'ThreeClickType Exception: unable to find specfied selector: '+selector
+        }
+        await input.click({ clickCount: 3 });//selects all text in input thus causing it to be deleted
+        await input.type(value);
+    }
 
     protected getPathInUserData(pathToFile:string){
         return path.join( app.getPath('userData'),pathToFile)
@@ -28,7 +36,7 @@ export abstract class ChannelBase {
     }
 
 
-    protected async getActivePage(browser:puppeteer.Browser, timeout:number) {
+    protected async getActivePage(browser:puppeteer.Browser, timeout:number) :Promise<puppeteer.Page>{
         var start = new Date().getTime();
         while(new Date().getTime() - start < timeout) {
             var pages = await browser.pages();

@@ -20,8 +20,6 @@
             <h5>General Settings</h5>
             <ul class="sideBarList">
                 <!-- <li (click)="onSidebarClick('Facebook Credentials')">Facebook Credentials</li> -->
-                <li (click)="onSidebarClick('Craigslist Credentials')">Craigslist Credentials</li>
-                <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
                 <li (click)="onSidebarClick('Behavior')">Behavior</li>
                 <li (click)="onSidebarClick('Text Templates')">Text Templates</li>
                 <li (click)="onSidebarClick('Scheduler')">Scheduler</li>
@@ -30,6 +28,10 @@
             <h5>Channel Settings</h5>
             <ul class="sideBarList">
                 <li (click)="onSidebarClick('General Channels Settings')">General Settings</li>
+                <li (click)="onSidebarClick('Craigslist Credentials')">Craigslist Credentials</li>
+                <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
+                <li (click)="onSidebarClick('Bathsold Credentials')">Bathsold Credentials</li>
+
                 <!-- <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li> -->
                 <!-- <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li> -->
             </ul>
@@ -59,6 +61,26 @@
                         <label for="pwd">Old Facebook template:</label>
                         <mat-checkbox [checked]="config.facebook_old_style" (change)="facebookStyleValueChange($event)">
                         </mat-checkbox>
+                    </div>
+
+                </span>
+
+
+                <span *ngIf="selectedTemplate == 'Bathsold Credentials' ">
+                    
+                    <h5>Bathsold Credentials</h5>
+                    <br>
+
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" [(ngModel)]="config.bathsold_email" name="facebook_email"
+                            class="form-control" id="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" [(ngModel)]="config.bathsold_password" name="facebook_password"
+                            class="form-control" id="pwd">
                     </div>
 
                 </span>

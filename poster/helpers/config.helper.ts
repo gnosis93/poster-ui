@@ -83,6 +83,8 @@ export class ConfigHelper extends BaseHelper{
             "chrome_executable_path":"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             "craigslist_email":"hotdogcondos@gmail.com",
             "craigslist_password":"Miami5151+-*!!",
+            "bathsold_email":"hotdogcondos@gmail.com",
+            "bathsold_password":"Miami5151+-*!!",
             "livinginsider_email":"hotdogcondos@gmail.com",
             "livinginsider_password":"Miami5151+-*!!",
             "post_immediately":false,

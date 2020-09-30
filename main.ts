@@ -1,10 +1,10 @@
-import { app, BrowserWindow, screen, ipcMain, ipcRenderer,shell } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, ipcRenderer, shell, TouchBarOtherItemsProxy } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 import { PostsHelper } from './poster/helpers/posts.helper';
 import { HotDogCondosImporter } from './poster/importers/hotdogcondos.importer';
-import { Post ,ChannelCity} from './poster/models/post.interface';
+import { Post, ChannelCity } from './poster/models/post.interface';
 import { ConfigHelper } from './poster/helpers/config.helper';
 import { FacebookGroupPoster } from './poster/channels/facebook/facebook.group.poster';
 import { FacebookPagePoster } from './poster/channels/facebook/facebook.page.poster';
@@ -17,6 +17,7 @@ import * as schedule from 'node-schedule';
 import { QueueScheduler } from './poster/scheduler/QueueScheduler';
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
 import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.helper';
+import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
 
 //importing necessary modules
 
@@ -72,12 +73,12 @@ function createWindow(): BrowserWindow {
 }
 
 //handle Queue
-var queueScheduler      = new QueueScheduler();
-var schedulerEnabled    = ConfigHelper.getConfigValue<boolean>('enable_scheduler',false);
-var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron',false);
+var queueScheduler = new QueueScheduler();
+var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('enable_scheduler', false);
+var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron', false);
 
-if(schedulerEnabled === true){
-  schedule.scheduleJob(schedulerCRONConfig, ()=>{
+if (schedulerEnabled === true) {
+  schedule.scheduleJob(schedulerCRONConfig, () => {
     queueScheduler.handleQueue();
   });
 }
@@ -94,17 +95,17 @@ ipcMain.addListener('deletePostByName', async (event, args) => {
   console.log('deleted and sent')
 });
 
-ipcMain.addListener('getConfig',async (event,args) => {
+ipcMain.addListener('getConfig', async (event, args) => {
   let config = ConfigHelper.getConfig();
   event.sender.send('getConfig', config);
 });
 
-ipcMain.addListener('getConfigValue',async (event,args) => {
+ipcMain.addListener('getConfigValue', async (event, args) => {
   let configValue = ConfigHelper.getConfigValue(args);
   event.sender.send('getConfigValue', configValue);
 });
 
-ipcMain.addListener('fileExists',async (event,args) => {
+ipcMain.addListener('fileExists', async (event, args) => {
   // let configValue = ConfigHelper.getConfigValue(args);
   let fileExists = fs.existsSync(args);
   event.sender.send('fileExists', fileExists);
@@ -115,14 +116,14 @@ ipcMain.addListener('getPosts', async (event, args) => {
   event.sender.send('getPosts', PostsHelper.redefineListOfPosts(result.postsDirs, result.postsDirPath));
 });
 
-ipcMain.addListener('openBrowser',async (event,link) => {
+ipcMain.addListener('openBrowser', async (event, link) => {
   await shell.openExternal(link);
-  console.log('Browser Opened at '+link);
+  console.log('Browser Opened at ' + link);
 });
 
 ipcMain.addListener('deleteAllPosts', async (event, args) => {
   let result = await PostsHelper.getListOfPosts();
-  for(let post of result.postsDirs){
+  for (let post of result.postsDirs) {
     await PostsHelper.deletePostByName(post);
   }
   event.sender.send('deleteAllPosts', true);
@@ -166,10 +167,10 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
   let result = true;
   try {
-    let poster:IChannel|null = null;
+    let poster: IChannel | null = null;
 
-    if(ConfigHelper.getConfigValue<boolean>('facebook_old_style',true) === true){
-       poster = new FacebookOldPagePoster(
+    if (ConfigHelper.getConfigValue<boolean>('facebook_old_style', true) === true) {
+      poster = new FacebookOldPagePoster(
         config.facebook_pages,
         {
           username: config.facebook_email,
@@ -178,8 +179,8 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
         post.images,
         post.content
       );
-    }else{
-       poster = new FacebookPagePoster(
+    } else {
+      poster = new FacebookPagePoster(
         config.facebook_pages,
         {
           username: config.facebook_email,
@@ -189,7 +190,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
         post.content
       );
     }
-   
+
 
     await poster.run();
 
@@ -202,9 +203,9 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
 });
 
-ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:ChannelCity) => {
+ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: ChannelCity) => {
   let config = ConfigHelper.getConfig();
-  let poster:IChannel|null = null;
+  let poster: IChannel | null = null;
   let result = true;
 
   try {
@@ -215,7 +216,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
         password: config.craigslist_password
       },
       post.images,
-      ConfigHelper.parseTextTemplate(post,city.lang),
+      ConfigHelper.parseTextTemplate(post, city.lang),
       post?.metaData?.title,
       'Pattaya',
       post.metaData?.price,
@@ -223,7 +224,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
       city.name,
-      ConfigHelper.getConfigValue('post_immediately',false)
+      ConfigHelper.getConfigValue('post_immediately', false)
     );
 
     result = await poster.run();
@@ -239,7 +240,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post,city:Chan
 
 ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
   let config = ConfigHelper.getConfig();
-  let poster:IChannel|null = null;
+  let poster: IChannel | null = null;
   let result = true;
 
   try {
@@ -250,15 +251,15 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
         password: config.livinginsider_password
       },
       post.images,
-      ConfigHelper.parseTextTemplate(post,'thai'),
-      ConfigHelper.parseTextTemplate(post,'english'),
+      ConfigHelper.parseTextTemplate(post, 'thai'),
+      ConfigHelper.parseTextTemplate(post, 'english'),
       post?.metaData?.title,
       'Pattaya',
       post.metaData?.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
-      ConfigHelper.getConfigValue('post_immediately',false)
+      ConfigHelper.getConfigValue('post_immediately', false)
     );
 
     result = await poster.run();
@@ -280,9 +281,9 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
   let result = true;
   try {
 
-    let poster:IChannel|null = null;
+    let poster: IChannel | null = null;
 
-    if(  ConfigHelper.getConfigValue<boolean>('facebook_old_style',true) === true)      {
+    if (ConfigHelper.getConfigValue<boolean>('facebook_old_style', true) === true) {
       poster = new FacebookOldGroupPoster(
         config.facebook_groups,
         {
@@ -292,7 +293,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
         post.images,
         post.content
       );
-    }else{
+    } else {
       poster = new FacebookGroupPoster(
         config.facebook_groups,
         {
@@ -303,7 +304,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
         post.content
       );
     }
-   
+
 
     await poster.run();
 
@@ -316,10 +317,46 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
 
 });
 
+ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
+  // console.log('detail clicked 2')
+  let config = ConfigHelper.getConfig();
+  console.log(config);
 
-ipcMain.addListener('log',async (event,log:LogEntry,logChannel:LogChannel) => {
-  let logEntry = LoggerHelper.writeLog(log.message,log.additionalData,logChannel,log.logSeverity);
-  console.log('Log From Render Process',logEntry);
+  let result = true;
+  try {
+
+    let poster: IChannel | null = null;
+
+
+    poster = new BathsoldPoster(
+      {
+        username: config.craigslist_email,
+        password: config.craigslist_password
+      },
+      post.images,
+      ConfigHelper.parseTextTemplate(post, 'thai'),
+      post?.metaData?.title,
+      'Pattaya',
+      post.metaData?.price,
+      post?.metaData?.size,
+      ConfigHelper.getConfigValue('phone_number'),
+      ConfigHelper.getConfigValue('phone_extension'),
+      ConfigHelper.getConfigValue('post_immediately', false)
+    );
+
+    await poster.run();
+
+  } catch (e) {
+    result = false;
+    console.error(e);
+  }
+
+  return event.sender.send('submitPostBathSold', result);
+})
+
+ipcMain.addListener('log', async (event, log: LogEntry, logChannel: LogChannel) => {
+  let logEntry = LoggerHelper.writeLog(log.message, log.additionalData, logChannel, log.logSeverity);
+  console.log('Log From Render Process', logEntry);
   return event.sender.send('log', logEntry);
 });
 
