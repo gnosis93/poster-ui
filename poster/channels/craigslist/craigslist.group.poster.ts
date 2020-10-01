@@ -267,36 +267,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
     }
 
 
-    private async clickTickboxByIndex(page: puppeteer.Page, selectionIndex: number, querySelector = ".selection-list>li>label>.right-side", awaitNavigation: boolean = true) {
-        // const linkHandlers = await page.$(querySelector);
-        console.log('start');
-
-        let result = false;
-        let elements = await page.$$(querySelector);
-        for (let [i, link] of (elements.entries())) {
-            if (i == selectionIndex) {
-                // console.log('Selected index' + selectionIndex, link);
-                await link.click();
-                result = true;
-                // await page.waitForNavigation({ waitUntil: 'load' });
-                break;
-            } else {
-                result = false
-            }
-        }
-
-        if (result) {
-            return true;
-            // await linkHandlers[0].click();
-        } else {
-            await this.delay(500);
-            return await this.clickTickboxByIndex(page, selectionIndex, querySelector, awaitNavigation)
-            // throw new Error("Link By Index: "+selectionIndex+". not found");
-        }
-
-        return false;
-    }
-
+   
     async lunchBrowser(): Promise<puppeteer.Browser> {//override
         let config = ConfigHelper.getConfig();
 

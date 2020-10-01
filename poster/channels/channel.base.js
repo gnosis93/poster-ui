@@ -46,6 +46,22 @@ var __values = (this && this.__values) || function(o) {
     };
     throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelBase = void 0;
 var path = require("path");
@@ -148,6 +164,72 @@ var ChannelBase = /** @class */ (function () {
                             return [2 /*return*/, arr[0]];
                         return [3 /*break*/, 1];
                     case 11: throw "Unable to get active page";
+                }
+            });
+        });
+    };
+    ChannelBase.prototype.clickTickboxByIndex = function (page, selectionIndex, querySelector, awaitNavigation) {
+        if (querySelector === void 0) { querySelector = ".selection-list>li>label>.right-side"; }
+        if (awaitNavigation === void 0) { awaitNavigation = true; }
+        return __awaiter(this, void 0, void 0, function () {
+            var result, elements, _a, _b, _c, i, link, e_2_1;
+            var e_2, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        // const linkHandlers = await page.$(querySelector);
+                        console.log('start');
+                        result = false;
+                        return [4 /*yield*/, page.$$(querySelector)];
+                    case 1:
+                        elements = _e.sent();
+                        _e.label = 2;
+                    case 2:
+                        _e.trys.push([2, 8, 9, 10]);
+                        _a = __values((elements.entries())), _b = _a.next();
+                        _e.label = 3;
+                    case 3:
+                        if (!!_b.done) return [3 /*break*/, 7];
+                        _c = __read(_b.value, 2), i = _c[0], link = _c[1];
+                        if (!(i == selectionIndex)) return [3 /*break*/, 5];
+                        // console.log('Selected index' + selectionIndex, link);
+                        return [4 /*yield*/, link.click()];
+                    case 4:
+                        // console.log('Selected index' + selectionIndex, link);
+                        _e.sent();
+                        result = true;
+                        // await page.waitForNavigation({ waitUntil: 'load' });
+                        return [3 /*break*/, 7];
+                    case 5:
+                        result = false;
+                        _e.label = 6;
+                    case 6:
+                        _b = _a.next();
+                        return [3 /*break*/, 3];
+                    case 7: return [3 /*break*/, 10];
+                    case 8:
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 10];
+                    case 9:
+                        try {
+                            if (_b && !_b.done && (_d = _a.return)) _d.call(_a);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                        return [7 /*endfinally*/];
+                    case 10:
+                        if (!result) return [3 /*break*/, 11];
+                        return [2 /*return*/, true];
+                    case 11: return [4 /*yield*/, this.delay(500)];
+                    case 12:
+                        _e.sent();
+                        return [4 /*yield*/, this.clickTickboxByIndex(page, selectionIndex, querySelector, awaitNavigation)
+                            // throw new Error("Link By Index: "+selectionIndex+". not found");
+                        ];
+                    case 13: return [2 /*return*/, _e.sent()
+                        // throw new Error("Link By Index: "+selectionIndex+". not found");
+                    ];
+                    case 14: return [2 /*return*/, false];
                 }
             });
         });

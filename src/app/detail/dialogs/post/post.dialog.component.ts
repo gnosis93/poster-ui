@@ -331,15 +331,9 @@ export class PostDialogComponent implements OnInit {
       switch (channel.name) {
         case 'Facebook Pages':
           result = await this.validateFacebookPageConfig()
-          if (result == false) {
-            return result;
-          }
           break;
         case 'Facebook Groups':
           result = await this.validateFacebookGroupConfig()
-          if (result == false) {
-            return result;
-          }
           break;
         case 'Craigslist':
           result = await this.validateCraigslistConfig()
@@ -353,10 +347,10 @@ export class PostDialogComponent implements OnInit {
           break;
         case 'Livinginsider':
           result = await this.validateLivinginsiderConfig()
-          if (result == false) {
-            return result;
-          }
           break;
+        case 'bathsold':
+            result = await this.validateBathsoldConfig()
+            break;
       }
     }
     return result;
@@ -418,6 +412,14 @@ export class PostDialogComponent implements OnInit {
       return false;
     }
 
+    return true;
+  }
+
+ private async validateBathsoldConfig() {
+    if (await this.configService.validatBathsoldCredentials() === false) {
+      alert('Bathsold Email/Password are not set or incorrect');
+      return false;
+    }
     return true;
   }
 

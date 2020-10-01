@@ -48,6 +48,37 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __values = (this && this.__values) || function(o) {
+    var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+    if (m) return m.call(o);
+    if (o && typeof o.length === "number") return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+    throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+};
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BathsoldPoster = void 0;
 var puppeteer = require("puppeteer");
@@ -55,7 +86,7 @@ var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var BathsoldPoster = /** @class */ (function (_super) {
     __extends(BathsoldPoster, _super);
-    function BathsoldPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, immediatelyPost) {
+    function BathsoldPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, immediatelyPost, numberOfBeds, numberOfBaths) {
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
@@ -67,6 +98,8 @@ var BathsoldPoster = /** @class */ (function (_super) {
         _this.phoneNumber = phoneNumber;
         _this.phoneExtension = phoneExtension;
         _this.immediatelyPost = immediatelyPost;
+        _this.numberOfBeds = numberOfBeds;
+        _this.numberOfBaths = numberOfBaths;
         _this.channelUrl = 'https://www.bahtsold.com/';
         _this.postADUrl = 'https://www.bahtsold.com/members/select_ad_category';
         if (!credentials || !credentials.username || !credentials.password) {
@@ -82,38 +115,60 @@ var BathsoldPoster = /** @class */ (function (_super) {
     };
     BathsoldPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, loginBTN;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var loginPage, _a, username, password, loginBTN, _b, _c, _d, loginUsernameSelector, _e, _f, _g, loginBTNSelector, _h, _j, _k;
+            return __generator(this, function (_l) {
+                switch (_l.label) {
                     case 0: return [4 /*yield*/, this.getActivePage(browser, 1200)];
                     case 1:
-                        loginPage = _b.sent();
+                        loginPage = _l.sent();
                         _a = this.getCredentials(), username = _a.username, password = _a.password;
-                        // await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load' })];
-                    case 2:
-                        // await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-                        _b.sent();
-                        loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
-                        return [4 /*yield*/, loginPage.waitForSelector(loginBTN)];
-                    case 3:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.click(loginBTN)];
-                    case 4:
-                        _b.sent();
                         return [4 /*yield*/, this.delay(500)];
+                    case 2:
+                        _l.sent();
+                        loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
+                        _c = (_b = Promise).all;
+                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load' })];
+                    case 3:
+                        _d = [
+                            _l.sent(),
+                            loginPage.waitForSelector(loginBTN)
+                        ];
+                        return [4 /*yield*/, loginPage.click(loginBTN)];
+                    case 4: return [4 /*yield*/, _c.apply(_b, [_d.concat([
+                                _l.sent()
+                            ])])];
                     case 5:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#login-username', username)];
+                        _l.sent();
+                        return [4 /*yield*/, this.delay(500)];
                     case 6:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#login-password', password)];
-                    case 7:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.click('.btn.btn-md.btn-blue.block-element')];
+                        _l.sent();
+                        loginUsernameSelector = '#login-username';
+                        _f = (_e = Promise).all;
+                        _g = [loginPage.waitForSelector(loginUsernameSelector)];
+                        return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
+                    case 7: return [4 /*yield*/, _f.apply(_e, [_g.concat([
+                                _l.sent()
+                            ])])];
                     case 8:
-                        _b.sent();
-                        // await loginPage.waitForNavigation();
+                        _l.sent();
+                        return [4 /*yield*/, Promise.all([
+                                this.delay(200),
+                                loginPage.type('#login-password', password)
+                            ])];
+                    case 9:
+                        _l.sent();
+                        loginBTNSelector = 'button.btn.btn-md.btn-blue.block-element';
+                        _j = (_h = Promise).all;
+                        _k = [loginPage.waitForSelector(loginBTNSelector)];
+                        return [4 /*yield*/, loginPage.click(loginBTNSelector)
+                            // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
+                        ];
+                    case 10: return [4 /*yield*/, _j.apply(_h, [_k.concat([
+                                _l.sent()
+                                // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
+                            ])])];
+                    case 11:
+                        _l.sent();
                         return [2 /*return*/, loginPage];
                 }
             });
@@ -128,11 +183,14 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.lunchBrowser()];
                     case 1:
                         browser = _a.sent();
-                        return [4 /*yield*/, this.login(browser)];
+                        return [4 /*yield*/, this.delay(500)];
                     case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.login(browser)];
+                    case 3:
                         loginPage = _a.sent();
                         return [4 /*yield*/, this.postAD(loginPage, onPageUploadedCallback)];
-                    case 3:
+                    case 4:
                         _a.sent();
                         if ((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser')) {
                             // await browser.close();
@@ -145,39 +203,267 @@ var BathsoldPoster = /** @class */ (function (_super) {
     BathsoldPoster.prototype.postAD = function (page, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var selectRealEstateCategorySelector, selectCondosCategorySelector, selectFreeAdSelector;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, page.goto(this.postADUrl, { waitUntil: 'load' })];
+            var selectRealEstateCategorySelector, selectCondosCategorySelector, selectFreeAdSelector, continueBtnSelector, isAgentCheckBoxSelector, condoPropertyTypeSelector, numberOfBathsSelector, numberOfBedsSelector, fullyFurnishedOptionSelector, imageInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, removeImageBtns, removeImageBtns_1, removeImageBtns_1_1, removeImageBtn, e_1_1, filesToUploadLimited, count, filesToUpload_1, filesToUpload_1_1, file, provinceSelector, pattayaCentralOption, submitButtonSelector;
+            var e_1, _a, e_2, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, page.goto(this.postADUrl, { waitUntil: 'networkidle2', timeout: 15000 })];
                     case 1:
-                        _a.sent();
+                        _c.sent();
                         selectRealEstateCategorySelector = 'li[data-price-30="490"]';
                         return [4 /*yield*/, page.waitForSelector(selectRealEstateCategorySelector)];
                     case 2:
-                        _a.sent();
+                        _c.sent();
                         return [4 /*yield*/, page.click(selectRealEstateCategorySelector)];
                     case 3:
-                        _a.sent();
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 4:
+                        _c.sent();
                         selectCondosCategorySelector = 'li[data-id="175"]';
                         return [4 /*yield*/, page.waitForSelector(selectCondosCategorySelector)];
-                    case 4:
-                        _a.sent();
-                        return [4 /*yield*/, page.click(selectCondosCategorySelector)];
                     case 5:
-                        _a.sent();
-                        return [4 /*yield*/, this.delay(500)];
+                        _c.sent();
+                        return [4 /*yield*/, page.click(selectCondosCategorySelector)];
                     case 6:
-                        _a.sent();
-                        return [4 /*yield*/, page.click('button.submit-category')];
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
                     case 7:
-                        _a.sent();
+                        _c.sent();
+                        return [4 /*yield*/, page.click('button.submit-category')];
+                    case 8:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 9:
+                        _c.sent();
                         selectFreeAdSelector = 'div[data-type="0"]>div.price-table-footer>a.btn-chosen';
                         return [4 /*yield*/, page.waitForSelector(selectFreeAdSelector)];
-                    case 8:
-                        _a.sent();
-                        return [4 /*yield*/, page.click(selectCondosCategorySelector)];
-                    case 9:
-                        _a.sent();
+                    case 10:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(selectFreeAdSelector)];
+                    case 11:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 12:
+                        _c.sent();
+                        continueBtnSelector = '.btn.btn-blue.btn-sm.submit-category';
+                        return [4 /*yield*/, page.waitForSelector(continueBtnSelector)];
+                    case 13:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(continueBtnSelector)];
+                    case 14:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 15:
+                        _c.sent();
+                        isAgentCheckBoxSelector = 'label[for="is_owner_0"]';
+                        return [4 /*yield*/, page.waitForSelector(isAgentCheckBoxSelector)];
+                    case 16:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(isAgentCheckBoxSelector)];
+                    case 17:
+                        _c.sent();
+                        return [4 /*yield*/, page.type('#ad_title_en', this.title)];
+                    case 18:
+                        _c.sent();
+                        //select condo type
+                        return [4 /*yield*/, page.click('div.property_type')];
+                    case 19:
+                        //select condo type
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 20:
+                        _c.sent();
+                        condoPropertyTypeSelector = 'label[for=property_type_2272]';
+                        return [4 /*yield*/, page.waitForSelector(condoPropertyTypeSelector)];
+                    case 21:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(condoPropertyTypeSelector)];
+                    case 22:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 23:
+                        _c.sent();
+                        //set number of baths
+                        return [4 /*yield*/, page.click('div.number_of_bath')];
+                    case 24:
+                        //set number of baths
+                        _c.sent();
+                        numberOfBathsSelector = 'label[for="number_of_bath_' + this.numberOfBaths + '"]';
+                        if (this.numberOfBaths > 19) {
+                            numberOfBathsSelector = 'label[for="number_of_bath_20"]';
+                        }
+                        return [4 /*yield*/, page.waitForSelector(numberOfBathsSelector)];
+                    case 25:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(numberOfBathsSelector)];
+                    case 26:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 27:
+                        _c.sent();
+                        //set number of beds
+                        return [4 /*yield*/, page.click('div.number_of_bed')];
+                    case 28:
+                        //set number of beds
+                        _c.sent();
+                        numberOfBedsSelector = 'label[for="number_of_bed_' + this.numberOfBaths + '"]';
+                        if (this.numberOfBaths > 19) {
+                            numberOfBedsSelector = 'label[for="number_of_bed_20"]';
+                        }
+                        return [4 /*yield*/, page.waitForSelector(numberOfBedsSelector)];
+                    case 29:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(numberOfBedsSelector)];
+                    case 30:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 31:
+                        _c.sent();
+                        //furnished level
+                        return [4 /*yield*/, page.click('div.furnished')];
+                    case 32:
+                        //furnished level
+                        _c.sent();
+                        fullyFurnishedOptionSelector = 'label[for="furnished_2280"]';
+                        return [4 /*yield*/, page.waitForSelector(fullyFurnishedOptionSelector)];
+                    case 33:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(fullyFurnishedOptionSelector)];
+                    case 34:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 35:
+                        _c.sent();
+                        //property size
+                        return [4 /*yield*/, page.type('#property_size', this.surfaceArea)];
+                    case 36:
+                        //property size
+                        _c.sent();
+                        return [4 /*yield*/, page.type('#land_size', this.surfaceArea)];
+                    case 37:
+                        _c.sent();
+                        return [4 /*yield*/, page.type('input[name="data[ad_price]"]', this.price)];
+                    case 38:
+                        _c.sent();
+                        return [4 /*yield*/, page.type('textarea#ad_desc_en', this.content)];
+                    case 39:
+                        _c.sent();
+                        imageInputSelector = 'input[name="files[]"]';
+                        return [4 /*yield*/, page.waitForSelector(imageInputSelector)];
+                    case 40:
+                        _c.sent();
+                        return [4 /*yield*/, page.$$(imageInputSelector)];
+                    case 41:
+                        inputUploadHandles = _c.sent();
+                        inputUploadHandle = inputUploadHandles[0];
+                        filesToUpload = this.getImagesToPost();
+                        return [4 /*yield*/, page.$$('.fileuploader-action-remove')];
+                    case 42:
+                        removeImageBtns = _c.sent();
+                        _c.label = 43;
+                    case 43:
+                        _c.trys.push([43, 49, 50, 51]);
+                        removeImageBtns_1 = __values(removeImageBtns), removeImageBtns_1_1 = removeImageBtns_1.next();
+                        _c.label = 44;
+                    case 44:
+                        if (!!removeImageBtns_1_1.done) return [3 /*break*/, 48];
+                        removeImageBtn = removeImageBtns_1_1.value;
+                        return [4 /*yield*/, page.keyboard.press('Enter')];
+                    case 45:
+                        _c.sent(); //enter to confirm yes in confirm dialog popup
+                        return [4 /*yield*/, removeImageBtn.click()];
+                    case 46:
+                        _c.sent();
+                        _c.label = 47;
+                    case 47:
+                        removeImageBtns_1_1 = removeImageBtns_1.next();
+                        return [3 /*break*/, 44];
+                    case 48: return [3 /*break*/, 51];
+                    case 49:
+                        e_1_1 = _c.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 51];
+                    case 50:
+                        try {
+                            if (removeImageBtns_1_1 && !removeImageBtns_1_1.done && (_a = removeImageBtns_1.return)) _a.call(removeImageBtns_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 51:
+                        //we can only upload up to 6 files, therefore if we have more we need to remove the extra ones
+                        if (filesToUpload.length > 6) {
+                            filesToUploadLimited = [];
+                            count = 1;
+                            try {
+                                for (filesToUpload_1 = __values(filesToUpload), filesToUpload_1_1 = filesToUpload_1.next(); !filesToUpload_1_1.done; filesToUpload_1_1 = filesToUpload_1.next()) {
+                                    file = filesToUpload_1_1.value;
+                                    if (count > 6) {
+                                        break;
+                                    }
+                                    filesToUploadLimited.push(file);
+                                    count++;
+                                }
+                            }
+                            catch (e_2_1) { e_2 = { error: e_2_1 }; }
+                            finally {
+                                try {
+                                    if (filesToUpload_1_1 && !filesToUpload_1_1.done && (_b = filesToUpload_1.return)) _b.call(filesToUpload_1);
+                                }
+                                finally { if (e_2) throw e_2.error; }
+                            }
+                            filesToUpload = filesToUploadLimited;
+                        }
+                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
+                    case 52:
+                        _c.sent();
+                        //select property location
+                        return [4 /*yield*/, page.click('div.select_area')];
+                    case 53:
+                        //select property location
+                        _c.sent();
+                        return [4 /*yield*/, page.click('label[for="area_1006"]')];
+                    case 54:
+                        _c.sent();
+                        provinceSelector = 'label[for="province_11"]';
+                        return [4 /*yield*/, page.click('#select_province_val')];
+                    case 55:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 56:
+                        _c.sent();
+                        return [4 /*yield*/, page.waitForSelector(provinceSelector)];
+                    case 57:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(provinceSelector)];
+                    case 58:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 59:
+                        _c.sent();
+                        return [4 /*yield*/, page.click('#select_city_val')];
+                    case 60:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 61:
+                        _c.sent();
+                        pattayaCentralOption = 'label[for="city_1075"]';
+                        return [4 /*yield*/, page.waitForSelector(pattayaCentralOption)];
+                    case 62:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(pattayaCentralOption)];
+                    case 63:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 64:
+                        _c.sent();
+                        submitButtonSelector = '#placecomplete';
+                        return [4 /*yield*/, page.waitForSelector(submitButtonSelector)];
+                    case 65:
+                        _c.sent();
+                        return [4 /*yield*/, page.click(submitButtonSelector)];
+                    case 66:
+                        _c.sent();
                         return [2 /*return*/];
                 }
             });
@@ -185,9 +471,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
     };
     BathsoldPoster.prototype.lunchBrowser = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var config;
             return __generator(this, function (_a) {
-                config = config_helper_1.ConfigHelper.getConfig();
                 return [2 /*return*/, puppeteer.launch({
                         executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
                         headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
