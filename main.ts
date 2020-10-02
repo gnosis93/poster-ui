@@ -259,7 +259,9 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),
-      ConfigHelper.getConfigValue('post_immediately', false)
+      ConfigHelper.getConfigValue('post_immediately', false),
+      Number(post?.metaData?.beds),
+      Number(post?.metaData?.baths),
     );
 
     result = await poster.run();

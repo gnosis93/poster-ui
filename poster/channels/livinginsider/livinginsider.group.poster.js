@@ -48,26 +48,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivinginsiderPoster = void 0;
 var puppeteer = require("puppeteer");
@@ -75,7 +55,7 @@ var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var LivinginsiderPoster = /** @class */ (function (_super) {
     __extends(LivinginsiderPoster, _super);
-    function LivinginsiderPoster(credentials, imagesToPost, thaiContent, englishContent, title, location, price, surfaceArea, phoneNumber, phoneExtension, immediatelyPost) {
+    function LivinginsiderPoster(credentials, imagesToPost, thaiContent, englishContent, title, location, price, surfaceArea, phoneNumber, phoneExtension, immediatelyPost, beds, baths) {
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
@@ -88,8 +68,11 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
         _this.phoneNumber = phoneNumber;
         _this.phoneExtension = phoneExtension;
         _this.immediatelyPost = immediatelyPost;
+        _this.beds = beds;
+        _this.baths = baths;
         _this.channelUrl = 'https://livinginsider.com/en';
-        _this.channelLoginUrl = '';
+        _this.channelCreatePostUrl = 'https://www.livinginsider.com/living_buysell.php';
+        _this.channelLogoutUrl = 'https://www.livinginsider.com/logout.php';
         _this.chromeSessionPath = 'LivinginsiderSession'; //this will not work on windows , will work fine on UNIX like OSes
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
@@ -104,7 +87,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     };
     LivinginsiderPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, closeAdModalSelector, _b, _c, _d, e_1, openLoginSelector, _e, _f, _g, loginUsernameSelector;
+            var loginPage, _a, username, password, loggedInUserSelector, e_1, closeAdModalSelector, _b, _c, _d, e_2, openLoginSelector, _e, _f, _g, loginUsernameSelector;
             return __generator(this, function (_h) {
                 switch (_h.label) {
                     case 0: return [4 /*yield*/, browser.newPage()];
@@ -116,58 +99,78 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         _h.sent();
                         return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
                     case 3:
-                        _h.sent(); //its ok for me now
-                        closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+                        _h.sent();
+                        loggedInUserSelector = 'ul.dropdown-menu.dropdown-menu-right.user-link>li.dropdown>a.dropdown-toggle';
                         return [4 /*yield*/, this.delay(1000)];
                     case 4:
                         _h.sent();
                         _h.label = 5;
                     case 5:
-                        _h.trys.push([5, 8, , 9]);
+                        _h.trys.push([5, 10, , 11]);
+                        return [4 /*yield*/, loginPage.waitForSelector(loggedInUserSelector, { timeout: 5000 })];
+                    case 6:
+                        if (!((_h.sent()) != null)) return [3 /*break*/, 9];
+                        return [4 /*yield*/, loginPage.goto(this.channelLogoutUrl, { waitUntil: 'load', timeout: 0 })];
+                    case 7:
+                        _h.sent();
+                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
+                    case 8:
+                        _h.sent();
+                        _h.label = 9;
+                    case 9: return [3 /*break*/, 11];
+                    case 10:
+                        e_1 = _h.sent();
+                        console.log('Exception raised, user is not logged in');
+                        return [3 /*break*/, 11];
+                    case 11:
+                        closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
+                        return [4 /*yield*/, this.delay(1000)];
+                    case 12:
+                        _h.sent();
+                        _h.label = 13;
+                    case 13:
+                        _h.trys.push([13, 16, , 17]);
                         _c = (_b = Promise).all;
                         _d = [loginPage.waitForSelector(closeAdModalSelector)];
                         return [4 /*yield*/, loginPage.click(closeAdModalSelector)];
-                    case 6: return [4 /*yield*/, _c.apply(_b, [_d.concat([
+                    case 14: return [4 /*yield*/, _c.apply(_b, [_d.concat([
                                 _h.sent(),
                                 this.delay(500)
                             ])])];
-                    case 7:
+                    case 15:
                         _h.sent();
-                        return [3 /*break*/, 9];
-                    case 8:
-                        e_1 = _h.sent();
+                        return [3 /*break*/, 17];
+                    case 16:
+                        e_2 = _h.sent();
                         console.log('Exception raised, no ad modal popup to close found');
-                        return [3 /*break*/, 9];
-                    case 9:
+                        return [3 /*break*/, 17];
+                    case 17:
                         openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
                         _f = (_e = Promise).all;
-                        _g = [
-                            // loginPage.waitForNavigation({ waitUntil: 'load' }),
-                            loginPage.waitForSelector(openLoginSelector)];
+                        _g = [loginPage.waitForSelector(openLoginSelector)];
                         return [4 /*yield*/, loginPage.click(openLoginSelector)];
-                    case 10: 
-                    // await this.delay(500);
-                    return [4 /*yield*/, _f.apply(_e, [_g.concat([
+                    case 18: return [4 /*yield*/, _f.apply(_e, [_g.concat([
                                 _h.sent(),
                                 this.delay(500)
                             ])])];
-                    case 11:
-                        // await this.delay(500);
+                    case 19:
                         _h.sent();
                         loginUsernameSelector = '#login_username';
                         return [4 /*yield*/, loginPage.waitForSelector('#login_username')];
-                    case 12:
+                    case 20:
                         _h.sent();
                         return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
-                    case 13:
+                    case 21:
                         _h.sent();
                         return [4 /*yield*/, loginPage.type('#password', password)];
-                    case 14:
+                    case 22:
                         _h.sent();
                         return [4 /*yield*/, loginPage.click('#btn-signin')];
-                    case 15:
+                    case 23:
                         _h.sent();
-                        // await loginPage.waitForNavigation();
+                        return [4 /*yield*/, loginPage.waitForNavigation()];
+                    case 24:
+                        _h.sent();
                         return [2 /*return*/, loginPage];
                 }
             });
@@ -203,7 +206,9 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.login(browser)];
                     case 2:
                         loginPage = _a.sent();
-                        // await this.postToPages(loginPage, onPageUploadedCallback);
+                        return [4 /*yield*/, this.postToPages(loginPage, onPageUploadedCallback)];
+                    case 3:
+                        _a.sent();
                         if ((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser')) {
                             // await browser.close();
                         }
@@ -215,7 +220,7 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     LivinginsiderPoster.prototype.postToPages = function (page, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var count, fromEmailFieldExists, housingTypeSelectorExists, isFurnishedSelectorExists, _a, _b, _c, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount;
+            var count, closePrivacyModalSelector, _a, _b, _c, e_3, englishLanguageSelector, select2Elements;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -223,156 +228,178 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, page.setDefaultNavigationTimeout(10000)];
                     case 1:
                         _d.sent();
-                        // page.click('.selection-list li')[6]
-                        return [4 /*yield*/, this.clickTickboxByIndex(page, 3)];
+                        //navigate to create post page
+                        return [4 /*yield*/, page.goto(this.channelCreatePostUrl, { waitUntil: 'load', timeout: 0 })];
                     case 2:
-                        // page.click('.selection-list li')[6]
+                        //navigate to create post page
                         _d.sent();
-                        return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
+                        closePrivacyModalSelector = 'div.col-md-1.col-sm-1.accetpPrivacy>a[href="javascript:void(0)"]';
+                        return [4 /*yield*/, this.delay(1000)];
                     case 3:
                         _d.sent();
-                        return [4 /*yield*/, page.click('button[type=submit]')];
+                        _d.label = 4;
                     case 4:
-                        _d.sent();
-                        // this.delay(2000);
-                        return [4 /*yield*/, page.waitForSelector('.option-label')];
-                    case 5:
-                        // this.delay(2000);
-                        _d.sent();
-                        return [4 /*yield*/, this.clickTickboxByIndex(page, 3, '.option-label')];
+                        _d.trys.push([4, 7, , 8]);
+                        _b = (_a = Promise).all;
+                        _c = [page.waitForSelector(closePrivacyModalSelector)];
+                        return [4 /*yield*/, page.click(closePrivacyModalSelector)];
+                    case 5: return [4 /*yield*/, _b.apply(_a, [_c.concat([
+                                _d.sent(),
+                                this.delay(1000)
+                            ])])];
                     case 6:
                         _d.sent();
-                        // this.delay(2000);
-                        // await Promise.all([
-                        return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
+                        return [3 /*break*/, 8];
                     case 7:
-                        // this.delay(2000);
-                        // await Promise.all([
-                        _d.sent();
-                        return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 8:
-                        _d.sent();
-                        return [4 /*yield*/, page.waitForSelector("#PostingTitle")];
+                        e_3 = _d.sent();
+                        console.log('Exception raised, privacy modal is not visible');
+                        return [3 /*break*/, 8];
+                    case 8: 
+                    /**
+                     * CREATE POST - STEP ONE
+                     * TITLE
+                    */
+                    //select Agent as status
+                    return [4 /*yield*/, page.click('#web_post_from2')];
                     case 9:
+                        /**
+                         * CREATE POST - STEP ONE
+                         * TITLE
+                        */
+                        //select Agent as status
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#PostingTitle", this.title)];
+                        return [4 /*yield*/, this.delay(1000)];
                     case 10:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#geographic_area", this.location)];
+                        //select Condo as property type
+                        return [4 /*yield*/, page.waitForSelector('#select2-buildingList-container')];
                     case 11:
+                        //select Condo as property type
                         _d.sent();
-                        //await this.threeClickType(page,"#PostingBody",this.content);
-                        return [4 /*yield*/, this.threeClickType(page, "input[name='price']", this.price)];
+                        return [4 /*yield*/, page.click('#select2-buildingList-container')];
                     case 12:
-                        //await this.threeClickType(page,"#PostingBody",this.content);
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
+                        return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
                     case 13:
                         _d.sent();
-                        return [4 /*yield*/, page.$("input[name=FromEMail][type=text]")];
+                        return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
                     case 14:
-                        fromEmailFieldExists = _d.sent();
-                        if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 16];
-                        return [4 /*yield*/, this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username)];
-                    case 15:
                         _d.sent();
-                        _d.label = 16;
-                    case 16: return [4 /*yield*/, page.$("select[name='housing_type']")];
+                        //select For Sale as post type
+                        return [4 /*yield*/, page.click('#web_post_type1')];
+                    case 15:
+                        //select For Sale as post type
+                        _d.sent();
+                        //enter project name (Unknown project)
+                        return [4 /*yield*/, page.click('#select2-web_project_id-container')];
+                    case 16:
+                        //enter project name (Unknown project)
+                        _d.sent();
+                        return [4 /*yield*/, page.waitForSelector('.select2-search__field')];
                     case 17:
-                        housingTypeSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 19];
-                        return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
+                        _d.sent();
+                        return [4 /*yield*/, page.type('.select2-search__field', 'Unknown project')];
                     case 18:
                         _d.sent();
-                        _d.label = 19;
-                    case 19: 
-                    // await this.clickTickbox(page,'show my phone number',false);
-                    // this.delay(500);
-                    return [4 /*yield*/, page.click('input.show_phone_ok')];
-                    case 20:
-                        // await this.clickTickbox(page,'show my phone number',false);
-                        // this.delay(500);
+                        return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
+                    case 19:
                         _d.sent();
-                        return [4 /*yield*/, page.type("input[name='contact_phone']", this.phoneNumber)];
+                        return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
+                    case 20:
+                        _d.sent();
+                        return [4 /*yield*/, this.delay(4000)];
                     case 21:
                         _d.sent();
-                        return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
+                        //enter zone name (Pattaya)
+                        return [4 /*yield*/, page.waitForSelector('#select2-web_zone_id-container')];
                     case 22:
+                        //enter zone name (Pattaya)
                         _d.sent();
-                        return [4 /*yield*/, page.$("input.is_furnished")];
+                        return [4 /*yield*/, page.click('#select2-web_zone_id-container')];
                     case 23:
-                        isFurnishedSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!isFurnishedSelectorExists) return [3 /*break*/, 25];
-                        return [4 /*yield*/, page.click('input.is_furnished')];
+                        _d.sent();
+                        return [4 /*yield*/, page.waitForSelector('.select2-search__field')];
                     case 24:
                         _d.sent();
-                        _d.label = 25;
+                        return [4 /*yield*/, page.type('.select2-search__field', 'Pattaya')];
                     case 25:
-                        _b = (_a = Promise).all;
-                        _c = [page.waitForNavigation({ waitUntil: 'load' })];
-                        return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 26: 
-                    // await this.clickTickbox(page,'furnished',false);
-                    // await this.delay(500);
-                    // await page.click('button[type=submit]');
-                    // await this.delay(500);
-                    return [4 /*yield*/, _b.apply(_a, [_c.concat([
-                                _d.sent()
-                            ])])];
+                        _d.sent();
+                        return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
+                    case 26:
+                        _d.sent();
+                        return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
                     case 27:
-                        // await this.clickTickbox(page,'furnished',false);
-                        // await this.delay(500);
-                        // await page.click('button[type=submit]');
-                        // await this.delay(500);
                         _d.sent();
-                        console.log('wating for imgcount');
-                        return [4 /*yield*/, page.waitForSelector('.imgcount')];
+                        //enter title (TH)
+                        return [4 /*yield*/, page.click('#web_title')];
                     case 28:
+                        //enter title (TH)
                         _d.sent();
-                        console.log('READY WITH: wating for imgcount');
-                        // await page.waitForNavigation();
-                        // let clickUpload = await page.waitForSelector('a.newupl');
-                        // await clickUpload.click();
-                        return [4 /*yield*/, page.waitForSelector('input[type=file]')];
+                        return [4 /*yield*/, page.type('#web_title', this.title)];
                     case 29:
-                        // await page.waitForNavigation();
-                        // let clickUpload = await page.waitForSelector('a.newupl');
-                        // await clickUpload.click();
                         _d.sent();
-                        return [4 /*yield*/, page.$$('input[type=file]')];
+                        //enter description (TH) 
+                        return [4 /*yield*/, page.click('#web_description')];
                     case 30:
-                        inputUploadHandles = _d.sent();
-                        inputUploadHandle = inputUploadHandles[0];
-                        filesToUpload = this.getImagesToPost();
-                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 31:
+                        //enter description (TH) 
                         _d.sent();
-                        return [4 /*yield*/, this.getImageCount(page)];
+                        return [4 /*yield*/, page.type('#web_description', this.englishContent)];
+                    case 31:
+                        _d.sent(); //TODO: need to use thai in the future
+                        englishLanguageSelector = 'div.col-md-12.col-sm-12.title-des-lang>ul.nav.nav-tabs>li>a[href="#en"]';
+                        return [4 /*yield*/, page.click(englishLanguageSelector)];
                     case 32:
-                        imageCount = (_d.sent());
-                        _d.label = 33;
+                        _d.sent();
+                        return [4 /*yield*/, this.delay(1000)];
                     case 33:
-                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 36];
-                        return [4 /*yield*/, this.delay(500)];
+                        _d.sent();
+                        return [4 /*yield*/, page.click('#web_title_en')];
                     case 34:
                         _d.sent();
-                        return [4 /*yield*/, this.getImageCount(page)];
+                        return [4 /*yield*/, page.type('#web_title_en', this.title)];
                     case 35:
-                        imageCount = (_d.sent());
-                        console.log('wating image count');
-                        return [3 /*break*/, 33];
-                    case 36: return [4 /*yield*/, page.click('button[type=submit].done')];
+                        _d.sent();
+                        //enter description (EN)
+                        return [4 /*yield*/, page.click('#web_description_en')];
+                    case 36:
+                        //enter description (EN)
+                        _d.sent();
+                        return [4 /*yield*/, page.type('#web_description_en', this.englishContent)];
                     case 37:
                         _d.sent();
-                        if (!this.immediatelyPost) return [3 /*break*/, 40];
-                        return [4 /*yield*/, page.waitForSelector("button[name='go']")];
+                        return [4 /*yield*/, this.delay(1000)];
                     case 38:
                         _d.sent();
-                        return [4 /*yield*/, page.click("button[name='go']")];
+                        //click on next step
+                        // await page.waitForSelector('button[type=submit]');
+                        return [4 /*yield*/, Promise.all([
+                                page.click('button[type=submit]'),
+                                page.waitForNavigation()
+                            ])];
                     case 39:
+                        //click on next step
+                        // await page.waitForSelector('button[type=submit]');
                         _d.sent();
-                        _d.label = 40;
-                    case 40: return [2 /*return*/, page];
+                        return [4 /*yield*/, page.$$('.select2.select2-container.select2-container')];
+                    case 40:
+                        select2Elements = _d.sent();
+                        return [4 /*yield*/, select2Elements[0].click()];
+                    case 41:
+                        _d.sent();
+                        return [4 /*yield*/, page.click('#select2-web_room-results>li:nth-child(' + (this.baths + 2) + ')')
+                            //select baths
+                        ];
+                    case 42:
+                        _d.sent();
+                        //select baths
+                        return [4 /*yield*/, select2Elements[1].click()];
+                    case 43:
+                        //select baths
+                        _d.sent();
+                        return [4 /*yield*/, page.click('#select2-web_bathroom-results>li:nth-child(' + (this.baths + 1) + ')')];
+                    case 44:
+                        _d.sent();
+                        return [2 /*return*/, page];
                 }
             });
         });
