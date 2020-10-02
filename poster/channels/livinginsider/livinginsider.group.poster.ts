@@ -6,7 +6,7 @@ import { PostImage } from '../../models/post.interface';
 
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/en';
-    private readonly channelLoginUrl: string = '';
+    private readonly channelCreatePostUrl: string = 'https://www.livinginsider.com/living_buysell.php';
     private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
 
     constructor(
@@ -41,12 +41,11 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
         let loginPage = await browser.newPage();
-        //let loginPage = await this.newPageWithNewContext(browser); WITH NEW CODES
         let { username, password } = this.getCredentials();
 
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 }); //its ok for me now
+        await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 });
         
         let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
         await this.delay(1000)
@@ -62,9 +61,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         }
             
         let openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
-        // await this.delay(500);
         await Promise.all([
-            // loginPage.waitForNavigation({ waitUntil: 'load' }),
             loginPage.waitForSelector(openLoginSelector),
             await loginPage.click(openLoginSelector),
             this.delay(500)
@@ -76,8 +73,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await loginPage.type(loginUsernameSelector, username);
         await loginPage.type('#password', password);
         await loginPage.click('#btn-signin');
-        // await loginPage.waitForNavigation();
-
+        await loginPage.waitForNavigation();
         return loginPage;
     }
     
@@ -104,110 +100,129 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         let count = 0;
 
         await page.setDefaultNavigationTimeout(10000);
-        // page.click('.selection-list li')[6]
 
+        //navigate to create post page
+        await page.goto(this.channelCreatePostUrl, { waitUntil: 'load', timeout: 0 });
 
+        /** 
+         * CREATE POST
+         * STEP 1
+         * TITLE
+        */
 
-        await this.clickTickboxByIndex(page, 3);
-        await page.waitForSelector('button[type=submit]');
-        await page.click('button[type=submit]');
-        // this.delay(2000);
-        await page.waitForSelector('.option-label');
-        
-        await this.clickTickboxByIndex(page, 3, '.option-label');
-        // this.delay(2000);
+        //select Agent as status
+        await page.click('#web_post_from2');
 
-        // await Promise.all([
-        await page.waitForSelector('button[type=submit]');
+        //select Condo as property type
+        await page.click('#select2-buildingList-container');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.click('li.select2-results__option.select2-results__option--highlighted');
 
-        await page.click('button[type=submit]');
-          
-        await page.waitForSelector("#PostingTitle");
+        //select For Sale as post type
+        await page.click('#web_post_type1');
 
-        await this.threeClickType(page,"#PostingTitle",this.title);
-        await this.threeClickType(page,"#geographic_area",this.location);
-        //await this.threeClickType(page,"#PostingBody",this.content);
-        await this.threeClickType(page,"input[name='price']",this.price);
+        //enter project name (Unknown project)
+        await page.click('#select2-web_project_id-container');
+        await page.waitForSelector('.select2-search__field');
+        await page.type('.select2-search__field', 'Unknown project');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.click('li.select2-results__option.select2-results__option--highlighted');
+        //enter zone name (Pattaya)
+        await page.waitForSelector('#select2-web_zone_id-container');
+        await page.click('#select2-web_zone_id-container');
+        await page.waitForSelector('.select2-search__field');
+        await page.type('.select2-search__field', 'Pattaya');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.click('li.select2-results__option.select2-results__option--highlighted');
 
-        await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
+        //enter title (TH)
+        await page.click('#web_title');
+        await page.type('#web_title', this.title);
 
-        let fromEmailFieldExists = await page.$("input[name=FromEMail][type=text]");
-        if(fromEmailFieldExists !== null){
-            await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
-        }
-        // await page.type("input[name='surface_area']",'');
+        //enter description (TH)
+        await page.click('#web_description');
+        await page.type('#web_description', this.englishContent); //TODO: need to use thai in the future
 
-        let housingTypeSelectorExists = await page.$("select[name='housing_type']") !== null ? true: false;
-        if(housingTypeSelectorExists === true){
-            await page.select("select[name='housing_type']", '2');
-        }
+        //enter title (EN)
+        let englishLanguageSelector = 'a[href="#en"]';
+        await page.click(englishLanguageSelector);
 
-        // await this.clickTickbox(page,'show my phone number',false);
-        // this.delay(500);
+        await page.click('#web_title_en');
+        await page.type('#web_title_en', this.title);
 
-        await page.click('input.show_phone_ok');
+        //enter description (EN)
+        await page.click('#web_description_en');
+        await page.type('#web_description_en', this.englishContent);
 
-        await page.type("input[name='contact_phone']", this.phoneNumber);
-        await page.type("input[name='contact_phone_extension']", this.phoneExtension);
+        //click on next step
+        //await page.waitForSelector('button[type=submit]');
+        //await page.click('button[type=submit]');
 
-        let isFurnishedSelectorExists = await page.$("input.is_furnished") !== null ? true: false;
-        if(isFurnishedSelectorExists){
-            await page.click('input.is_furnished');
-        }
+        /** 
+         * CREATE POST
+         * STEP 2
+         * DETAIL
+        */
 
-        // await this.clickTickbox(page,'furnished',false);
-        // await this.delay(500);
+        // await this.clickTickboxByIndex(page, 3);
+        // await page.waitForSelector('button[type=submit]');
         // await page.click('button[type=submit]');
-        // await this.delay(500);
-        
-        await Promise.all([
-            page.waitForNavigation({ waitUntil: 'load' }),
-            await page.click('button[type=submit]'),
-        ]);
-      
-        console.log('wating for imgcount');
-        await page.waitForSelector('.imgcount')
-        console.log('READY WITH: wating for imgcount');
+        // await page.waitForSelector('.option-label');
+        // await this.clickTickboxByIndex(page, 3, '.option-label');
+        // await page.waitForSelector('button[type=submit]');
+        // await page.click('button[type=submit]');
+        // await page.waitForSelector("#PostingTitle");
+        // await this.threeClickType(page,"#PostingTitle",this.title);
+        // await this.threeClickType(page,"#geographic_area",this.location);
+        // await this.threeClickType(page,"input[name='price']",this.price);
 
-        // await page.waitForNavigation();
+        // await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
 
-        // let clickUpload = await page.waitForSelector('a.newupl');
-        // await clickUpload.click();
-        
-        await page.waitForSelector('input[type=file]');
-        const inputUploadHandles = await page.$$('input[type=file]');
-        const inputUploadHandle  = inputUploadHandles[0];
-        let filesToUpload        = this.getImagesToPost();
-        await inputUploadHandle.uploadFile(...filesToUpload);
-
-        // const inputUploadHandle = await page.$('input[type=file]');
-        // let filesToUpload = this.getImagesToPost();
-        // console.log('files to upload',filesToUpload);
-        // for(let file of filesToUpload){
-        //     await this.delay(100);
-        //     await inputUploadHandle.uploadFile(file);
-
+        // let fromEmailFieldExists = await page.$("input[name=FromEMail][type=text]");
+        // if(fromEmailFieldExists !== null){
+        //     await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
         // }
+
+        // let housingTypeSelectorExists = await page.$("select[name='housing_type']") !== null ? true: false;
+        // if(housingTypeSelectorExists === true){
+        //     await page.select("select[name='housing_type']", '2');
+        // }
+        // await page.click('input.show_phone_ok');
+        // await page.type("input[name='contact_phone']", this.phoneNumber);
+        // await page.type("input[name='contact_phone_extension']", this.phoneExtension);
+        // let isFurnishedSelectorExists = await page.$("input.is_furnished") !== null ? true: false;
+        // if(isFurnishedSelectorExists){
+        //     await page.click('input.is_furnished');
+        // }
+    
+        // await Promise.all([
+        //     page.waitForNavigation({ waitUntil: 'load' }),
+        //     await page.click('button[type=submit]'),
+        // ]);
+      
+        // console.log('wating for imgcount');
+        // await page.waitForSelector('.imgcount')
+        // console.log('READY WITH: wating for imgcount');
+        
+        // await page.waitForSelector('input[type=file]');
+        // const inputUploadHandles = await page.$$('input[type=file]');
+        // const inputUploadHandle  = inputUploadHandles[0];
+        // let filesToUpload        = this.getImagesToPost();
         // await inputUploadHandle.uploadFile(...filesToUpload);
         
-        let imageCount = (await this.getImageCount(page));
-        while (imageCount < filesToUpload.length) {
-            await this.delay(500);
-            imageCount = (await this.getImageCount(page));
-            console.log('wating image count')
-        }
+        // let imageCount = (await this.getImageCount(page));
+        // while (imageCount < filesToUpload.length) {
+        //     await this.delay(500);
+        //     imageCount = (await this.getImageCount(page));
+        //     console.log('wating image count')
+        // }
+        // await page.click('button[type=submit].done');
 
+        // if(this.immediatelyPost){
+        //     await page.waitForSelector("button[name='go']");
+        //     await page.click("button[name='go']");
+        // }
 
-        await page.click('button[type=submit].done');
-
-        if(this.immediatelyPost){
-            await page.waitForSelector("button[name='go']");
-            await page.click("button[name='go']");
-        }
-        
-
-
-        
         return page;
     }
 
