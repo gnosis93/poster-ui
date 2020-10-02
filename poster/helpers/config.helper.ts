@@ -85,8 +85,8 @@ export class ConfigHelper extends BaseHelper{
             "craigslist_password":"Miami5151+-*!!",
             "bathsold_email":"hotdogcondos@gmail.com",
             "bathsold_password":"Miami5151+-*!!",
-            "livinginsider_email":"hotdogcondos@gmail.com",
-            "livinginsider_password":"Miami5151+-*!!",
+            "livinginsider_email":"mkmardel@gmail.com",
+            "livinginsider_password":"33gh44",
             "post_immediately":false,
 
             "english_text_template":`{title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! 

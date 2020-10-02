@@ -7,6 +7,7 @@ import { PostImage } from '../../models/post.interface';
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/en';
     private readonly channelCreatePostUrl: string = 'https://www.livinginsider.com/living_buysell.php';
+    private readonly channelLogoutUrl: string = 'https://www.livinginsider.com/logout.php';
     private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
 
     constructor(
@@ -47,6 +48,20 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 });
         
+        let loggedInUserSelector = 'ul.dropdown-menu.dropdown-menu-right.user-link>li.dropdown>a.dropdown-toggle';
+        await this.delay(1000);
+
+        try{
+
+            if(loginPage.waitForSelector(loggedInUserSelector, {timeout: 5000}) != null){
+                await loginPage.goto(this.channelLogoutUrl, { waitUntil: 'load', timeout: 0 }),
+                await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })
+            }
+
+        }catch(e){
+            console.log('Exception raised, user is not logged in')
+        }
+
         let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
         await this.delay(1000)
         
@@ -87,7 +102,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
-        // await this.postToPages(loginPage, onPageUploadedCallback);
+        await this.postToPages(loginPage, onPageUploadedCallback);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             // await browser.close();
@@ -104,16 +119,31 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //navigate to create post page
         await page.goto(this.channelCreatePostUrl, { waitUntil: 'load', timeout: 0 });
 
+        //close privacy modal if visible
+        let closePrivacyModalSelector = 'div.col-md-1.col-sm-1.accetpPrivacy>a[href="javascript:void(0)"]';
+        await this.delay(1000)
+        
+        try{
+            await Promise.all([
+                page.waitForSelector(closePrivacyModalSelector),
+                await page.click(closePrivacyModalSelector),
+                this.delay(1000)
+            ]);
+        }catch(e){
+            console.log('Exception raised, privacy modal is not visible')
+        }
+
         /** 
-         * CREATE POST
-         * STEP 1
+         * CREATE POST - STEP ONE
          * TITLE
         */
 
         //select Agent as status
         await page.click('#web_post_from2');
+        await this.delay(1000);
 
         //select Condo as property type
+        await page.waitForSelector('#select2-buildingList-container');
         await page.click('#select2-buildingList-container');
         await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
         await page.click('li.select2-results__option.select2-results__option--highlighted');
@@ -127,6 +157,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.type('.select2-search__field', 'Unknown project');
         await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
         await page.click('li.select2-results__option.select2-results__option--highlighted');
+        await this.delay(4000);
         //enter zone name (Pattaya)
         await page.waitForSelector('#select2-web_zone_id-container');
         await page.click('#select2-web_zone_id-container');
@@ -144,8 +175,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.type('#web_description', this.englishContent); //TODO: need to use thai in the future
 
         //enter title (EN)
-        let englishLanguageSelector = 'a[href="#en"]';
+        let englishLanguageSelector = 'div.col-md-12.col-sm-12.title-des-lang>ul.nav.nav-tabs>li>a[href="#en"]';
         await page.click(englishLanguageSelector);
+        await this.delay(1000);
 
         await page.click('#web_title_en');
         await page.type('#web_title_en', this.title);
@@ -153,14 +185,14 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //enter description (EN)
         await page.click('#web_description_en');
         await page.type('#web_description_en', this.englishContent);
+        await this.delay(1000);
 
         //click on next step
-        //await page.waitForSelector('button[type=submit]');
-        //await page.click('button[type=submit]');
+        await page.waitForSelector('button[type=submit]');
+        await page.click('button[type=submit]');
 
         /** 
-         * CREATE POST
-         * STEP 2
+         * CREATE POST - STEP 2
          * DETAIL
         */
 
