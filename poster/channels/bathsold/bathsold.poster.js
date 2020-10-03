@@ -102,6 +102,8 @@ var BathsoldPoster = /** @class */ (function (_super) {
         _this.numberOfBaths = numberOfBaths;
         _this.channelUrl = 'https://www.bahtsold.com/';
         _this.postADUrl = 'https://www.bahtsold.com/members/select_ad_category';
+        _this.maxLoginAttempts = 10;
+        _this.loginAttemptsCount = 0;
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
@@ -115,7 +117,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
     };
     BathsoldPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, loginBTN, _b, _c, _d, loginUsernameSelector, _e, _f, _g, loginBTNSelector, _h, _j, _k;
+            var loginPage, _a, username, password, loginBTN, _b, _c, _d, loginUsernameSelector, _e, _f, _g, loginBTNSelector, _h, _j, _k, loginBTNCount;
             return __generator(this, function (_l) {
                 switch (_l.label) {
                     case 0: return [4 /*yield*/, this.getActivePage(browser, 1200)];
@@ -160,16 +162,30 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         loginBTNSelector = 'button.btn.btn-md.btn-blue.block-element';
                         _j = (_h = Promise).all;
                         _k = [loginPage.waitForSelector(loginBTNSelector)];
-                        return [4 /*yield*/, loginPage.click(loginBTNSelector)
-                            // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
-                        ];
+                        return [4 /*yield*/, loginPage.click(loginBTNSelector)];
                     case 10: return [4 /*yield*/, _j.apply(_h, [_k.concat([
                                 _l.sent()
-                                // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
                             ])])];
                     case 11:
                         _l.sent();
+                        return [4 /*yield*/, loginPage.waitForSelector('.app-logo')
+                            // let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
+                        ];
+                    case 12:
+                        _l.sent();
+                        return [4 /*yield*/, loginPage.$$(loginBTN)];
+                    case 13:
+                        loginBTNCount = (_l.sent()).length;
+                        if (!(loginBTNCount > 0)) return [3 /*break*/, 16];
+                        this.loginAttemptsCount++;
+                        if (!(this.loginAttemptsCount > this.maxLoginAttempts)) return [3 /*break*/, 14];
+                        console.log('Login Failed, max login attempts reached!!! Count: ' + this.loginAttemptsCount);
                         return [2 /*return*/, loginPage];
+                    case 14:
+                        console.log('Login Failed, reattempting login recursively. Count: ' + this.loginAttemptsCount);
+                        return [4 /*yield*/, this.login(browser)];
+                    case 15: return [2 /*return*/, (_l.sent())];
+                    case 16: return [2 /*return*/, loginPage];
                 }
             });
         });

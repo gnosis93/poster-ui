@@ -8,7 +8,9 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
 
     private readonly channelUrl: string      = 'https://www.bahtsold.com/';
     private readonly postADUrl:string        = 'https://www.bahtsold.com/members/select_ad_category';
-
+    private readonly maxLoginAttempts:number = 10;
+    private loginAttemptsCount:number        = 0;
+    
     constructor(
         private credentials: { username: string, password: string },
         private imagesToPost: PostImage[],
@@ -70,10 +72,24 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
 
         await Promise.all([
             loginPage.waitForSelector(loginBTNSelector),
-            await loginPage.click(loginBTNSelector)
+            await loginPage.click(loginBTNSelector),
             // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
         ]);
+        
+        await loginPage.waitForSelector('.app-logo')
 
+        // let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
+        let loginBTNCount = (await loginPage.$$(loginBTN)).length;
+        if(loginBTNCount > 0){
+            this.loginAttemptsCount++;
+            if(this.loginAttemptsCount > this.maxLoginAttempts){
+                console.log('Login Failed, max login attempts reached!!! Count: '+this.loginAttemptsCount);
+                return loginPage;
+            }else{
+                console.log('Login Failed, reattempting login recursively. Count: '+this.loginAttemptsCount);
+                return (await this.login(browser));
+            }
+        }
         return loginPage;
     }
 
