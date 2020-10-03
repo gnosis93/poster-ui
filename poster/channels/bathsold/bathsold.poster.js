@@ -221,6 +221,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             var selectRealEstateCategorySelector, selectCondosCategorySelector, selectFreeAdSelector, continueBtnSelector, isAgentCheckBoxSelector, condoPropertyTypeSelector, numberOfBathsSelector, numberOfBedsSelector, fullyFurnishedOptionSelector, imageInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, removeImageBtns, removeImageBtns_1, removeImageBtns_1_1, removeImageBtn, e_1_1, filesToUploadLimited, count, filesToUpload_1, filesToUpload_1_1, file, provinceSelector, pattayaCentralOption, submitButtonSelector;
             var e_1, _a, e_2, _b;
+            var _this = this;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, page.goto(this.postADUrl, { waitUntil: 'networkidle2', timeout: 15000 })];
@@ -374,39 +375,49 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         inputUploadHandles = _c.sent();
                         inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
+                        //remove any images that are already selected
+                        page.on("dialog", function (dialog) { return __awaiter(_this, void 0, void 0, function () {
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        console.log("dialog event , accepting");
+                                        return [4 /*yield*/, dialog.accept()];
+                                    case 1:
+                                        _a.sent();
+                                        return [2 /*return*/];
+                                }
+                            });
+                        }); });
                         return [4 /*yield*/, page.$$('.fileuploader-action-remove')];
                     case 42:
                         removeImageBtns = _c.sent();
                         _c.label = 43;
                     case 43:
-                        _c.trys.push([43, 49, 50, 51]);
+                        _c.trys.push([43, 48, 49, 50]);
                         removeImageBtns_1 = __values(removeImageBtns), removeImageBtns_1_1 = removeImageBtns_1.next();
                         _c.label = 44;
                     case 44:
-                        if (!!removeImageBtns_1_1.done) return [3 /*break*/, 48];
+                        if (!!removeImageBtns_1_1.done) return [3 /*break*/, 47];
                         removeImageBtn = removeImageBtns_1_1.value;
-                        return [4 /*yield*/, page.keyboard.press('Enter')];
-                    case 45:
-                        _c.sent(); //enter to confirm yes in confirm dialog popup
                         return [4 /*yield*/, removeImageBtn.click()];
-                    case 46:
+                    case 45:
                         _c.sent();
-                        _c.label = 47;
-                    case 47:
+                        _c.label = 46;
+                    case 46:
                         removeImageBtns_1_1 = removeImageBtns_1.next();
                         return [3 /*break*/, 44];
-                    case 48: return [3 /*break*/, 51];
-                    case 49:
+                    case 47: return [3 /*break*/, 50];
+                    case 48:
                         e_1_1 = _c.sent();
                         e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 51];
-                    case 50:
+                        return [3 /*break*/, 50];
+                    case 49:
                         try {
                             if (removeImageBtns_1_1 && !removeImageBtns_1_1.done && (_a = removeImageBtns_1.return)) _a.call(removeImageBtns_1);
                         }
                         finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
-                    case 51:
+                    case 50:
                         //we can only upload up to 6 files, therefore if we have more we need to remove the extra ones
                         if (filesToUpload.length > 6) {
                             filesToUploadLimited = [];
@@ -431,54 +442,54 @@ var BathsoldPoster = /** @class */ (function (_super) {
                             filesToUpload = filesToUploadLimited;
                         }
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 52:
+                    case 51:
                         _c.sent();
                         //select property location
                         return [4 /*yield*/, page.click('div.select_area')];
-                    case 53:
+                    case 52:
                         //select property location
                         _c.sent();
                         return [4 /*yield*/, page.click('label[for="area_1006"]')];
-                    case 54:
+                    case 53:
                         _c.sent();
                         provinceSelector = 'label[for="province_11"]';
                         return [4 /*yield*/, page.click('#select_province_val')];
+                    case 54:
+                        _c.sent();
+                        return [4 /*yield*/, this.delay(500)];
                     case 55:
                         _c.sent();
-                        return [4 /*yield*/, this.delay(500)];
+                        return [4 /*yield*/, page.waitForSelector(provinceSelector)];
                     case 56:
                         _c.sent();
-                        return [4 /*yield*/, page.waitForSelector(provinceSelector)];
+                        return [4 /*yield*/, page.click(provinceSelector)];
                     case 57:
                         _c.sent();
-                        return [4 /*yield*/, page.click(provinceSelector)];
+                        return [4 /*yield*/, this.delay(500)];
                     case 58:
                         _c.sent();
-                        return [4 /*yield*/, this.delay(500)];
+                        return [4 /*yield*/, page.click('#select_city_val')];
                     case 59:
                         _c.sent();
-                        return [4 /*yield*/, page.click('#select_city_val')];
-                    case 60:
-                        _c.sent();
                         return [4 /*yield*/, this.delay(500)];
-                    case 61:
+                    case 60:
                         _c.sent();
                         pattayaCentralOption = 'label[for="city_1075"]';
                         return [4 /*yield*/, page.waitForSelector(pattayaCentralOption)];
-                    case 62:
+                    case 61:
                         _c.sent();
                         return [4 /*yield*/, page.click(pattayaCentralOption)];
-                    case 63:
+                    case 62:
                         _c.sent();
                         return [4 /*yield*/, this.delay(500)];
-                    case 64:
+                    case 63:
                         _c.sent();
                         submitButtonSelector = '#placecomplete';
                         return [4 /*yield*/, page.waitForSelector(submitButtonSelector)];
-                    case 65:
+                    case 64:
                         _c.sent();
                         return [4 /*yield*/, page.click(submitButtonSelector)];
-                    case 66:
+                    case 65:
                         _c.sent();
                         return [2 /*return*/];
                 }

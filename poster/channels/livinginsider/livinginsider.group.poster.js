@@ -48,6 +48,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LivinginsiderPoster = void 0;
 var puppeteer = require("puppeteer");
@@ -87,90 +107,82 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     };
     LivinginsiderPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, loggedInUserSelector, e_1, closeAdModalSelector, _b, _c, _d, e_2, openLoginSelector, _e, _f, _g, loginUsernameSelector;
-            return __generator(this, function (_h) {
-                switch (_h.label) {
+            var loginPage, _a, username, password, closeAdModalSelector, _b, _c, _d, e_1, openLoginSelector, e_2, _e, _f, loginUsernameSelector, loginBtnSelector;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0: return [4 /*yield*/, browser.newPage()];
                     case 1:
-                        loginPage = _h.sent();
+                        loginPage = _g.sent();
                         _a = this.getCredentials(), username = _a.username, password = _a.password;
                         return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 2:
-                        _h.sent();
+                        _g.sent();
                         return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
                     case 3:
-                        _h.sent();
-                        loggedInUserSelector = 'ul.dropdown-menu.dropdown-menu-right.user-link>li.dropdown>a.dropdown-toggle';
-                        return [4 /*yield*/, this.delay(1000)];
-                    case 4:
-                        _h.sent();
-                        _h.label = 5;
-                    case 5:
-                        _h.trys.push([5, 10, , 11]);
-                        return [4 /*yield*/, loginPage.waitForSelector(loggedInUserSelector, { timeout: 5000 })];
-                    case 6:
-                        if (!((_h.sent()) != null)) return [3 /*break*/, 9];
-                        return [4 /*yield*/, loginPage.goto(this.channelLogoutUrl, { waitUntil: 'load', timeout: 0 })];
-                    case 7:
-                        _h.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })];
-                    case 8:
-                        _h.sent();
-                        _h.label = 9;
-                    case 9: return [3 /*break*/, 11];
-                    case 10:
-                        e_1 = _h.sent();
-                        console.log('Exception raised, user is not logged in');
-                        return [3 /*break*/, 11];
-                    case 11:
+                        _g.sent();
                         closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
-                        return [4 /*yield*/, this.delay(1000)];
-                    case 12:
-                        _h.sent();
-                        _h.label = 13;
-                    case 13:
-                        _h.trys.push([13, 16, , 17]);
+                        _g.label = 4;
+                    case 4:
+                        _g.trys.push([4, 7, , 8]);
                         _c = (_b = Promise).all;
                         _d = [loginPage.waitForSelector(closeAdModalSelector)];
                         return [4 /*yield*/, loginPage.click(closeAdModalSelector)];
-                    case 14: return [4 /*yield*/, _c.apply(_b, [_d.concat([
-                                _h.sent(),
-                                this.delay(500)
+                    case 5: return [4 /*yield*/, _c.apply(_b, [_d.concat([
+                                _g.sent(),
+                                this.delay(1000)
                             ])])];
-                    case 15:
-                        _h.sent();
-                        return [3 /*break*/, 17];
-                    case 16:
-                        e_2 = _h.sent();
+                    case 6:
+                        _g.sent();
+                        return [3 /*break*/, 8];
+                    case 7:
+                        e_1 = _g.sent();
                         console.log('Exception raised, no ad modal popup to close found');
-                        return [3 /*break*/, 17];
-                    case 17:
+                        return [3 /*break*/, 8];
+                    case 8:
                         openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
+                        _g.label = 9;
+                    case 9:
+                        _g.trys.push([9, 11, , 12]);
+                        return [4 /*yield*/, loginPage.waitForSelector(openLoginSelector, { timeout: 500 })];
+                    case 10:
+                        _g.sent();
+                        return [3 /*break*/, 12];
+                    case 11:
+                        e_2 = _g.sent();
+                        console.log('already logged in, skipping login');
+                        return [2 /*return*/, loginPage];
+                    case 12:
                         _f = (_e = Promise).all;
-                        _g = [loginPage.waitForSelector(openLoginSelector)];
                         return [4 /*yield*/, loginPage.click(openLoginSelector)];
-                    case 18: return [4 /*yield*/, _f.apply(_e, [_g.concat([
-                                _h.sent(),
+                    case 13: return [4 /*yield*/, _f.apply(_e, [[
+                                _g.sent(),
                                 this.delay(500)
-                            ])])];
-                    case 19:
-                        _h.sent();
+                            ]])];
+                    case 14:
+                        _g.sent();
                         loginUsernameSelector = '#login_username';
                         return [4 /*yield*/, loginPage.waitForSelector('#login_username')];
-                    case 20:
-                        _h.sent();
+                    case 15:
+                        _g.sent();
                         return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
-                    case 21:
-                        _h.sent();
+                    case 16:
+                        _g.sent();
+                        return [4 /*yield*/, loginPage.waitForSelector('#password')];
+                    case 17:
+                        _g.sent();
                         return [4 /*yield*/, loginPage.type('#password', password)];
-                    case 22:
-                        _h.sent();
-                        return [4 /*yield*/, loginPage.click('#btn-signin')];
-                    case 23:
-                        _h.sent();
+                    case 18:
+                        _g.sent();
+                        loginBtnSelector = '#btn-signin';
+                        return [4 /*yield*/, loginPage.waitForSelector(loginBtnSelector)];
+                    case 19:
+                        _g.sent();
+                        return [4 /*yield*/, loginPage.click(loginBtnSelector)];
+                    case 20:
+                        _g.sent();
                         return [4 /*yield*/, loginPage.waitForNavigation()];
-                    case 24:
-                        _h.sent();
+                    case 21:
+                        _g.sent();
                         return [2 /*return*/, loginPage];
                 }
             });
@@ -220,228 +232,281 @@ var LivinginsiderPoster = /** @class */ (function (_super) {
     LivinginsiderPoster.prototype.postToPages = function (page, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var count, closePrivacyModalSelector, _a, _b, _c, e_3, englishLanguageSelector, select2Elements;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var count, closePrivacyModalSelector, _a, _b, _c, e_3, englishLanguageSelector, btnNextSelector, _d, _e, _f, select2Elements, imagesInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, imageCount, acceptCoAgentSelector, savePublishSelector, saveDraftSelector;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
                         count = 0;
                         return [4 /*yield*/, page.setDefaultNavigationTimeout(10000)];
                     case 1:
-                        _d.sent();
+                        _g.sent();
                         //navigate to create post page
                         return [4 /*yield*/, page.goto(this.channelCreatePostUrl, { waitUntil: 'load', timeout: 0 })];
                     case 2:
                         //navigate to create post page
-                        _d.sent();
+                        _g.sent();
                         closePrivacyModalSelector = 'div.col-md-1.col-sm-1.accetpPrivacy>a[href="javascript:void(0)"]';
-                        return [4 /*yield*/, this.delay(1000)];
+                        _g.label = 3;
                     case 3:
-                        _d.sent();
-                        _d.label = 4;
-                    case 4:
-                        _d.trys.push([4, 7, , 8]);
+                        _g.trys.push([3, 6, , 7]);
                         _b = (_a = Promise).all;
                         _c = [page.waitForSelector(closePrivacyModalSelector)];
                         return [4 /*yield*/, page.click(closePrivacyModalSelector)];
-                    case 5: return [4 /*yield*/, _b.apply(_a, [_c.concat([
-                                _d.sent(),
-                                this.delay(1000)
+                    case 4: return [4 /*yield*/, _b.apply(_a, [_c.concat([
+                                _g.sent(),
+                                this.delay(200)
                             ])])];
+                    case 5:
+                        _g.sent();
+                        return [3 /*break*/, 7];
                     case 6:
-                        _d.sent();
-                        return [3 /*break*/, 8];
-                    case 7:
-                        e_3 = _d.sent();
+                        e_3 = _g.sent();
                         console.log('Exception raised, privacy modal is not visible');
-                        return [3 /*break*/, 8];
-                    case 8: 
+                        return [3 /*break*/, 7];
+                    case 7: 
                     /**
                      * CREATE POST - STEP ONE
                      * TITLE
                     */
                     //select Agent as status
                     return [4 /*yield*/, page.click('#web_post_from2')];
-                    case 9:
+                    case 8:
                         /**
                          * CREATE POST - STEP ONE
                          * TITLE
                         */
                         //select Agent as status
-                        _d.sent();
-                        return [4 /*yield*/, this.delay(1000)];
-                    case 10:
-                        _d.sent();
+                        _g.sent();
                         //select Condo as property type
                         return [4 /*yield*/, page.waitForSelector('#select2-buildingList-container')];
-                    case 11:
+                    case 9:
                         //select Condo as property type
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.click('#select2-buildingList-container')];
-                    case 12:
-                        _d.sent();
+                    case 10:
+                        _g.sent();
                         return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
-                    case 13:
-                        _d.sent();
+                    case 11:
+                        _g.sent();
                         return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
-                    case 14:
-                        _d.sent();
+                    case 12:
+                        _g.sent();
                         //select For Sale as post type
                         return [4 /*yield*/, page.click('#web_post_type1')];
-                    case 15:
+                    case 13:
                         //select For Sale as post type
-                        _d.sent();
+                        _g.sent();
                         //enter project name (Unknown project)
                         return [4 /*yield*/, page.click('#select2-web_project_id-container')];
-                    case 16:
+                    case 14:
                         //enter project name (Unknown project)
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.waitForSelector('.select2-search__field')];
-                    case 17:
-                        _d.sent();
+                    case 15:
+                        _g.sent();
                         return [4 /*yield*/, page.type('.select2-search__field', 'Unknown project')];
-                    case 18:
-                        _d.sent();
+                    case 16:
+                        _g.sent();
                         return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
-                    case 19:
-                        _d.sent();
+                    case 17:
+                        _g.sent();
                         return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
-                    case 20:
-                        _d.sent();
-                        return [4 /*yield*/, this.delay(4000)];
-                    case 21:
-                        _d.sent();
+                    case 18:
+                        _g.sent();
+                        return [4 /*yield*/, this.delay(2000)];
+                    case 19:
+                        _g.sent();
                         //enter zone name (Pattaya)
                         return [4 /*yield*/, page.waitForSelector('#select2-web_zone_id-container')];
-                    case 22:
+                    case 20:
                         //enter zone name (Pattaya)
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.click('#select2-web_zone_id-container')];
-                    case 23:
-                        _d.sent();
+                    case 21:
+                        _g.sent();
                         return [4 /*yield*/, page.waitForSelector('.select2-search__field')];
-                    case 24:
-                        _d.sent();
+                    case 22:
+                        _g.sent();
                         return [4 /*yield*/, page.type('.select2-search__field', 'Pattaya')];
-                    case 25:
-                        _d.sent();
+                    case 23:
+                        _g.sent();
                         return [4 /*yield*/, page.waitForSelector('li.select2-results__option.select2-results__option--highlighted')];
-                    case 26:
-                        _d.sent();
+                    case 24:
+                        _g.sent();
                         return [4 /*yield*/, page.click('li.select2-results__option.select2-results__option--highlighted')];
-                    case 27:
-                        _d.sent();
+                    case 25:
+                        _g.sent();
                         //enter title (TH)
                         return [4 /*yield*/, page.click('#web_title')];
-                    case 28:
+                    case 26:
                         //enter title (TH)
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.type('#web_title', this.title)];
-                    case 29:
-                        _d.sent();
+                    case 27:
+                        _g.sent();
                         //enter description (TH) 
                         return [4 /*yield*/, page.click('#web_description')];
-                    case 30:
+                    case 28:
                         //enter description (TH) 
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.type('#web_description', this.englishContent)];
-                    case 31:
-                        _d.sent(); //TODO: need to use thai in the future
+                    case 29:
+                        _g.sent(); //TODO: need to use thai in the future
                         englishLanguageSelector = 'div.col-md-12.col-sm-12.title-des-lang>ul.nav.nav-tabs>li>a[href="#en"]';
                         return [4 /*yield*/, page.click(englishLanguageSelector)];
-                    case 32:
-                        _d.sent();
-                        return [4 /*yield*/, this.delay(1000)];
-                    case 33:
-                        _d.sent();
+                    case 30:
+                        _g.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 31:
+                        _g.sent();
                         return [4 /*yield*/, page.click('#web_title_en')];
-                    case 34:
-                        _d.sent();
+                    case 32:
+                        _g.sent();
                         return [4 /*yield*/, page.type('#web_title_en', this.title)];
-                    case 35:
-                        _d.sent();
+                    case 33:
+                        _g.sent();
                         //enter description (EN)
                         return [4 /*yield*/, page.click('#web_description_en')];
-                    case 36:
+                    case 34:
                         //enter description (EN)
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.type('#web_description_en', this.englishContent)];
+                    case 35:
+                        _g.sent();
+                        return [4 /*yield*/, this.delay(500)];
+                    case 36:
+                        _g.sent();
+                        btnNextSelector = 'button[type=submit].btn.btn-default-out.circle.flo-right';
+                        _e = (_d = Promise).all;
+                        return [4 /*yield*/, page.waitForSelector(btnNextSelector)];
                     case 37:
-                        _d.sent();
-                        return [4 /*yield*/, this.delay(1000)];
-                    case 38:
-                        _d.sent();
-                        //click on next step
-                        // await page.waitForSelector('button[type=submit]');
-                        return [4 /*yield*/, Promise.all([
-                                page.click('button[type=submit]'),
+                        _f = [
+                            _g.sent()
+                        ];
+                        return [4 /*yield*/, page.click(btnNextSelector)];
+                    case 38: return [4 /*yield*/, _e.apply(_d, [_f.concat([
+                                _g.sent(),
                                 page.waitForNavigation()
-                            ])];
+                            ])])];
                     case 39:
-                        //click on next step
-                        // await page.waitForSelector('button[type=submit]');
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.$$('.select2.select2-container.select2-container')];
                     case 40:
-                        select2Elements = _d.sent();
+                        select2Elements = _g.sent();
                         return [4 /*yield*/, select2Elements[0].click()];
                     case 41:
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.click('#select2-web_room-results>li:nth-child(' + (this.baths + 2) + ')')
                             //select baths
                         ];
                     case 42:
-                        _d.sent();
+                        _g.sent();
                         //select baths
                         return [4 /*yield*/, select2Elements[1].click()];
                     case 43:
                         //select baths
-                        _d.sent();
+                        _g.sent();
                         return [4 /*yield*/, page.click('#select2-web_bathroom-results>li:nth-child(' + (this.baths + 1) + ')')];
                     case 44:
-                        _d.sent();
-                        return [2 /*return*/, page];
+                        _g.sent();
+                        //select level
+                        return [4 /*yield*/, select2Elements[2].click()];
+                    case 45:
+                        //select level
+                        _g.sent();
+                        return [4 /*yield*/, page.click('#select2-web_floor-results>li:nth-child(' + (7) + ')')];
+                    case 46:
+                        _g.sent();
+                        // enter size
+                        return [4 /*yield*/, page.type('#web_area_size', this.surfaceArea)
+                            //enter price
+                        ];
+                    case 47:
+                        // enter size
+                        _g.sent();
+                        //enter price
+                        return [4 /*yield*/, page.type('#web_price', this.price)];
+                    case 48:
+                        //enter price
+                        _g.sent();
+                        imagesInputSelector = 'input[type=file][multiple]';
+                        return [4 /*yield*/, page.waitForSelector(imagesInputSelector)];
+                    case 49:
+                        _g.sent();
+                        return [4 /*yield*/, page.$$(imagesInputSelector)];
+                    case 50:
+                        inputUploadHandles = _g.sent();
+                        inputUploadHandle = inputUploadHandles[0];
+                        filesToUpload = this.getImagesToPost();
+                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
+                    case 51:
+                        _g.sent();
+                        return [4 /*yield*/, this.getImageCount(page)];
+                    case 52:
+                        imageCount = (_g.sent());
+                        _g.label = 53;
+                    case 53:
+                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 56];
+                        return [4 /*yield*/, this.delay(500)];
+                    case 54:
+                        _g.sent();
+                        return [4 /*yield*/, this.getImageCount(page)];
+                    case 55:
+                        imageCount = (_g.sent());
+                        console.log('waiting image count');
+                        return [3 /*break*/, 53];
+                    case 56:
+                        page.click('button[onclick="acceptModal();"]');
+                        acceptCoAgentSelector = '#post_data>div.btn-area>button';
+                        return [4 /*yield*/, this.delay(500)];
+                    case 57:
+                        _g.sent();
+                        return [4 /*yield*/, page.waitForSelector(acceptCoAgentSelector)];
+                    case 58:
+                        _g.sent();
+                        return [4 /*yield*/, page.click(acceptCoAgentSelector)];
+                    case 59:
+                        _g.sent();
+                        return [4 /*yield*/, page.waitForNavigation()];
+                    case 60:
+                        _g.sent();
+                        savePublishSelector = '#save_publish';
+                        return [4 /*yield*/, page.waitForSelector(savePublishSelector)];
+                    case 61:
+                        _g.sent();
+                        if (!this.immediatelyPost) return [3 /*break*/, 63];
+                        return [4 /*yield*/, page.click(savePublishSelector)];
+                    case 62:
+                        _g.sent();
+                        return [3 /*break*/, 66];
+                    case 63:
+                        saveDraftSelector = '#save_draft';
+                        return [4 /*yield*/, page.waitForSelector(saveDraftSelector)];
+                    case 64:
+                        _g.sent();
+                        return [4 /*yield*/, page.click(saveDraftSelector)];
+                    case 65:
+                        _g.sent();
+                        _g.label = 66;
+                    case 66: return [2 /*return*/, page];
                 }
             });
         });
     };
     LivinginsiderPoster.prototype.getImageCount = function (page) {
         return __awaiter(this, void 0, void 0, function () {
-            var element, value;
+            var element, value, valueStr;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, page.$('.imgcount')];
+                    case 0: return [4 /*yield*/, page.$('#upload_complete')];
                     case 1:
                         element = _a.sent();
                         return [4 /*yield*/, page.evaluate(function (el) { return el.textContent; }, element)];
                     case 2:
                         value = _a.sent();
-                        return [2 /*return*/, value];
-                }
-            });
-        });
-    };
-    LivinginsiderPoster.prototype.clickTickbox = function (page, selectionText, awaitNavigation) {
-        if (awaitNavigation === void 0) { awaitNavigation = true; }
-        return __awaiter(this, void 0, void 0, function () {
-            var linkHandlers;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, page.$x("//span[contains(text(), '" + selectionText + "')]")];
-                    case 1:
-                        linkHandlers = _a.sent();
-                        if (!(linkHandlers.length > 0)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, linkHandlers[0].click()];
-                    case 2:
-                        _a.sent();
-                        return [3 /*break*/, 4];
-                    case 3: throw new Error("Link not found");
-                    case 4:
-                        if (!awaitNavigation) return [3 /*break*/, 6];
-                        return [4 /*yield*/, page.waitForNavigation()];
-                    case 5:
-                        _a.sent();
-                        _a.label = 6;
-                    case 6: return [2 /*return*/, page];
+                        valueStr = String(value);
+                        valueStr = valueStr.replace('Upload complete :', '').trim();
+                        return [2 /*return*/, Number(valueStr)];
                 }
             });
         });

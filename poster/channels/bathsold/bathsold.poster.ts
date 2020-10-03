@@ -197,9 +197,12 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         let filesToUpload        = this.getImagesToPost();
 
         //remove any images that are already selected
+        page.on("dialog", async(dialog) => {
+            console.log("dialog event , accepting");
+            await dialog.accept();
+        });
         let removeImageBtns = await page.$$('.fileuploader-action-remove');        
         for(let removeImageBtn of removeImageBtns){
-            await page.keyboard.press('Enter');//enter to confirm yes in confirm dialog popup
             await removeImageBtn.click();
         }
 

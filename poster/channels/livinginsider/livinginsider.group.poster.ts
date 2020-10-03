@@ -50,47 +50,45 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 });
         
-        let loggedInUserSelector = 'ul.dropdown-menu.dropdown-menu-right.user-link>li.dropdown>a.dropdown-toggle';
-        await this.delay(1000);
+        // let loggedInUserSelector = 'ul.dropdown-menu.dropdown-menu-right.user-link>li.dropdown>a.dropdown-toggle';
+        // await this.delay(1000);
 
-        try{
-
-            if(await loginPage.waitForSelector(loggedInUserSelector, {timeout: 5000}) != null){
-                await loginPage.goto(this.channelLogoutUrl, { waitUntil: 'load', timeout: 0 }),
-                await loginPage.goto(this.channelUrl, { waitUntil: 'load', timeout: 0 })
-            }
-
-        }catch(e){
-            console.log('Exception raised, user is not logged in')
-        }
-
-        let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';
-        await this.delay(1000)
-        
+        let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';        
         try{
             await Promise.all([
                 loginPage.waitForSelector(closeAdModalSelector),
                 await loginPage.click(closeAdModalSelector),
-                this.delay(500)
+                this.delay(1000)
             ]);
         }catch(e){
             console.log('Exception raised, no ad modal popup to close found')
         }
             
         let openLoginSelector = 'li#none_login_zone>a[data-target="#loginModal"]';
+        try{
+            await loginPage.waitForSelector(openLoginSelector,{timeout:500});
+        }catch(e){
+            console.log('already logged in, skipping login')
+            return loginPage;
+        }
+
         await Promise.all([
-            loginPage.waitForSelector(openLoginSelector),
             await loginPage.click(openLoginSelector),
             this.delay(500)
         ]);
 
         let loginUsernameSelector = '#login_username';
         await loginPage.waitForSelector('#login_username');
-
         await loginPage.type(loginUsernameSelector, username);
+
+        await loginPage.waitForSelector('#password');
         await loginPage.type('#password', password);
-        await loginPage.click('#btn-signin');
+
+        let loginBtnSelector = '#btn-signin'
+        await loginPage.waitForSelector(loginBtnSelector);
+        await loginPage.click(loginBtnSelector);
         await loginPage.waitForNavigation();
+        
         return loginPage;
     }
     
@@ -123,13 +121,12 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         //close privacy modal if visible
         let closePrivacyModalSelector = 'div.col-md-1.col-sm-1.accetpPrivacy>a[href="javascript:void(0)"]';
-        await this.delay(1000)
         
         try{
             await Promise.all([
                 page.waitForSelector(closePrivacyModalSelector),
                 await page.click(closePrivacyModalSelector),
-                this.delay(1000)
+                this.delay(200)
             ]);
         }catch(e){
             console.log('Exception raised, privacy modal is not visible')
@@ -142,7 +139,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         //select Agent as status
         await page.click('#web_post_from2');
-        await this.delay(1000);
 
         //select Condo as property type
         await page.waitForSelector('#select2-buildingList-container');
@@ -159,7 +155,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.type('.select2-search__field', 'Unknown project');
         await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
         await page.click('li.select2-results__option.select2-results__option--highlighted');
-        await this.delay(4000);
+        await this.delay(2000);
 
         //enter zone name (Pattaya)
         await page.waitForSelector('#select2-web_zone_id-container');
@@ -180,7 +176,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //enter title (EN)
         let englishLanguageSelector = 'div.col-md-12.col-sm-12.title-des-lang>ul.nav.nav-tabs>li>a[href="#en"]';
         await page.click(englishLanguageSelector);
-        await this.delay(1000);
+        await this.delay(500);
 
         await page.click('#web_title_en');
         await page.type('#web_title_en', this.title);
@@ -188,12 +184,15 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //enter description (EN)
         await page.click('#web_description_en');
         await page.type('#web_description_en', this.englishContent);
-        await this.delay(1000);
+        await this.delay(500);
 
+       
+       
         //click on next step
-        // await page.waitForSelector('button[type=submit]');
+        let btnNextSelector = 'button[type=submit].btn.btn-default-out.circle.flo-right';
         await Promise.all([
-            page.click('button[type=submit]'),
+            await page.waitForSelector(btnNextSelector),
+            await page.click(btnNextSelector),
             page.waitForNavigation()
         ]);
         
@@ -211,33 +210,60 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         //select baths
         await select2Elements[1].click();        
-        
-        await  page.click('#select2-web_bathroom-results>li:nth-child('+(this.baths + 1)+')')
+        await  page.click('#select2-web_bathroom-results>li:nth-child('+(this.baths + 1)+')');
+    
+        //select level
+        await select2Elements[2].click();        
+        await  page.click('#select2-web_floor-results>li:nth-child('+(7)+')');
+
+        // enter size
+        await page.type('#web_area_size',this.surfaceArea)
+
+        //enter price
+        await page.type('#web_price',this.price);
+
+        let imagesInputSelector = 'input[type=file][multiple]';
+        await page.waitForSelector(imagesInputSelector);
+
+        const inputUploadHandles = await page.$$(imagesInputSelector);
+        const inputUploadHandle  = inputUploadHandles[0];
+        let filesToUpload        = this.getImagesToPost();
+
+        await inputUploadHandle.uploadFile(...filesToUpload);
+        let imageCount = (await this.getImageCount(page));
+        while (imageCount < filesToUpload.length) {
+            await this.delay(500);
+            imageCount = (await this.getImageCount(page));
+            console.log('waiting image count')
+        }
+        page.click('button[onclick="acceptModal();"]');
+
+        let acceptCoAgentSelector = '#post_data>div.btn-area>button';
+        await this.delay(500);
+        await page.waitForSelector(acceptCoAgentSelector);
+        await page.click(acceptCoAgentSelector);
+        await page.waitForNavigation();
+
+        let savePublishSelector = '#save_publish'; 
+        await page.waitForSelector(savePublishSelector);
+        if(this.immediatelyPost){
+            await page.click(savePublishSelector);
+        }else{
+            let saveDraftSelector = '#save_draft'; 
+            await page.waitForSelector(saveDraftSelector);
+            await page.click(saveDraftSelector);
+        }
+
         return page;
     }
-
+       
     private async getImageCount(page: puppeteer.Page) {
-        let element = await page.$('.imgcount')
-        let value = await page.evaluate(el => el.textContent, element)
-        return value;
+        let element = await page.$('#upload_complete')
+        let value   = await page.evaluate(el => el.textContent, element)
+        let valueStr = String(value);
+        valueStr = valueStr.replace('Upload complete :','').trim(); 
+        return Number(valueStr);
     }
-
-    private async clickTickbox(page: puppeteer.Page, selectionText: string, awaitNavigation: boolean = true) {
-        const linkHandlers = await page.$x("//span[contains(text(), '" + selectionText + "')]");
-        if (linkHandlers.length > 0) {
-            await linkHandlers[0].click();
-        } else {
-            throw new Error("Link not found");
-        }
-
-        if (awaitNavigation) {
-            await page.waitForNavigation();
-        }
-
-        return page;
-    }
-
-
     
     async lunchBrowser(): Promise<puppeteer.Browser> {//override
         let config = ConfigHelper.getConfig();
