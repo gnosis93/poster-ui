@@ -26,13 +26,10 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         private baths:number
     ) {
         super();
-
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to LivinginsiderGroupPoster";
         }
     }
-
-    
 
     public getImagesToPost() {
         return this.imagesToPost.filter((i) => i.selected == true).map((i) => i.imageURL);
