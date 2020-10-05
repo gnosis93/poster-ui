@@ -81,7 +81,6 @@ var __spread = (this && this.__spread) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacebookOldGroupPoster = void 0;
-var puppeteer = require("puppeteer");
 var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var FacebookOldGroupPoster = /** @class */ (function (_super) {
@@ -285,20 +284,6 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         return [7 /*endfinally*/];
                     case 24: return [2 /*return*/, pages];
                 }
-            });
-        });
-    };
-    FacebookOldGroupPoster.prototype.lunchBrowser = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var config;
-            return __generator(this, function (_a) {
-                config = config_helper_1.ConfigHelper.getConfig();
-                return [2 /*return*/, puppeteer.launch({
-                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
-                        headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
-                        defaultViewport: null,
-                        args: ['--start-maximized', "--disable-notifications"]
-                    })];
             });
         });
     };

@@ -71,7 +71,7 @@ export class ConfigHelper extends BaseHelper{
             "facebook_email":"aaronscifo@gmail.com",
             "facebook_password":"Miami5151+-*",
             "facebook_pages":[
-                "https://www.facebook.com/Test123-109118157588870/"
+                "https://www.facebook.com/Test123-109118157588870"
             ],
             "facebook_groups":[
                 "https://www.facebook.com/groups/317055712850966"
@@ -97,7 +97,7 @@ Call for view:  {phone_extension} {phone_number')}
             `,
             "italian_text_template":`{title} è un nuovo progetto che può essere una nuova grande opportunità di investimento o un posto da chiamare casa. Situato a Pattaya, una città altamente turistica con tutti i comfort che puoi immaginare!
             Maggiori informazioni su: {url}
-            Chiamaci al numero: {phone_extension} {phone_number ')}`,
+            Chiamaci al numero: {phone_extension} {phone_number}`,
             "chinese_text_template":"",
             "russian_text_template":"",
             "thai_text_template":"",

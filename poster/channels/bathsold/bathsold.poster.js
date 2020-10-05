@@ -81,7 +81,6 @@ var __spread = (this && this.__spread) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BathsoldPoster = void 0;
-var puppeteer = require("puppeteer");
 var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var BathsoldPoster = /** @class */ (function (_super) {
@@ -100,7 +99,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
         _this.immediatelyPost = immediatelyPost;
         _this.numberOfBeds = numberOfBeds;
         _this.numberOfBaths = numberOfBaths;
-        _this.channelUrl = 'https://www.bahtsold.com/';
+        _this.channelUrl = 'https://www.bahtsold.com';
         _this.postADUrl = 'https://www.bahtsold.com/members/select_ad_category';
         _this.maxLoginAttempts = 10;
         _this.loginAttemptsCount = 0;
@@ -199,14 +198,11 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 0: return [4 /*yield*/, this.lunchBrowser()];
                     case 1:
                         browser = _a.sent();
-                        return [4 /*yield*/, this.delay(500)];
-                    case 2:
-                        _a.sent();
                         return [4 /*yield*/, this.login(browser)];
-                    case 3:
+                    case 2:
                         loginPage = _a.sent();
                         return [4 /*yield*/, this.postAD(loginPage, onPageUploadedCallback)];
-                    case 4:
+                    case 3:
                         _a.sent();
                         if ((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser')) {
                             // await browser.close();
@@ -493,18 +489,6 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         _c.sent();
                         return [2 /*return*/];
                 }
-            });
-        });
-    };
-    BathsoldPoster.prototype.lunchBrowser = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, puppeteer.launch({
-                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
-                        headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
-                        defaultViewport: null,
-                        args: ['--start-maximized', "--disable-notifications"]
-                    })];
             });
         });
     };

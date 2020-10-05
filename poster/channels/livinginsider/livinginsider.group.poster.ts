@@ -262,17 +262,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         return Number(valueStr);
     }
     
-    async lunchBrowser(): Promise<puppeteer.Browser> {//override
-        let config = ConfigHelper.getConfig();
 
-        return puppeteer.launch({
-            executablePath: ConfigHelper.getConfigValue('chrome_executable_path'),
-            headless: ConfigHelper.getConfigValue('headless', false),
-            defaultViewport: null,
-            args: ['--start-maximized', "--disable-notifications"],
-            userDataDir: this.getPathInUserData(this.chromeSessionPath)
-        });
-
-    }
 
 }

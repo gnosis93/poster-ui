@@ -70,7 +70,6 @@ var __spread = (this && this.__spread) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CraigslistPoster = void 0;
-var puppeteer = require("puppeteer");
 var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var CraigslistPoster = /** @class */ (function (_super) {
@@ -425,20 +424,6 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         _a.label = 6;
                     case 6: return [2 /*return*/, page];
                 }
-            });
-        });
-    };
-    CraigslistPoster.prototype.lunchBrowser = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var config;
-            return __generator(this, function (_a) {
-                config = config_helper_1.ConfigHelper.getConfig();
-                return [2 /*return*/, puppeteer.launch({
-                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
-                        headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
-                        defaultViewport: null,
-                        args: ['--start-maximized', "--disable-notifications"]
-                    })];
             });
         });
     };

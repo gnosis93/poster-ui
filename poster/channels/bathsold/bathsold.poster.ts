@@ -6,11 +6,11 @@ import { PostImage } from '../../models/post.interface';
 
 export class BathsoldPoster extends ChannelBase implements IChannel {
 
-    private readonly channelUrl: string      = 'https://www.bahtsold.com/';
-    private readonly postADUrl:string        = 'https://www.bahtsold.com/members/select_ad_category';
-    private readonly maxLoginAttempts:number = 10;
-    private loginAttemptsCount:number        = 0;
-    
+    private readonly channelUrl: string = 'https://www.bahtsold.com';
+    private readonly postADUrl: string = 'https://www.bahtsold.com/members/select_ad_category';
+    private readonly maxLoginAttempts: number = 10;
+    private loginAttemptsCount: number = 0;
+
     constructor(
         private credentials: { username: string, password: string },
         private imagesToPost: PostImage[],
@@ -22,8 +22,8 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         private phoneNumber: string,
         private phoneExtension: string,
         private immediatelyPost,
-        private numberOfBeds:number,
-        private numberOfBaths:number
+        private numberOfBeds: number,
+        private numberOfBaths: number
     ) {
         super();
 
@@ -31,7 +31,7 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
             throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
     }
-  
+
     public getImagesToPost() {
         return this.imagesToPost.filter((i) => i.selected == true).map((i) => i.imageURL);
     }
@@ -41,7 +41,7 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
     }
 
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
-        let loginPage = await this.getActivePage(browser,1200);
+        let loginPage = await this.getActivePage(browser, 1200);
         let { username, password } = this.getCredentials();
         await this.delay(500);
 
@@ -51,11 +51,11 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
             await loginPage.goto(this.channelUrl, { waitUntil: 'load' }),
             loginPage.waitForSelector(loginBTN),
             await loginPage.click(loginBTN),
-            
+
         ]);
-        
+
         await this.delay(500);
-        
+
         let loginUsernameSelector = '#login-username';
         await Promise.all([
             loginPage.waitForSelector(loginUsernameSelector),
@@ -75,18 +75,18 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
             await loginPage.click(loginBTNSelector),
             // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
         ]);
-        
+
         await loginPage.waitForSelector('.app-logo')
 
         // let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
         let loginBTNCount = (await loginPage.$$(loginBTN)).length;
-        if(loginBTNCount > 0){
+        if (loginBTNCount > 0) {
             this.loginAttemptsCount++;
-            if(this.loginAttemptsCount > this.maxLoginAttempts){
-                console.log('Login Failed, max login attempts reached!!! Count: '+this.loginAttemptsCount);
+            if (this.loginAttemptsCount > this.maxLoginAttempts) {
+                console.log('Login Failed, max login attempts reached!!! Count: ' + this.loginAttemptsCount);
                 return loginPage;
-            }else{
-                console.log('Login Failed, reattempting login recursively. Count: '+this.loginAttemptsCount);
+            } else {
+                console.log('Login Failed, reattempting login recursively. Count: ' + this.loginAttemptsCount);
                 return (await this.login(browser));
             }
         }
@@ -95,7 +95,6 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
         let browser = await this.lunchBrowser();
-        await this.delay(500);
         let loginPage = await this.login(browser);
         await this.postAD(loginPage, onPageUploadedCallback);
 
@@ -106,14 +105,14 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         return true;
     }
 
-    private async postAD(page: puppeteer.Page, onPageUploadedCallback: Function | null = null){
-        await page.goto(this.postADUrl,{waitUntil:'networkidle2',timeout:15000});
-        
+    private async postAD(page: puppeteer.Page, onPageUploadedCallback: Function | null = null) {
+        await page.goto(this.postADUrl, { waitUntil: 'networkidle2', timeout: 15000 });
+
         let selectRealEstateCategorySelector = 'li[data-price-30="490"]';
         await page.waitForSelector(selectRealEstateCategorySelector);
         await page.click(selectRealEstateCategorySelector);
         await this.delay(500);
-        
+
         let selectCondosCategorySelector = 'li[data-id="175"]';
         await page.waitForSelector(selectCondosCategorySelector);
         await page.click(selectCondosCategorySelector);
@@ -125,11 +124,11 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         //select free ad option/btn
         let selectFreeAdSelector = 'div[data-type="0"]>div.price-table-footer>a.btn-chosen';
         await page.waitForSelector(selectFreeAdSelector);
-        await page.click(selectFreeAdSelector); 
+        await page.click(selectFreeAdSelector);
         await this.delay(500);
 
         //click continue button
-        let continueBtnSelector = '.btn.btn-blue.btn-sm.submit-category' ;
+        let continueBtnSelector = '.btn.btn-blue.btn-sm.submit-category';
         await page.waitForSelector(continueBtnSelector);
         await page.click(continueBtnSelector);
         await this.delay(500);
@@ -140,8 +139,8 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         await page.click(isAgentCheckBoxSelector);
 
 
-        await page.type('#ad_title_en',this.title);
-        
+        await page.type('#ad_title_en', this.title);
+
         //select condo type
         await page.click('div.property_type');
         await this.delay(500);
@@ -153,8 +152,8 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
 
         //set number of baths
         await page.click('div.number_of_bath');
-        let numberOfBathsSelector = 'label[for="number_of_bath_'+this.numberOfBaths+'"]';
-        if(this.numberOfBaths > 19){
+        let numberOfBathsSelector = 'label[for="number_of_bath_' + this.numberOfBaths + '"]';
+        if (this.numberOfBaths > 19) {
             numberOfBathsSelector = 'label[for="number_of_bath_20"]';
         }
         await page.waitForSelector(numberOfBathsSelector);
@@ -163,8 +162,8 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
 
         //set number of beds
         await page.click('div.number_of_bed');
-        let numberOfBedsSelector = 'label[for="number_of_bed_'+this.numberOfBaths+'"]';
-        if(this.numberOfBaths > 19){
+        let numberOfBedsSelector = 'label[for="number_of_bed_' + this.numberOfBaths + '"]';
+        if (this.numberOfBaths > 19) {
             numberOfBedsSelector = 'label[for="number_of_bed_20"]';
         }
         await page.waitForSelector(numberOfBedsSelector);
@@ -181,37 +180,37 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         await this.delay(500);
 
         //property size
-        await page.type('#property_size',this.surfaceArea)
-        await page.type('#land_size',this.surfaceArea)
+        await page.type('#property_size', this.surfaceArea)
+        await page.type('#land_size', this.surfaceArea)
 
 
-        await page.type('input[name="data[ad_price]"]',this.price);
-        await page.type('textarea#ad_desc_en',this.content);
+        await page.type('input[name="data[ad_price]"]', this.price);
+        await page.type('textarea#ad_desc_en', this.content);
 
         //upload images
-        
+
         let imageInputSelector = 'input[name="files[]"]';
         await page.waitForSelector(imageInputSelector);
         const inputUploadHandles = await page.$$(imageInputSelector);
-        const inputUploadHandle  = inputUploadHandles[0];
-        let filesToUpload        = this.getImagesToPost();
+        const inputUploadHandle = inputUploadHandles[0];
+        let filesToUpload = this.getImagesToPost();
 
         //remove any images that are already selected
-        page.on("dialog", async(dialog) => {
+        page.on("dialog", async (dialog) => {
             console.log("dialog event , accepting");
             await dialog.accept();
         });
-        let removeImageBtns = await page.$$('.fileuploader-action-remove');        
-        for(let removeImageBtn of removeImageBtns){
+        let removeImageBtns = await page.$$('.fileuploader-action-remove');
+        for (let removeImageBtn of removeImageBtns) {
             await removeImageBtn.click();
         }
 
         //we can only upload up to 6 files, therefore if we have more we need to remove the extra ones
-        if(filesToUpload.length > 6){
+        if (filesToUpload.length > 6) {
             let filesToUploadLimited = [];
             let count = 1;
-            for(let file of filesToUpload){
-                if(count > 6){
+            for (let file of filesToUpload) {
+                if (count > 6) {
                     break;
                 }
                 filesToUploadLimited.push(file);
@@ -239,23 +238,16 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
         await page.waitForSelector(pattayaCentralOption);
         await page.click(pattayaCentralOption);
         await this.delay(500);
-        
+
         let submitButtonSelector = '#placecomplete';
         await page.waitForSelector(submitButtonSelector);
         await page.click(submitButtonSelector);
-        
+
         // for(let file of filesToUpload){
         // }
-        
+
     }
 
-    async lunchBrowser(): Promise<puppeteer.Browser> {//override
-        return puppeteer.launch({
-            executablePath: ConfigHelper.getConfigValue('chrome_executable_path'),
-            headless: ConfigHelper.getConfigValue('headless', false),
-            defaultViewport: null,
-            args: ['--start-maximized', "--disable-notifications"]
-        });
-    }
+   
 
 }

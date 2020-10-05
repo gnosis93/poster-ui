@@ -64,11 +64,47 @@ var __read = (this && this.__read) || function (o, n) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelBase = void 0;
+var puppeteer = require("puppeteer");
 var path = require("path");
+var config_helper_1 = require("../helpers/config.helper");
 var app = require('electron').app;
 var ChannelBase = /** @class */ (function () {
     function ChannelBase() {
     }
+    ChannelBase.prototype.lunchBrowser = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var browser, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        browser = null;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 7]);
+                        return [4 /*yield*/, puppeteer.launch({
+                                executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
+                                headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
+                                defaultViewport: null,
+                                args: ['--start-maximized', "--disable-notifications"]
+                            })];
+                    case 2:
+                        browser = _a.sent();
+                        return [2 /*return*/, browser];
+                    case 3:
+                        e_1 = _a.sent();
+                        console.log('Failed to lunch browser, exception message: ' + e_1.toString());
+                        if (!browser) return [3 /*break*/, 5];
+                        return [4 /*yield*/, browser.close()];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [4 /*yield*/, this.lunchBrowser()];
+                    case 6: return [2 /*return*/, _a.sent()];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        });
+    };
     ChannelBase.prototype.threeClickType = function (page, selector, value) {
         return __awaiter(this, void 0, void 0, function () {
             var input;
@@ -118,8 +154,8 @@ var ChannelBase = /** @class */ (function () {
     };
     ChannelBase.prototype.getActivePage = function (browser, timeout) {
         return __awaiter(this, void 0, void 0, function () {
-            var start, pages, arr, pages_1, pages_1_1, p, e_1_1;
-            var e_1, _a;
+            var start, pages, arr, pages_1, pages_1_1, p, e_2_1;
+            var e_2, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -134,7 +170,7 @@ var ChannelBase = /** @class */ (function () {
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 8, 9, 10]);
-                        pages_1 = (e_1 = void 0, __values(pages)), pages_1_1 = pages_1.next();
+                        pages_1 = (e_2 = void 0, __values(pages)), pages_1_1 = pages_1.next();
                         _b.label = 4;
                     case 4:
                         if (!!pages_1_1.done) return [3 /*break*/, 7];
@@ -150,14 +186,14 @@ var ChannelBase = /** @class */ (function () {
                         return [3 /*break*/, 4];
                     case 7: return [3 /*break*/, 10];
                     case 8:
-                        e_1_1 = _b.sent();
-                        e_1 = { error: e_1_1 };
+                        e_2_1 = _b.sent();
+                        e_2 = { error: e_2_1 };
                         return [3 /*break*/, 10];
                     case 9:
                         try {
                             if (pages_1_1 && !pages_1_1.done && (_a = pages_1.return)) _a.call(pages_1);
                         }
-                        finally { if (e_1) throw e_1.error; }
+                        finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
                     case 10:
                         if (arr.length == 1)
@@ -172,8 +208,8 @@ var ChannelBase = /** @class */ (function () {
         if (querySelector === void 0) { querySelector = ".selection-list>li>label>.right-side"; }
         if (awaitNavigation === void 0) { awaitNavigation = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var result, elements, _a, _b, _c, i, link, e_2_1;
-            var e_2, _d;
+            var result, elements, _a, _b, _c, i, link, e_3_1;
+            var e_3, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -208,14 +244,14 @@ var ChannelBase = /** @class */ (function () {
                         return [3 /*break*/, 3];
                     case 7: return [3 /*break*/, 10];
                     case 8:
-                        e_2_1 = _e.sent();
-                        e_2 = { error: e_2_1 };
+                        e_3_1 = _e.sent();
+                        e_3 = { error: e_3_1 };
                         return [3 /*break*/, 10];
                     case 9:
                         try {
                             if (_b && !_b.done && (_d = _a.return)) _d.call(_a);
                         }
-                        finally { if (e_2) throw e_2.error; }
+                        finally { if (e_3) throw e_3.error; }
                         return [7 /*endfinally*/];
                     case 10:
                         if (!result) return [3 /*break*/, 11];

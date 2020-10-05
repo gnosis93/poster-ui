@@ -1,9 +1,31 @@
 import * as puppeteer from 'puppeteer';
 import * as path from 'path';
+import { ConfigHelper } from '../helpers/config.helper';
 const {app} = require('electron');
 
 export abstract class ChannelBase {
 
+
+    async lunchBrowser(): Promise<puppeteer.Browser> {//override
+        let browser: puppeteer.Browser | null = null;
+        try {
+            browser = await puppeteer.launch({
+                executablePath: ConfigHelper.getConfigValue('chrome_executable_path'),
+                headless: ConfigHelper.getConfigValue('headless', false),
+                defaultViewport: null,
+                args: ['--start-maximized', "--disable-notifications"]
+            });
+            return browser;
+        } catch (e) {
+            console.log('Failed to lunch browser, exception message: ' + e.toString());
+            if (browser) {
+                await browser.close()
+            }
+            return await this.lunchBrowser();
+        }
+
+
+    }
 
     protected async threeClickType(page: puppeteer.Page, selector: string, value: string) {
         const input = await page.$(selector);
