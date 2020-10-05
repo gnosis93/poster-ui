@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { BaseHelper } from "./helper.base";
 import * as path from 'path';
 
@@ -32,11 +31,15 @@ export class LoggerHelper extends BaseHelper {
         console.log('logger event',newLog);
         allLogs.push(newLog);
         let logChannelPath = LoggerHelper.getLogChannelPath(logChannel);
+        let fs   = require('fs');
+
         return fs.writeFileSync(logChannelPath ,JSON.stringify(allLogs));
     }
 
     public static getAllLogs(logChannel: LogChannel): LogEntry[] {
+        let fs   = require('fs');
         let logFilePath = this.getLogChannelPath(logChannel);
+        
         //create log file if it doesn't exist
         if (fs.existsSync(logFilePath) === false) {
             this.createEmptyLogFile(logFilePath);
@@ -53,6 +56,8 @@ export class LoggerHelper extends BaseHelper {
 
     private static createEmptyLogFile(logFilePath:string){
         let logData = [];
+        let fs   = require('fs');
+
         fs.writeFileSync(logFilePath, JSON.stringify(logData));
         return logData;
     }
