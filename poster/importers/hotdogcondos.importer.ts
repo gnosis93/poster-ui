@@ -11,7 +11,7 @@ const Stream = require('stream').Transform;
 export class HotDogCondosImporter{
 
     private static readonly HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com'
-
+    private static readonly TIMEOUT = 100000;
 
     public async run():Promise<boolean>{
         let browser     = await this.lunchBrowser();
@@ -59,7 +59,7 @@ export class HotDogCondosImporter{
 
     private async scrapePagesUrls(page:puppeteer.Page):Promise<Array<string>>{
         // let page      = await browser.newPage();
-        await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL,{ waitUntil: 'networkidle2' });
+        await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL,{ waitUntil: 'networkidle2' , timeout:HotDogCondosImporter.TIMEOUT});
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.pagination li a'), element => element.getAttribute('href')));
         urls.pop();
        
@@ -84,7 +84,7 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
 
     private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
         // let page    = await browser.newPage();
-        await page.goto(pageUrl,{ waitUntil: 'networkidle2' });  
+        await page.goto(pageUrl,{ waitUntil: 'networkidle2' ,timeout:HotDogCondosImporter.TIMEOUT});  
         
         let title = await page.evaluate(() =>  document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null); 
         
@@ -178,7 +178,7 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
     }
 
     private async scrapeListingURLS(page:puppeteer.Page,pageUrl:string):Promise<Array<string>>{
-        await page.goto(pageUrl,{ waitUntil: 'networkidle2' });
+        await page.goto(pageUrl,{ waitUntil: 'networkidle2',timeout:HotDogCondosImporter.TIMEOUT });
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.listing-featured-image'), element => element.getAttribute('href')));
         return urls;
     }
@@ -187,12 +187,13 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
         let config = ConfigHelper.getConfig();
         // if((ConfigHelper.getConfigValue('headless',false) ) === true){
 
-        return puppeteer.launch({
+        let browser = puppeteer.launch({
             executablePath:ConfigHelper.getConfigValue('chrome_executable_path'),
             headless: ConfigHelper.getConfigValue('headless',false), 
             defaultViewport: null, 
             args: ['--start-maximized',"--disable-notifications"] 
         });
+        return browser;
         
     } 
 }
