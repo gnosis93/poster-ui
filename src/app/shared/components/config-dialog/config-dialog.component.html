@@ -236,33 +236,91 @@
 
                     <strong>NB: Restart application for scheduler settings updates to take effect</strong>
                     <br>
-
+                    
+                    <h6>Craigslist Scheduler</h6>
+                    
                     <div class="row">
                         <div class="col-12">
-                            <label>Enable Scheduler</label>
+                            <label>Enable Craigslist Scheduler </label>
                             <mat-checkbox [checked]="config.criagslist_enable_scheduler"
                                 (change)="enableSchedulerValueChange($event)"></mat-checkbox>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="criagslist_scheduler_cron">Scheduler Cron</label>
+                        <label for="criagslist_scheduler_cron">Craigslist Scheduler Cron</label>
                         <input type="text" [(ngModel)]="config.criagslist_scheduler_cron" name="criagslist_scheduler_cron"
                             id="criagslist_scheduler_cron" [disabled]="config?.criagslist_enable_scheduler == false">
                     </div>
                     
                     <div class="form-group" >
-                        <label for="criagslist_scheduler_cron">Post Expiry Time (In DAYS)</label> 
-                        <input type="number" min="1" max="30" [disabled]="config?.criagslist_enable_scheduler == false" [(ngModel)]="config.post_expiry_time" name="post_expiry_time" id="post_expiry_time">
+                        <label for="criagslist_scheduler_cron">Craigslist Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.criagslist_enable_scheduler == false" [(ngModel)]="config.criagslist_post_expiry_time" name="criagslist_post_expiry_time" id="criagslist_post_expiry_time">
                     </div>
 
                     <div class="form-group" >
-                        <label for="criagslist_postings_per_trigger">How much posts to post on each cron tiger ? </label> 
+                        <label for="criagslist_postings_per_trigger"Craigslist >How much posts to post on each cron tiger ? </label> 
                         <input type="number" min="1" max="356" [disabled]="config?.criagslist_enable_scheduler == false" [(ngModel)]="config.criagslist_postings_per_trigger" name="criagslist_postings_per_trigger" id="criagslist_postings_per_trigger">
                     </div>
 
+
+                    
+
                     <div class="form-group">
-                        <button class="btn btn-warning" (click)="onTriggerCronClick()">Trigger Cron</button>
+                        <button class="btn btn-warning" (click)="onTriggerCronClick()">Trigger Cron Craiglist</button>
+                    </div>
+
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Enable BathSold Scheduler </label>
+                            <mat-checkbox [checked]="config.bathsold_enable_scheduler"
+                                (change)="enableBathSoldSchedulerValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bathsold_scheduler_cron">Bathsold Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.bathsold_scheduler_cron" name="bathsold_scheduler_cron"
+                            id="bathsold_scheduler_cron" [disabled]="config?.bathsold_enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="bathsold_scheduler_cron">Bathsold Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.bathsold_enable_scheduler == false" [(ngModel)]="config.bathsold_post_expiry_time" name="bathsold_post_expiry_time" id="bathsold_post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="bathsold_postings_per_trigger"Bathsold >How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.bathsold_enable_scheduler == false" [(ngModel)]="config.bathsold_postings_per_trigger" name="bathsold_postings_per_trigger" id="bathsold_postings_per_trigger">
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label>Enable LivingInsider Scheduler </label>
+                            <mat-checkbox [checked]="config.livinginsider_enable_scheduler"
+                                (change)="enableLivingInsiderSchedulerValueChange($event)"></mat-checkbox>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="livinginsider_scheduler_cron">LivingInsider Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.livinginsider_scheduler_cron" name="livinginsider_scheduler_cron"
+                            id="livinginsider_scheduler_cron" [disabled]="config?.livinginsider_enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="livinginsider_scheduler_cron">LivingInsider Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.livinginsider_enable_scheduler == false" [(ngModel)]="config.livinginsider_post_expiry_time" name="livinginsider_post_expiry_time" id="livinginsider_post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="livinginsider_postings_per_trigger"LivingInsider >How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.livinginsider_enable_scheduler == false" [(ngModel)]="config.livinginsider_postings_per_trigger" name="livinginsider_postings_per_trigger" id="livinginsider_postings_per_trigger">
                     </div>
 
 

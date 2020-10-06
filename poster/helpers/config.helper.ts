@@ -106,7 +106,15 @@ Call for view:  {phone_extension} {phone_number')}
             
             "criagslist_enable_scheduler":false,
             "criagslist_scheduler_cron":"0 * * * *",
-            'criagslist_postings_per_trigger':1
+            'criagslist_postings_per_trigger':1,
+
+            "bathsold_enable_scheduler":false,
+            "bathsold_scheduler_cron":"0 * * * *",
+            'bathsold_postings_per_trigger':1,
+
+            "livinginsider_enable_scheduler":false,
+            "livinginsider_scheduler_cron":"0 * * * *",
+            'livinginsider_postings_per_trigger':1
 
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));

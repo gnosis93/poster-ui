@@ -17,6 +17,8 @@ import {QueueScheduler} from './poster/scheduler/QueueScheduler'
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
 import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.helper';
 import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
+import { CraigslistQueueScheduler } from './poster/scheduler/CraigslistQueueScheduler';
+import { BathSoldQueueScheduler } from './poster/scheduler/BathSoldQueueScheduler';
 
 //importing necessary modules
 
@@ -127,16 +129,15 @@ ipcMain.addListener('saveConfig', async (event, args) => {
 });
 
 ipcMain.addListener('triggerCronPost', async (event, args) => {
-  // await queueScheduler.handleQueue();
+  CraigslistQueueScheduler.getInstance().handleQueue();
   event.sender.send('triggerCronPost', true);
 });
 
-var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('criagslist_enable_scheduler', false);
-if (schedulerEnabled === true) {
-  QueueScheduler.registerSchedule();
-}
 
-
+// if (schedulerEnabled === true) {
+  CraigslistQueueScheduler.getInstance().registerScheduler();
+  BathSoldQueueScheduler.getInstance().registerScheduler();
+// }
 
 ipcMain.addListener('websiteImport', async (event, args) => {
   let websiteImporter = new HotDogCondosImporter();

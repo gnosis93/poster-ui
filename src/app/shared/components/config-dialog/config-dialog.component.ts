@@ -89,7 +89,14 @@ export class ConfigDialogComponent implements OnInit {
   public enableSchedulerValueChange(value:{checked:boolean}){
     this.config.criagslist_enable_scheduler = value.checked;
   }
+
+  public enableBathSoldSchedulerValueChange(value:{checked:boolean}){
+    this.config.bathsold_enable_scheduler = value.checked;
+  }
   
+  public enableLivingInsiderSchedulerValueChange(value:{checked:boolean}){
+    this.config.livinginsider_enable_scheduler = value.checked;
+  }
 
   public facebookStyleValueChange(value:{checked:boolean}){
     this.config.facebook_old_style = value.checked;

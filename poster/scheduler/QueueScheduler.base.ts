@@ -15,35 +15,46 @@ export abstract class QueueScheduler {
     currency: 'THB'
   };
 
-  private static readonly LOG_MESSAGE = 'Scheduler posted successfully'
-  private static readonly LOG_MESSAGE_FAIL = 'Scheduler posted failed'
-  private static postExpiryTime = null;
+  protected abstract readonly LOG_MESSAGE:string;
+  protected abstract readonly LOG_MESSAGE_FAIL:string;
+  protected abstract readonly POST_EXPIRY_TIME_CONFIG_KEY:string;
+  protected abstract readonly ENABLE_SCHEDULER_KEY:string;
 
-  private static allLogs:LogEntry[] = [];
+  private  postExpiryTime:number = 30;//default
+  protected abstract readonly cronValueConfigKey;
 
-  private async buildQueue() {
+  private  allLogs:LogEntry[] = [];
+
+  
+
+  // private static getInstance(instance:T){
+  //   this.singleton = new ();
+  // }
+
+
+  protected async buildQueue() {
     let postsFetch = (await PostsHelper.getListOfPosts());
     // let post
     for (let postDir of postsFetch.postsDirs) {
       let post = PostsHelper.getPostByName(postDir);
-      if(QueueScheduler.postExistsInLogs(post) === false){
+      if(this.postExistsInLogs(post) === false){
         this.queuedPosts.push(post);
       }
     }
     this.queuedPosts = this.shuffle(this.queuedPosts);
   }
 
-  public static postExistsInLogs(post:Post):boolean{
-    if(QueueScheduler.allLogs.length == 0){
-      QueueScheduler.allLogs = LoggerHelper.getAllLogs(LogChannel.scheduler);
+  public  postExistsInLogs(post:Post):boolean{
+    if(this.allLogs.length == 0){
+      this.allLogs = LoggerHelper.getAllLogs(LogChannel.scheduler);
     }
 
     if(this.postExpiryTime === null){
-      this.postExpiryTime = ConfigHelper.getConfigValue<number>('post_expiry_time',30);
+      this.postExpiryTime = ConfigHelper.getConfigValue<number>(this.POST_EXPIRY_TIME_CONFIG_KEY,30);
     }
 
-    for(let log of QueueScheduler.allLogs){
-      if(log?.logSeverity == LogSeverity.info && log?.message === QueueScheduler.LOG_MESSAGE && log?.additionalData?.name == post.name){
+    for(let log of this.allLogs){
+      if(log?.logSeverity == LogSeverity.info && log?.message === this.LOG_MESSAGE && log?.additionalData?.name == post.name){
         let logISRecent =  moment(log.date).add(this.postExpiryTime,'days').isAfter(moment());//log is recent if it hasn't expired (as per POST_EXPIRY_DAYS const)
         if(logISRecent){
           return true;
@@ -64,43 +75,8 @@ export abstract class QueueScheduler {
     }
   }
 
-  private async handleQueueItem(post: Post, city: ChannelCity) {
-    if(typeof post == 'undefined' || !post){
-      LoggerHelper.err('Invalid post given to handleQueueItem()',null,LogChannel.scheduler);
-    }
-    let config = ConfigHelper.getConfig();
-    var result = false;
-    try {
-      // let price = await PostsHelper.handlePostPrice(post,city.currency);
-      let poster = new CraigslistPoster(
-        {
-          username: config.craigslist_email,
-          password: config.craigslist_password
-        },
-        post.images,
-        ConfigHelper.parseTextTemplate(post, city.lang),
-        post?.metaData?.title,
-        'Pattaya',
-        post.metaData?.price,
-        post?.metaData?.size,
-        ConfigHelper.getConfigValue('phone_number'),
-        ConfigHelper.getConfigValue('phone_extension'),
-        city.name,
-        ConfigHelper.getConfigValue('post_immediately', false)
-      );
-      
-      result = await poster.run();
-
-      LoggerHelper.info(QueueScheduler.LOG_MESSAGE,post,LogChannel.scheduler);
-    
-    } catch (e) {
-      result = false;
-      console.error(e);
-      LoggerHelper.err(QueueScheduler.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
-    }
-
-    return result;
-  }
+  protected abstract async handleQueueItem(post: Post, city: ChannelCity);
+  
 
   private shuffle(array: any[]) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -120,7 +96,16 @@ export abstract class QueueScheduler {
     return array;
   }
 
-  public abstract registerScheduler():void;
+  public registerScheduler(): void {
+    var schedulerEnabled = ConfigHelper.getConfigValue<boolean>(this.ENABLE_SCHEDULER_KEY, false);
+    if(schedulerEnabled){
+      var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>(this.cronValueConfigKey, false);
+      schedule.scheduleJob(schedulerCRONConfig, () => {
+          this.handleQueue();
+      });
+    }
+   
+}
 
   // public static abstract registerSchedule(){
   //   var queueScheduler      = new QueueScheduler();
