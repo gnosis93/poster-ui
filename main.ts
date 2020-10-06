@@ -19,6 +19,8 @@ import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.help
 import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
 import { CraigslistQueueScheduler } from './poster/scheduler/CraigslistQueueScheduler';
 import { BathSoldQueueScheduler } from './poster/scheduler/BathSoldQueueScheduler';
+import { LivinginsiderQueueScheduler } from './poster/scheduler/LivingInsiderQueueScheduler';
+import { FacebookPageQueueScheduler } from './poster/scheduler/FacebookQueueScheduler';
 
 //importing necessary modules
 
@@ -137,6 +139,8 @@ ipcMain.addListener('triggerCronPost', async (event, args) => {
 // if (schedulerEnabled === true) {
   CraigslistQueueScheduler.getInstance().registerScheduler();
   BathSoldQueueScheduler.getInstance().registerScheduler();
+  LivinginsiderQueueScheduler.getInstance().registerScheduler();
+  FacebookPageQueueScheduler.getInstance().registerScheduler();
 // }
 
 ipcMain.addListener('websiteImport', async (event, args) => {

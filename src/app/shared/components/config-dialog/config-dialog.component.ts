@@ -98,6 +98,10 @@ export class ConfigDialogComponent implements OnInit {
     this.config.livinginsider_enable_scheduler = value.checked;
   }
 
+  public enableFacebookPagesSchedulerValueChange(value:{checked:boolean}){
+    this.config.facebookpages_enable_scheduler = value.checked;
+  }
+
   public facebookStyleValueChange(value:{checked:boolean}){
     this.config.facebook_old_style = value.checked;
     console.log(value);

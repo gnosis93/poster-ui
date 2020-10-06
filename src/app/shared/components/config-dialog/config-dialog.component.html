@@ -32,8 +32,8 @@
                 <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
                 <li (click)="onSidebarClick('Bathsold Credentials')">Bathsold Credentials</li>
 
-                <!-- <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li> -->
-                <!-- <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li> -->
+                <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
+                <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li>
             </ul>
 
         </div>
@@ -321,6 +321,34 @@
                     <div class="form-group" >
                         <label for="livinginsider_postings_per_trigger"LivingInsider >How much posts to post on each cron tiger ? </label> 
                         <input type="number" min="1" max="356" [disabled]="config?.livinginsider_enable_scheduler == false" [(ngModel)]="config.livinginsider_postings_per_trigger" name="livinginsider_postings_per_trigger" id="livinginsider_postings_per_trigger">
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                    
+                        <div class="col-12">
+                            <label>Enable FacebookPages Scheduler </label>
+                            <mat-checkbox [checked]="config.facebookpages_enable_scheduler"
+                                (change)="enableFacebookPagesSchedulerValueChange($event)"></mat-checkbox>
+                        </div>
+                    
+                    </div>
+
+                    <div class="form-group">
+                        <label for="facebookpages_scheduler_cron">FacebookPages Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.facebookpages_scheduler_cron" name="facebookpages_scheduler_cron"
+                            id="facebookpages_scheduler_cron" [disabled]="config?.facebookpages_enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="facebookpages_scheduler_cron">FacebookPages Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.facebookpages_enable_scheduler == false" [(ngModel)]="config.facebookpages_post_expiry_time" name="facebookpages_post_expiry_time" id="facebookpages_post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="facebookpages_postings_per_trigger"FacebookPages >How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.facebookpages_enable_scheduler == false" [(ngModel)]="config.facebookpages_postings_per_trigger" name="facebookpages_postings_per_trigger" id="facebookpages_postings_per_trigger">
                     </div>
 
 

@@ -114,7 +114,11 @@ Call for view:  {phone_extension} {phone_number')}
 
             "livinginsider_enable_scheduler":false,
             "livinginsider_scheduler_cron":"0 * * * *",
-            'livinginsider_postings_per_trigger':1
+            'livinginsider_postings_per_trigger':1,
+            
+            "facebookpages_enable_scheduler":false,
+            "facebookpages_scheduler_cron":"0 * * * *",
+            'facebookpages_postings_per_trigger':1
 
         };
         fs.writeFileSync(configFilePath, JSON.stringify(jsonFileTemplate));
