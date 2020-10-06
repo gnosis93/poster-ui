@@ -53,6 +53,7 @@ var craigslist_group_poster_1 = require("../channels/craigslist/craigslist.group
 var posts_helper_1 = require("../helpers/posts.helper");
 var logger_helper_1 = require("../helpers/logger.helper");
 var moment = require("moment");
+var schedule = require("node-schedule");
 var QueueScheduler = /** @class */ (function () {
     function QueueScheduler() {
         this.queuedPosts = [];
@@ -202,6 +203,13 @@ var QueueScheduler = /** @class */ (function () {
             array[randomIndex] = temporaryValue;
         }
         return array;
+    };
+    QueueScheduler.registerSchedule = function () {
+        var queueScheduler = new QueueScheduler();
+        var schedulerCRONConfig = config_helper_1.ConfigHelper.getConfigValue('scheduler_cron', false);
+        schedule.scheduleJob(schedulerCRONConfig, function () {
+            queueScheduler.handleQueue();
+        });
     };
     QueueScheduler.LOG_MESSAGE = 'Scheduler posted successfully';
     QueueScheduler.LOG_MESSAGE_FAIL = 'Scheduler posted failed';

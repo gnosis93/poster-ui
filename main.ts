@@ -13,8 +13,7 @@ import { IChannel } from './poster/channels/channel.interface';
 import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
 import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
 import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.poster';
-import * as schedule from 'node-schedule';
-import { QueueScheduler } from './poster/scheduler/QueueScheduler';
+import {QueueScheduler} from './poster/scheduler/QueueScheduler'
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
 import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.helper';
 import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
@@ -72,16 +71,7 @@ function createWindow(): BrowserWindow {
   return win;
 }
 
-//handle Queue
-var queueScheduler = new QueueScheduler();
-var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('enable_scheduler', false);
-var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('scheduler_cron', false);
 
-if (schedulerEnabled === true) {
-  schedule.scheduleJob(schedulerCRONConfig, () => {
-    queueScheduler.handleQueue();
-  });
-}
 
 
 ipcMain.addListener('getPostByName', async (event, args) => {
@@ -137,9 +127,15 @@ ipcMain.addListener('saveConfig', async (event, args) => {
 });
 
 ipcMain.addListener('triggerCronPost', async (event, args) => {
-  await queueScheduler.handleQueue();
+  // await queueScheduler.handleQueue();
   event.sender.send('triggerCronPost', true);
 });
+
+var schedulerEnabled = ConfigHelper.getConfigValue<boolean>('criagslist_enable_scheduler', false);
+if (schedulerEnabled === true) {
+  QueueScheduler.registerSchedule();
+}
+
 
 
 ipcMain.addListener('websiteImport', async (event, args) => {

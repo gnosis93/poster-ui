@@ -198,7 +198,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                 switch (_a.label) {
                     case 0: 
                     // let page      = await browser.newPage();
-                    return [4 /*yield*/, page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL, { waitUntil: 'networkidle2' })];
+                    return [4 /*yield*/, page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
                     case 1:
                         // let page      = await browser.newPage();
                         _a.sent();
@@ -228,7 +228,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                 switch (_b.label) {
                     case 0: 
                     // let page    = await browser.newPage();
-                    return [4 /*yield*/, page.goto(pageUrl, { waitUntil: 'networkidle2' })];
+                    return [4 /*yield*/, page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
                     case 1:
                         // let page    = await browser.newPage();
                         _b.sent();
@@ -351,7 +351,7 @@ var HotDogCondosImporter = /** @class */ (function () {
             var urls;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, page.goto(pageUrl, { waitUntil: 'networkidle2' })];
+                    case 0: return [4 /*yield*/, page.goto(pageUrl, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, page.evaluate(function () { return Array.from(document.querySelectorAll('.listing-featured-image'), function (element) { return element.getAttribute('href'); }); })];
@@ -364,20 +364,21 @@ var HotDogCondosImporter = /** @class */ (function () {
     };
     HotDogCondosImporter.prototype.lunchBrowser = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var config;
+            var config, browser;
             return __generator(this, function (_a) {
                 config = config_helper_1.ConfigHelper.getConfig();
-                // if((ConfigHelper.getConfigValue('headless',false) ) === true){
-                return [2 /*return*/, puppeteer.launch({
-                        executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
-                        headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
-                        defaultViewport: null,
-                        args: ['--start-maximized', "--disable-notifications"]
-                    })];
+                browser = puppeteer.launch({
+                    executablePath: config_helper_1.ConfigHelper.getConfigValue('chrome_executable_path'),
+                    headless: config_helper_1.ConfigHelper.getConfigValue('headless', false),
+                    defaultViewport: null,
+                    args: ['--start-maximized', "--disable-notifications"]
+                });
+                return [2 /*return*/, browser];
             });
         });
     };
     HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com';
+    HotDogCondosImporter.TIMEOUT = 100000;
     return HotDogCondosImporter;
 }());
 exports.HotDogCondosImporter = HotDogCondosImporter;

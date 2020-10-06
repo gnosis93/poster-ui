@@ -14,7 +14,6 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoggerHelper = exports.LogSeverity = exports.LogChannel = void 0;
-var fs = require("fs");
 var helper_base_1 = require("./helper.base");
 var path = require("path");
 var LogChannel;
@@ -63,9 +62,11 @@ var LoggerHelper = /** @class */ (function (_super) {
         console.log('logger event', newLog);
         allLogs.push(newLog);
         var logChannelPath = LoggerHelper.getLogChannelPath(logChannel);
+        var fs = require('fs');
         return fs.writeFileSync(logChannelPath, JSON.stringify(allLogs));
     };
     LoggerHelper.getAllLogs = function (logChannel) {
+        var fs = require('fs');
         var logFilePath = this.getLogChannelPath(logChannel);
         //create log file if it doesn't exist
         if (fs.existsSync(logFilePath) === false) {
@@ -80,6 +81,7 @@ var LoggerHelper = /** @class */ (function (_super) {
     };
     LoggerHelper.createEmptyLogFile = function (logFilePath) {
         var logData = [];
+        var fs = require('fs');
         fs.writeFileSync(logFilePath, JSON.stringify(logData));
         return logData;
     };

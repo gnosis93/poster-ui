@@ -87,7 +87,7 @@ export class ConfigDialogComponent implements OnInit {
   }
 
   public enableSchedulerValueChange(value:{checked:boolean}){
-    this.config.enable_scheduler = value.checked;
+    this.config.criagslist_enable_scheduler = value.checked;
   }
   
 

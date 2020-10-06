@@ -4,8 +4,9 @@ import { CraigslistPoster } from "../channels/craigslist/craigslist.group.poster
 import { PostsHelper } from "../helpers/posts.helper";
 import {LoggerHelper, LogChannel, LogEntry, LogSeverity} from '../helpers/logger.helper';
 import * as moment from 'moment';
+import * as schedule from 'node-schedule';
 
-export class QueueScheduler {
+export abstract class QueueScheduler {
   public queuedPosts: Array<Post> = [];
   private readonly defaultPost = {
     name: 'bangkok',
@@ -29,7 +30,7 @@ export class QueueScheduler {
         this.queuedPosts.push(post);
       }
     }
-    // this.queuedPosts = this.shuffle(this.queuedPosts);
+    this.queuedPosts = this.shuffle(this.queuedPosts);
   }
 
   public static postExistsInLogs(post:Post):boolean{
@@ -56,7 +57,7 @@ export class QueueScheduler {
     if (this.queuedPosts.length === 0) {
      await this.buildQueue();
     }
-    let postingsPerCronTrigger = ConfigHelper.getConfigValue<number>('postings_per_trigger') ?? 1;
+    let postingsPerCronTrigger = ConfigHelper.getConfigValue<number>('criagslist_postings_per_trigger') ?? 1;
     for(let i=1;i<=postingsPerCronTrigger;i++){
       let currentPost = this.queuedPosts.pop();
       await this.handleQueueItem(currentPost, this.defaultPost);
@@ -118,5 +119,16 @@ export class QueueScheduler {
 
     return array;
   }
+
+  public abstract registerScheduler():void;
+
+  // public static abstract registerSchedule(){
+  //   var queueScheduler      = new QueueScheduler();
+  //   var schedulerCRONConfig = ConfigHelper.getConfigValue<boolean>('criagslist_scheduler_cron', false);
+
+  //   schedule.scheduleJob(schedulerCRONConfig, () => {
+  //       queueScheduler.handleQueue();
+  //   });
+  // }
 
 }
