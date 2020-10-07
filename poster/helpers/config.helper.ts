@@ -94,7 +94,7 @@ export class ConfigHelper extends BaseHelper{
 More info at : {url}
 Property Features:
 {features}
-Call for view:  {phone_extension} {phone_number')}
+Call for view:  {phone_extension} {phone_number}
             `,
             "italian_text_template":`{title} è un nuovo progetto che può essere una nuova grande opportunità di investimento o un posto da chiamare casa. Situato a Pattaya, una città altamente turistica con tutti i comfort che puoi immaginare!
             Maggiori informazioni su: {url}

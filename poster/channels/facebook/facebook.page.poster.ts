@@ -65,12 +65,12 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
         this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
 
-        let browser = await this.lunchBrowser();
-        let loginPage = await this.login(browser);
-        let postedPages = await this.postToPages(browser, onPageUploadedCallback);
+        this.browser = await this.lunchBrowser();
+        let loginPage = await this.login(this.browser);
+        let postedPages = await this.postToPages(this.browser, onPageUploadedCallback);
         await ScreenshootHelper.takeSuccessScreenShot('FB-PAGE-POST',this.Browser);
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
-            await browser.close();
+            await this.browser.close();
         }
         return true;
     }

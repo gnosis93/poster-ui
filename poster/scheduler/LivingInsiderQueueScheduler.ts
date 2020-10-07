@@ -55,12 +55,12 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
           result = await poster.run();
     
           LoggerHelper.info(this.LOG_MESSAGE,post,LogChannel.scheduler);
-          await ScreenshootHelper.takeSuccessScreenShot(post.name,poster.Browser);
+          await ScreenshootHelper.takeSuccessScreenShot('livinginsider_'+post.name,poster.Browser);
 
         } catch (e) {
           result = false;
           console.error(e);
-          await ScreenshootHelper.takeErrorScreenShot(post.name,poster.Browser);
+          await ScreenshootHelper.takeErrorScreenShot('livinginsider_'+post.name,poster.Browser);
           await poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
           this

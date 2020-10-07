@@ -16,15 +16,23 @@ export class ScreenshootHelper extends BaseHelper{
     }
 
     private static async takeScreenShot(msg:string,browser:puppeteer.Browser,type:'error'|'success'){
+        if(!browser || browser.isConnected() === false){
+            console.warn('Failed to take '+type+' screenshot, browser is no longer connected');
+            return;
+        }
         let page = await this.getActivePage(browser);
+        let fileName =  moment().format('HH:MM')+'_'+msg+'.jpg';
+        let fullPath =    path.join(
+            (await this.getScreenshotDir(type)),
+            fileName
+        );
+
         await page.screenshot({
-            path: path.join(
-                (await this.getScreenshotDir(type)),
-                moment().format('HH:ii')+'_'+msg+'.jpg'
-            ),
             type: "jpeg",
-            fullPage: true
+            fullPage: true,
+            path:fullPath
         });
+        console.log('screenshot saved at:'+fullPath);
     }
 
     private static async getScreenshotDir(ssType:'error'|'success'){
@@ -36,7 +44,7 @@ export class ScreenshootHelper extends BaseHelper{
         await this.makeDirIfNotExists(dateFolder);
 
         let ssPathType = path.join(dateFolder,ssType);
-        await this.makeDirIfNotExists(dateFolder);
+        await this.makeDirIfNotExists(ssPathType);
 
         return ssPathType;
         
@@ -52,7 +60,7 @@ export class ScreenshootHelper extends BaseHelper{
 
 
     private static getSSDateFolder():string{
-        return moment().format('YYYY-mm-DD')
+        return moment().format('YYYY-MM-DD')
     }
 
     protected static async getActivePage(browser:puppeteer.Browser) :Promise<puppeteer.Page>{

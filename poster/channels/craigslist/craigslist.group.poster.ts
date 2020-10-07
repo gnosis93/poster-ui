@@ -121,7 +121,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
-        await ScreenshootHelper.takeSuccessScreenShot(this.title,this.Browser);
+        await ScreenshootHelper.takeSuccessScreenShot('craigslist_'+'_'+this.title,this.Browser);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();

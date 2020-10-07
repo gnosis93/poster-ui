@@ -57,15 +57,14 @@ export class FacebookPageQueueScheduler extends QueueScheduler{
             
             result = await poster.run();
           }
-         
-    
+
           LoggerHelper.info(this.LOG_MESSAGE,post,LogChannel.scheduler);
         
         } catch (e) {
           result = false;
           console.error(e);
-          await ScreenshootHelper.takeSuccessScreenShot(post.name,poster.Browser);
-          poster.kill();
+          await ScreenshootHelper.takeErrorScreenShot('facebookPages_'+post.name,poster.Browser);
+          await poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
         }
     

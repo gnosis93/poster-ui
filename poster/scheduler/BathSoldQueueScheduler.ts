@@ -4,6 +4,7 @@ import { LoggerHelper, LogChannel } from "../helpers/logger.helper";
 import { ConfigHelper } from "../helpers/config.helper";
 import { CraigslistPoster } from "../channels/craigslist/craigslist.group.poster";
 import { BathsoldPoster } from "../channels/bathsold/bathsold.poster";
+import { ScreenshootHelper } from "../helpers/screenshot.helper";
 
 export class BathSoldQueueScheduler extends QueueScheduler {
     protected readonly LOG_MESSAGE = 'BathSold Scheduler posted successfully';
@@ -51,12 +52,13 @@ export class BathSoldQueueScheduler extends QueueScheduler {
             );
 
             result = await poster.run();
-
             LoggerHelper.info(this.LOG_MESSAGE, post, LogChannel.scheduler);
 
         } catch (e) {
             result = false;
             console.error(e);
+            await ScreenshootHelper.takeErrorScreenShot('bathsold_'+post?.metaData?.title,poster.Browser);
+
             LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e.toString(), post, LogChannel.scheduler);
 
             await poster.kill();
