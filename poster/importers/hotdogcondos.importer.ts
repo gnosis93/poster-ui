@@ -113,8 +113,10 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
         let size = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null); 
         let floorNumber = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
         let price = await page.evaluate(() =>  document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null); 
-        price = price.replace('THB','')
-        price = price.replace(',','')
+        if(price){
+            price = price.replace(/\D/g,'');
+        }
+       
         
         let metadata:PostMetaData = {
             'title'      : title,
