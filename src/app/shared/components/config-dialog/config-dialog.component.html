@@ -19,7 +19,7 @@
 
             <h5>General Settings</h5>
             <ul class="sideBarList">
-                <!-- <li (click)="onSidebarClick('Facebook Credentials')">Facebook Credentials</li> -->
+                <li (click)="onSidebarClick('Facebook Credentials')">Facebook Credentials</li>
                 <li (click)="onSidebarClick('Behavior')">Behavior</li>
                 <li (click)="onSidebarClick('Text Templates')">Text Templates</li>
                 <li (click)="onSidebarClick('Scheduler')">Scheduler</li>
@@ -32,8 +32,8 @@
                 <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
                 <li (click)="onSidebarClick('Bathsold Credentials')">Bathsold Credentials</li>
 
-                <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
-                <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li>
+                <!-- <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
+                <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li> -->
             </ul>
 
         </div>
@@ -63,6 +63,42 @@
                         </mat-checkbox>
                     </div>
 
+
+                    <div class="row">
+                        <div class="col-12">
+                            <label><strong>Facebook Pages</strong></label>
+                            <ul>
+                                <li *ngFor="let pageUrl of config.facebook_pages">{{pageUrl}} <button
+                                        class="btn btn-danger" (click)="onDeletePageClick(pageUrl)">Delete</button></li>
+                            </ul>
+                        </div>
+                        <div class="col-10">
+                            <input class="form-control" #txtNewFBPageURL type="text" />
+                        </div>
+                        <div class="col-2">
+                            <button (click)="addFaceBookPage(txtNewFBPageURL)" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+
+                        <div class="col-12">
+                            <label><strong>Facebook Groups</strong></label>
+                            <ul>
+                                <li *ngFor="let pageUrl of config.facebook_groups">{{pageUrl}} <button
+                                        class="btn btn-danger" (click)="onDeleteGroupClick(pageUrl)">Delete</button>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="col-10">
+                            <input class="form-control" #txtNewFBGroupURL type="text" />
+                        </div>
+
+                        <div class="col-2">
+                            <button (click)="addFaceBookGroup(txtNewFBGroupURL)" class="btn btn-primary">Add</button>
+                        </div>
+                    </div>
                 </span>
 
 

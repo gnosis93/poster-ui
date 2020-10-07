@@ -92,7 +92,7 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     };
     FacebookOldPagePoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password;
+            var loginPage, _a, username, password, btnAcceptTerms, e_1, loginBtn;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, this.getActivePage(browser, 100)];
@@ -105,17 +105,36 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' })];
                     case 3:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.type('#email', username)];
+                        _b.label = 4;
                     case 4:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#pass', password)];
+                        _b.trys.push([4, 7, , 8]);
+                        btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
+                        return [4 /*yield*/, loginPage.waitForSelector(btnAcceptTerms, { timeout: 3000 })];
                     case 5:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.click('#loginbutton')];
+                        return [4 /*yield*/, loginPage.click(btnAcceptTerms)];
                     case 6:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.waitForNavigation()];
+                        return [3 /*break*/, 8];
                     case 7:
+                        e_1 = _b.sent();
+                        console.log('No accept terms key found');
+                        return [3 /*break*/, 8];
+                    case 8: return [4 /*yield*/, loginPage.type('#email', username)];
+                    case 9:
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.type('#pass', password)];
+                    case 10:
+                        _b.sent();
+                        loginBtn = '#loginbutton';
+                        return [4 /*yield*/, loginPage.waitForSelector(loginBtn)];
+                    case 11:
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.click(loginBtn)];
+                    case 12:
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.waitForNavigation()];
+                    case 13:
                         _b.sent();
                         return [2 /*return*/, loginPage];
                 }
@@ -150,8 +169,8 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     FacebookOldPagePoster.prototype.postToPages = function (browser, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var pages, count, _a, _b, group, groupPage, postButtonXPath, inputUploadHandles, inputUploadHandle, filesToUpload, filesToUpload_1, filesToUpload_1_1, image, e_1_1, postButton, e_2_1;
-            var e_2, _c, e_1, _d;
+            var pages, count, _a, _b, group, groupPage, postButtonXPath, inputUploadHandles, inputUploadHandle, filesToUpload, filesToUpload_1, filesToUpload_1_1, image, e_2_1, postButton, e_3_1;
+            var e_3, _c, e_2, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -205,7 +224,7 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         _e.label = 10;
                     case 10:
                         _e.trys.push([10, 16, 17, 18]);
-                        filesToUpload_1 = (e_1 = void 0, __values(filesToUpload)), filesToUpload_1_1 = filesToUpload_1.next();
+                        filesToUpload_1 = (e_2 = void 0, __values(filesToUpload)), filesToUpload_1_1 = filesToUpload_1.next();
                         _e.label = 11;
                     case 11:
                         if (!!filesToUpload_1_1.done) return [3 /*break*/, 15];
@@ -222,14 +241,14 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [3 /*break*/, 11];
                     case 15: return [3 /*break*/, 18];
                     case 16:
-                        e_1_1 = _e.sent();
-                        e_1 = { error: e_1_1 };
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
                         return [3 /*break*/, 18];
                     case 17:
                         try {
                             if (filesToUpload_1_1 && !filesToUpload_1_1.done && (_d = filesToUpload_1.return)) _d.call(filesToUpload_1);
                         }
-                        finally { if (e_1) throw e_1.error; }
+                        finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
                     case 18: return [4 /*yield*/, this.delay(2000)];
                     case 19:
@@ -261,14 +280,14 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [3 /*break*/, 2];
                     case 22: return [3 /*break*/, 25];
                     case 23:
-                        e_2_1 = _e.sent();
-                        e_2 = { error: e_2_1 };
+                        e_3_1 = _e.sent();
+                        e_3 = { error: e_3_1 };
                         return [3 /*break*/, 25];
                     case 24:
                         try {
                             if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
                         }
-                        finally { if (e_2) throw e_2.error; }
+                        finally { if (e_3) throw e_3.error; }
                         return [7 /*endfinally*/];
                     case 25: return [2 /*return*/, pages];
                 }

@@ -25,14 +25,14 @@ export class PostDialogComponent implements OnInit {
   public languages = CommonConstants.languages;
 
   public readonly channels: Channel[] = [
-    // {
-    //   "name": 'Facebook Pages',
-    //   "selected": false,
-    // },
-    // {
-    //   "name": 'Facebook Groups',
-    //   "selected": false,
-    // },
+    {
+      "name": 'Facebook Pages',
+      "selected": false,
+    },
+    {
+      "name": 'Facebook Groups',
+      "selected": false,
+    },
     {
       "name": 'Craigslist',
       "selected": true,
