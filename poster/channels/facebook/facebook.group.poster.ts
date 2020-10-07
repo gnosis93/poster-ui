@@ -3,6 +3,7 @@ import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
+import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 
 export class FacebookGroupPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
@@ -52,6 +53,7 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
 
         let loginPage   = await this.login(browser);
         let postedPages = await this.postToPages(browser,onPageUploadedCallback);
+        await ScreenshootHelper.takeSuccessScreenShot('FB-GROUP-POST',this.Browser);
 
         if((ConfigHelper.getConfigValue('headless',false) ) === true || ConfigHelper.getConfigValue('close_browser')){
            await browser.close();

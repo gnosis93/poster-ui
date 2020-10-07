@@ -4,6 +4,7 @@ import { ConfigHelper } from "../helpers/config.helper";
 import { ChannelCity, Post } from "../models/post.interface";
 import { LivinginsiderPoster } from "../channels/livinginsider/livinginsider.group.poster";
 import { LogChannel, LoggerHelper } from "../helpers/logger.helper";
+import { ScreenshootHelper } from "../helpers/screenshot.helper";
 
 export class LivinginsiderQueueScheduler extends QueueScheduler{
     protected ENABLE_SCHEDULER_KEY: string = 'livinginsider_enable_scheduler';
@@ -14,6 +15,8 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
     readonly LOG_MESSAGE = 'Livinginsider Scheduler posted successfully'
     readonly LOG_MESSAGE_FAIL = 'Livinginsider Scheduler posted failed'
     
+
+
     public static getInstance():LivinginsiderQueueScheduler{
         if(LivinginsiderQueueScheduler.singleton == null){
             LivinginsiderQueueScheduler.singleton = new LivinginsiderQueueScheduler();
@@ -52,10 +55,12 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
           result = await poster.run();
     
           LoggerHelper.info(this.LOG_MESSAGE,post,LogChannel.scheduler);
-        
+          await ScreenshootHelper.takeSuccessScreenShot(post.name,poster.Browser);
+
         } catch (e) {
           result = false;
           console.error(e);
+          await ScreenshootHelper.takeErrorScreenShot(post.name,poster.Browser);
           await poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
           this

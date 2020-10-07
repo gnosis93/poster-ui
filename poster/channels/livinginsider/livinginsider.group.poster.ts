@@ -3,6 +3,7 @@ import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
+import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 
 export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://livinginsider.com/en';
@@ -11,6 +12,8 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
     private timeout:number = 10000;//default timeout
 
+
+    
     constructor(
         private credentials: { username: string, password: string },
         private imagesToPost: PostImage[],
@@ -102,7 +105,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
-
+        
+        await ScreenshootHelper.takeSuccessScreenShot(this.title,this.Browser);
+        
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();
         }

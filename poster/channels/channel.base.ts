@@ -6,7 +6,8 @@ const {app} = require('electron');
 export abstract class ChannelBase {
 
     protected browser:puppeteer.Browser|null;
-    
+    public get Browser(){return this.browser}
+
     async lunchBrowser(): Promise<puppeteer.Browser> {//override
         try {
             this.browser = await puppeteer.launch({

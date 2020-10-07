@@ -5,6 +5,7 @@ import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { config } from 'process';
 import { PostImage } from '../../models/post.interface';
+import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 
 export class FacebookOldPagePoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://facebook.com/';
@@ -68,6 +69,7 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         let postedPages = await this.postToPages(browser, onPageUploadedCallback);
+        await ScreenshootHelper.takeSuccessScreenShot('FB-OLD-PAGE-POST',this.Browser);
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();
         }

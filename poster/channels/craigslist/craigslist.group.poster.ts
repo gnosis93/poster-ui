@@ -3,6 +3,7 @@ import { ChannelBase } from '../channel.base';
 import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
+import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 
 export class CraigslistPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://craigslist.com/';
@@ -120,6 +121,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
+        await ScreenshootHelper.takeSuccessScreenShot(this.title,this.Browser);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await browser.close();

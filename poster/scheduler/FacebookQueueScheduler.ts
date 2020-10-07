@@ -5,6 +5,7 @@ import { ChannelCity, Post } from "../models/post.interface";
 import { LogChannel, LoggerHelper } from "../helpers/logger.helper";
 import { FacebookPagePoster } from "../channels/facebook/facebook.page.poster";
 import { FacebookOldPagePoster } from "../channels/facebook/facebook-old.page.poster";
+import { ScreenshootHelper } from "../helpers/screenshot.helper";
 
 export class FacebookPageQueueScheduler extends QueueScheduler{
     protected ENABLE_SCHEDULER_KEY: string = 'facebookpages_enable_scheduler';
@@ -63,6 +64,7 @@ export class FacebookPageQueueScheduler extends QueueScheduler{
         } catch (e) {
           result = false;
           console.error(e);
+          await ScreenshootHelper.takeSuccessScreenShot(post.name,poster.Browser);
           poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
         }
