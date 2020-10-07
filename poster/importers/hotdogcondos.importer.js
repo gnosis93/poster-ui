@@ -273,8 +273,9 @@ var HotDogCondosImporter = /** @class */ (function () {
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
                     case 9:
                         price = _b.sent();
-                        price = price.replace('THB', '');
-                        price = price.replace(',', '');
+                        if (price) {
+                            price = price.replace(/\D/g, '');
+                        }
                         metadata = {
                             'title': title,
                             'url': pageUrl,
