@@ -57,4 +57,4 @@ poster/channels/livinginsider/
 
 poster/helpers/config.helper.js
 
-*.js
+poster/**/*.js
