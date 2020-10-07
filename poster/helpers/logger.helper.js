@@ -48,16 +48,22 @@ var LoggerHelper = /** @class */ (function (_super) {
         if (logChannel === void 0) { logChannel = LogChannel.general; }
         this.writeLog(message, additionalData, logChannel, LogSeverity.info);
     };
+    LoggerHelper.prettifyAdditionalLogData = function (additionalData) {
+        if (typeof additionalData['name'] != 'undefined' && typeof additionalData['postText'] != 'undefined') {
+            return { 'PostName': additionalData.name };
+        }
+        return additionalData;
+    };
     LoggerHelper.writeLog = function (message, additionalData, logChannel, logSeverity) {
         if (additionalData === void 0) { additionalData = null; }
         if (logChannel === void 0) { logChannel = LogChannel.general; }
         if (logSeverity === void 0) { logSeverity = LogSeverity.info; }
         var allLogs = this.getAllLogs(logChannel);
         var newLog = {
-            logSeverity: logSeverity,
+            logSeverity: LogSeverity[logSeverity],
             message: message,
-            additionalData: additionalData,
-            date: new Date().getTime()
+            additionalData: this.prettifyAdditionalLogData(additionalData),
+            date: new Date().toISOString()
         };
         console.log('logger event', newLog);
         allLogs.push(newLog);

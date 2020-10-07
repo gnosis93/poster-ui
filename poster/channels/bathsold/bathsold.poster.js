@@ -103,6 +103,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
         _this.postADUrl = 'https://www.bahtsold.com/members/select_ad_category';
         _this.maxLoginAttempts = 10;
         _this.loginAttemptsCount = 0;
+        _this.timeout = 10000; //default timeout
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
@@ -132,7 +133,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 3:
                         _d = [
                             _l.sent(),
-                            loginPage.waitForSelector(loginBTN)
+                            loginPage.waitForSelector(loginBTN, { timeout: this.timeout })
                         ];
                         return [4 /*yield*/, loginPage.click(loginBTN)];
                     case 4: return [4 /*yield*/, _c.apply(_b, [_d.concat([
@@ -145,7 +146,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         _l.sent();
                         loginUsernameSelector = '#login-username';
                         _f = (_e = Promise).all;
-                        _g = [loginPage.waitForSelector(loginUsernameSelector)];
+                        _g = [loginPage.waitForSelector(loginUsernameSelector, { timeout: this.timeout })];
                         return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
                     case 7: return [4 /*yield*/, _f.apply(_e, [_g.concat([
                                 _l.sent()
@@ -160,14 +161,14 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         _l.sent();
                         loginBTNSelector = 'button.btn.btn-md.btn-blue.block-element';
                         _j = (_h = Promise).all;
-                        _k = [loginPage.waitForSelector(loginBTNSelector)];
+                        _k = [loginPage.waitForSelector(loginBTNSelector, { timeout: this.timeout })];
                         return [4 /*yield*/, loginPage.click(loginBTNSelector)];
                     case 10: return [4 /*yield*/, _j.apply(_h, [_k.concat([
                                 _l.sent()
                             ])])];
                     case 11:
                         _l.sent();
-                        return [4 /*yield*/, loginPage.waitForSelector('.app-logo')
+                        return [4 /*yield*/, loginPage.waitForSelector('.app-logo', { timeout: this.timeout })
                             // let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
                         ];
                     case 12:
@@ -192,18 +193,23 @@ var BathsoldPoster = /** @class */ (function (_super) {
     BathsoldPoster.prototype.run = function (onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var browser, loginPage;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.lunchBrowser()];
+            var _a, browser, loginPage;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', this.timeout)];
                     case 1:
-                        browser = _a.sent();
-                        return [4 /*yield*/, this.login(browser)];
+                        _a.timeout = _b.sent();
+                        return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        loginPage = _a.sent();
-                        return [4 /*yield*/, this.postAD(loginPage, onPageUploadedCallback)];
+                        browser = _b.sent();
+                        return [4 /*yield*/, this.login(browser)];
                     case 3:
-                        _a.sent();
+                        loginPage = _b.sent();
+                        return [4 /*yield*/, this.postAD(loginPage, onPageUploadedCallback)];
+                    case 4:
+                        _b.sent();
                         if ((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser')) {
                             // await browser.close();
                         }
@@ -220,11 +226,11 @@ var BathsoldPoster = /** @class */ (function (_super) {
             var _this = this;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, page.goto(this.postADUrl, { waitUntil: 'networkidle2', timeout: 15000 })];
+                    case 0: return [4 /*yield*/, page.goto(this.postADUrl, { waitUntil: 'networkidle2', timeout: this.timeout })];
                     case 1:
                         _c.sent();
                         selectRealEstateCategorySelector = 'li[data-price-30="490"]';
-                        return [4 /*yield*/, page.waitForSelector(selectRealEstateCategorySelector)];
+                        return [4 /*yield*/, page.waitForSelector(selectRealEstateCategorySelector, { timeout: this.timeout })];
                     case 2:
                         _c.sent();
                         return [4 /*yield*/, page.click(selectRealEstateCategorySelector)];
@@ -234,7 +240,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 4:
                         _c.sent();
                         selectCondosCategorySelector = 'li[data-id="175"]';
-                        return [4 /*yield*/, page.waitForSelector(selectCondosCategorySelector)];
+                        return [4 /*yield*/, page.waitForSelector(selectCondosCategorySelector, { timeout: this.timeout })];
                     case 5:
                         _c.sent();
                         return [4 /*yield*/, page.click(selectCondosCategorySelector)];
@@ -250,7 +256,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 9:
                         _c.sent();
                         selectFreeAdSelector = 'div[data-type="0"]>div.price-table-footer>a.btn-chosen';
-                        return [4 /*yield*/, page.waitForSelector(selectFreeAdSelector)];
+                        return [4 /*yield*/, page.waitForSelector(selectFreeAdSelector, { timeout: this.timeout })];
                     case 10:
                         _c.sent();
                         return [4 /*yield*/, page.click(selectFreeAdSelector)];
@@ -260,7 +266,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 12:
                         _c.sent();
                         continueBtnSelector = '.btn.btn-blue.btn-sm.submit-category';
-                        return [4 /*yield*/, page.waitForSelector(continueBtnSelector)];
+                        return [4 /*yield*/, page.waitForSelector(continueBtnSelector, { timeout: this.timeout })];
                     case 13:
                         _c.sent();
                         return [4 /*yield*/, page.click(continueBtnSelector)];
@@ -270,7 +276,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 15:
                         _c.sent();
                         isAgentCheckBoxSelector = 'label[for="is_owner_0"]';
-                        return [4 /*yield*/, page.waitForSelector(isAgentCheckBoxSelector)];
+                        return [4 /*yield*/, page.waitForSelector(isAgentCheckBoxSelector, { timeout: this.timeout })];
                     case 16:
                         _c.sent();
                         return [4 /*yield*/, page.click(isAgentCheckBoxSelector)];
@@ -288,7 +294,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 20:
                         _c.sent();
                         condoPropertyTypeSelector = 'label[for=property_type_2272]';
-                        return [4 /*yield*/, page.waitForSelector(condoPropertyTypeSelector)];
+                        return [4 /*yield*/, page.waitForSelector(condoPropertyTypeSelector, { timeout: this.timeout })];
                     case 21:
                         _c.sent();
                         return [4 /*yield*/, page.click(condoPropertyTypeSelector)];
@@ -306,7 +312,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         if (this.numberOfBaths > 19) {
                             numberOfBathsSelector = 'label[for="number_of_bath_20"]';
                         }
-                        return [4 /*yield*/, page.waitForSelector(numberOfBathsSelector)];
+                        return [4 /*yield*/, page.waitForSelector(numberOfBathsSelector, { timeout: this.timeout })];
                     case 25:
                         _c.sent();
                         return [4 /*yield*/, page.click(numberOfBathsSelector)];
@@ -324,7 +330,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         if (this.numberOfBaths > 19) {
                             numberOfBedsSelector = 'label[for="number_of_bed_20"]';
                         }
-                        return [4 /*yield*/, page.waitForSelector(numberOfBedsSelector)];
+                        return [4 /*yield*/, page.waitForSelector(numberOfBedsSelector, { timeout: this.timeout })];
                     case 29:
                         _c.sent();
                         return [4 /*yield*/, page.click(numberOfBedsSelector)];
@@ -339,7 +345,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         //furnished level
                         _c.sent();
                         fullyFurnishedOptionSelector = 'label[for="furnished_2280"]';
-                        return [4 /*yield*/, page.waitForSelector(fullyFurnishedOptionSelector)];
+                        return [4 /*yield*/, page.waitForSelector(fullyFurnishedOptionSelector, { timeout: this.timeout })];
                     case 33:
                         _c.sent();
                         return [4 /*yield*/, page.click(fullyFurnishedOptionSelector)];
@@ -363,7 +369,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 39:
                         _c.sent();
                         imageInputSelector = 'input[name="files[]"]';
-                        return [4 /*yield*/, page.waitForSelector(imageInputSelector)];
+                        return [4 /*yield*/, page.waitForSelector(imageInputSelector, { timeout: this.timeout })];
                     case 40:
                         _c.sent();
                         return [4 /*yield*/, page.$$(imageInputSelector)];
@@ -455,7 +461,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.delay(500)];
                     case 55:
                         _c.sent();
-                        return [4 /*yield*/, page.waitForSelector(provinceSelector)];
+                        return [4 /*yield*/, page.waitForSelector(provinceSelector, { timeout: this.timeout })];
                     case 56:
                         _c.sent();
                         return [4 /*yield*/, page.click(provinceSelector)];
@@ -471,7 +477,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 60:
                         _c.sent();
                         pattayaCentralOption = 'label[for="city_1075"]';
-                        return [4 /*yield*/, page.waitForSelector(pattayaCentralOption)];
+                        return [4 /*yield*/, page.waitForSelector(pattayaCentralOption, { timeout: this.timeout })];
                     case 61:
                         _c.sent();
                         return [4 /*yield*/, page.click(pattayaCentralOption)];
@@ -481,7 +487,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 63:
                         _c.sent();
                         submitButtonSelector = '#placecomplete';
-                        return [4 /*yield*/, page.waitForSelector(submitButtonSelector)];
+                        return [4 /*yield*/, page.waitForSelector(submitButtonSelector, { timeout: this.timeout })];
                     case 64:
                         _c.sent();
                         return [4 /*yield*/, page.click(submitButtonSelector)];

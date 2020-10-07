@@ -11,9 +11,10 @@ const Stream = require('stream').Transform;
 export class HotDogCondosImporter{
 
     private static readonly HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com'
-    private static readonly TIMEOUT = 100000;
+    private static TIMEOUT = 100000;//defualt
 
     public async run():Promise<boolean>{
+        HotDogCondosImporter.TIMEOUT = await ConfigHelper.getConfigValue<number>('navigation_timeout', HotDogCondosImporter.TIMEOUT );
         let browser     = await this.lunchBrowser();
 
         let mainPage = await browser.newPage();

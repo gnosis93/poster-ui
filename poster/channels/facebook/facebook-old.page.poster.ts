@@ -64,6 +64,7 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
+        
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         let postedPages = await this.postToPages(browser, onPageUploadedCallback);

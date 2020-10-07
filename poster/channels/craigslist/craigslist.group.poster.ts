@@ -7,6 +7,7 @@ import { PostImage } from '../../models/post.interface';
 export class CraigslistPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://craigslist.com/';
     private readonly channelLoginUrl: string = 'https://accounts.craigslist.org/login';
+    private timeout:number = 10000;//default timeout
 
     private readonly locationsPostUrls = [
         {
@@ -115,6 +116,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
+        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
@@ -138,26 +140,26 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
             timeout: 0
         });
 
-        await page.setDefaultNavigationTimeout(10000);
+        await page.setDefaultNavigationTimeout(this.timeout);
         // page.click('.selection-list li')[6]
 
 
 
         await this.clickTickboxByIndex(page, 3);
-        await page.waitForSelector('button[type=submit]');
+        await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
         await page.click('button[type=submit]');
         // this.delay(2000);
-        await page.waitForSelector('.option-label');
+        await page.waitForSelector('.option-label',{timeout: this.timeout });
         
         await this.clickTickboxByIndex(page, 3, '.option-label');
         // this.delay(2000);
 
         // await Promise.all([
-        await page.waitForSelector('button[type=submit]');
+        await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
 
         await page.click('button[type=submit]');
           
-        await page.waitForSelector("#PostingTitle");
+        await page.waitForSelector("#PostingTitle",{timeout: this.timeout });
 
         await this.threeClickType(page,"#PostingTitle",this.title);
         await this.threeClickType(page,"#geographic_area",this.location);
@@ -203,7 +205,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         ])
       
         console.log('wating for imgcount');
-        await page.waitForSelector('.imgcount')
+        await page.waitForSelector('.imgcount',{timeout: this.timeout })
         console.log('READY WITH: wating for imgcount');
 
         // await page.waitForNavigation();
@@ -211,7 +213,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // let clickUpload = await page.waitForSelector('a.newupl');
         // await clickUpload.click();
         
-        await page.waitForSelector('input[type=file]');
+        await page.waitForSelector('input[type=file]',{timeout: this.timeout });
         const inputUploadHandles = await page.$$('input[type=file]');
         const inputUploadHandle  = inputUploadHandles[0];
         let filesToUpload        = this.getImagesToPost();
@@ -234,11 +236,10 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
             console.log('wating image count')
         }
 
-
         await page.click('button[type=submit].done');
 
         if(this.immediatelyPost){
-            await page.waitForSelector("button[name='go']");
+            await page.waitForSelector("button[name='go']",{timeout: this.timeout });
             await page.click("button[name='go']");
         }
         

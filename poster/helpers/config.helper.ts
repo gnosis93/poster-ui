@@ -77,6 +77,7 @@ export class ConfigHelper extends BaseHelper{
                 "https://www.facebook.com/groups/317055712850966"
             ],
             "headless":false,
+            "navigation_timeout":10000,
             "phone_number":'900 489999',
             "phone_extension":'+66',
             "facebook_old_style":true,

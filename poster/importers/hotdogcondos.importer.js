@@ -60,84 +60,89 @@ var HotDogCondosImporter = /** @class */ (function () {
     }
     HotDogCondosImporter.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var browser, mainPage, pagesUrls, propertiesUrls, pagesUrls_1, pagesUrls_1_1, pageUrl, pagePropertiesUrls, e_1_1, existingUrls, newUrls, newUrls_1, newUrls_1_1, propertyUrl, e_2_1;
-            var e_1, _a, e_2, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0: return [4 /*yield*/, this.lunchBrowser()];
+            var _a, browser, mainPage, pagesUrls, propertiesUrls, pagesUrls_1, pagesUrls_1_1, pageUrl, pagePropertiesUrls, e_1_1, existingUrls, newUrls, newUrls_1, newUrls_1_1, propertyUrl, e_2_1;
+            var e_1, _b, e_2, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        _a = HotDogCondosImporter;
+                        return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', HotDogCondosImporter.TIMEOUT)];
                     case 1:
-                        browser = _c.sent();
-                        return [4 /*yield*/, browser.newPage()];
+                        _a.TIMEOUT = _d.sent();
+                        return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        mainPage = _c.sent();
-                        return [4 /*yield*/, this.scrapePagesUrls(mainPage)];
+                        browser = _d.sent();
+                        return [4 /*yield*/, browser.newPage()];
                     case 3:
-                        pagesUrls = _c.sent();
-                        propertiesUrls = [];
-                        _c.label = 4;
+                        mainPage = _d.sent();
+                        return [4 /*yield*/, this.scrapePagesUrls(mainPage)];
                     case 4:
-                        _c.trys.push([4, 9, 10, 11]);
-                        pagesUrls_1 = __values(pagesUrls), pagesUrls_1_1 = pagesUrls_1.next();
-                        _c.label = 5;
+                        pagesUrls = _d.sent();
+                        propertiesUrls = [];
+                        _d.label = 5;
                     case 5:
-                        if (!!pagesUrls_1_1.done) return [3 /*break*/, 8];
+                        _d.trys.push([5, 10, 11, 12]);
+                        pagesUrls_1 = __values(pagesUrls), pagesUrls_1_1 = pagesUrls_1.next();
+                        _d.label = 6;
+                    case 6:
+                        if (!!pagesUrls_1_1.done) return [3 /*break*/, 9];
                         pageUrl = pagesUrls_1_1.value;
                         return [4 /*yield*/, this.scrapeListingURLS(mainPage, pageUrl)];
-                    case 6:
-                        pagePropertiesUrls = _c.sent();
-                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
-                        _c.label = 7;
                     case 7:
+                        pagePropertiesUrls = _d.sent();
+                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
+                        _d.label = 8;
+                    case 8:
                         pagesUrls_1_1 = pagesUrls_1.next();
-                        return [3 /*break*/, 5];
-                    case 8: return [3 /*break*/, 11];
-                    case 9:
-                        e_1_1 = _c.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 11];
+                        return [3 /*break*/, 6];
+                    case 9: return [3 /*break*/, 12];
                     case 10:
+                        e_1_1 = _d.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 12];
+                    case 11:
                         try {
-                            if (pagesUrls_1_1 && !pagesUrls_1_1.done && (_a = pagesUrls_1.return)) _a.call(pagesUrls_1);
+                            if (pagesUrls_1_1 && !pagesUrls_1_1.done && (_b = pagesUrls_1.return)) _b.call(pagesUrls_1);
                         }
                         finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
-                    case 11: return [4 /*yield*/, this.getExistingPostsUrls()];
-                    case 12:
-                        existingUrls = _c.sent();
+                    case 12: return [4 /*yield*/, this.getExistingPostsUrls()];
+                    case 13:
+                        existingUrls = _d.sent();
                         newUrls = propertiesUrls.filter(function (url) { return existingUrls.includes(url) === false; });
                         newUrls = newUrls.filter(function (v, i, a) { return a.indexOf(v) === i; }); //remove duplicates
-                        _c.label = 13;
-                    case 13:
-                        _c.trys.push([13, 18, 19, 20]);
-                        newUrls_1 = __values(newUrls), newUrls_1_1 = newUrls_1.next();
-                        _c.label = 14;
+                        _d.label = 14;
                     case 14:
-                        if (!!newUrls_1_1.done) return [3 /*break*/, 17];
+                        _d.trys.push([14, 19, 20, 21]);
+                        newUrls_1 = __values(newUrls), newUrls_1_1 = newUrls_1.next();
+                        _d.label = 15;
+                    case 15:
+                        if (!!newUrls_1_1.done) return [3 /*break*/, 18];
                         propertyUrl = newUrls_1_1.value;
                         return [4 /*yield*/, this.scrapeProperty(propertyUrl, mainPage)];
-                    case 15:
-                        _c.sent();
-                        _c.label = 16;
                     case 16:
+                        _d.sent();
+                        _d.label = 17;
+                    case 17:
                         newUrls_1_1 = newUrls_1.next();
-                        return [3 /*break*/, 14];
-                    case 17: return [3 /*break*/, 20];
-                    case 18:
-                        e_2_1 = _c.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3 /*break*/, 20];
+                        return [3 /*break*/, 15];
+                    case 18: return [3 /*break*/, 21];
                     case 19:
+                        e_2_1 = _d.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 21];
+                    case 20:
                         try {
-                            if (newUrls_1_1 && !newUrls_1_1.done && (_b = newUrls_1.return)) _b.call(newUrls_1);
+                            if (newUrls_1_1 && !newUrls_1_1.done && (_c = newUrls_1.return)) _c.call(newUrls_1);
                         }
                         finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
-                    case 20: 
+                    case 21: 
                     // if((ConfigHelper.getConfigValue('headless',false) ) === true){
                     return [4 /*yield*/, browser.close()];
-                    case 21:
+                    case 22:
                         // if((ConfigHelper.getConfigValue('headless',false) ) === true){
-                        _c.sent();
+                        _d.sent();
                         // }
                         // this.scrapeListingURLS(browser,HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL);
                         return [2 /*return*/, true];
@@ -378,7 +383,7 @@ var HotDogCondosImporter = /** @class */ (function () {
         });
     };
     HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com';
-    HotDogCondosImporter.TIMEOUT = 100000;
+    HotDogCondosImporter.TIMEOUT = 100000; //defualt
     return HotDogCondosImporter;
 }());
 exports.HotDogCondosImporter = HotDogCondosImporter;

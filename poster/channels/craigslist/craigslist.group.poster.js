@@ -89,6 +89,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
         _this.immediatelyPost = immediatelyPost;
         _this.channelUrl = 'https://craigslist.com/';
         _this.channelLoginUrl = 'https://accounts.craigslist.org/login';
+        _this.timeout = 10000; //default timeout
         _this.locationsPostUrls = [
             {
                 'city': "bangkok",
@@ -190,24 +191,29 @@ var CraigslistPoster = /** @class */ (function (_super) {
     CraigslistPoster.prototype.run = function (onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var browser, loginPage;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.lunchBrowser()];
+            var _a, browser, loginPage;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', this.timeout)];
                     case 1:
-                        browser = _a.sent();
-                        return [4 /*yield*/, this.login(browser)];
+                        _a.timeout = _b.sent();
+                        return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        loginPage = _a.sent();
-                        return [4 /*yield*/, this.postToPages(loginPage, onPageUploadedCallback)];
+                        browser = _b.sent();
+                        return [4 /*yield*/, this.login(browser)];
                     case 3:
-                        _a.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 5];
-                        return [4 /*yield*/, browser.close()];
+                        loginPage = _b.sent();
+                        return [4 /*yield*/, this.postToPages(loginPage, onPageUploadedCallback)];
                     case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/, true];
+                        _b.sent();
+                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 6];
+                        return [4 /*yield*/, browser.close()];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6: return [2 /*return*/, true];
                 }
             });
         });
@@ -227,7 +233,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                             })];
                     case 1:
                         _d.sent();
-                        return [4 /*yield*/, page.setDefaultNavigationTimeout(10000)];
+                        return [4 /*yield*/, page.setDefaultNavigationTimeout(this.timeout)];
                     case 2:
                         _d.sent();
                         // page.click('.selection-list li')[6]
@@ -235,14 +241,14 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 3:
                         // page.click('.selection-list li')[6]
                         _d.sent();
-                        return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
+                        return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 4:
                         _d.sent();
                         return [4 /*yield*/, page.click('button[type=submit]')];
                     case 5:
                         _d.sent();
                         // this.delay(2000);
-                        return [4 /*yield*/, page.waitForSelector('.option-label')];
+                        return [4 /*yield*/, page.waitForSelector('.option-label', { timeout: this.timeout })];
                     case 6:
                         // this.delay(2000);
                         _d.sent();
@@ -251,7 +257,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         _d.sent();
                         // this.delay(2000);
                         // await Promise.all([
-                        return [4 /*yield*/, page.waitForSelector('button[type=submit]')];
+                        return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 8:
                         // this.delay(2000);
                         // await Promise.all([
@@ -259,7 +265,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, page.click('button[type=submit]')];
                     case 9:
                         _d.sent();
-                        return [4 /*yield*/, page.waitForSelector("#PostingTitle")];
+                        return [4 /*yield*/, page.waitForSelector("#PostingTitle", { timeout: this.timeout })];
                     case 10:
                         _d.sent();
                         return [4 /*yield*/, this.threeClickType(page, "#PostingTitle", this.title)];
@@ -334,14 +340,14 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         // await this.delay(500);
                         _d.sent();
                         console.log('wating for imgcount');
-                        return [4 /*yield*/, page.waitForSelector('.imgcount')];
+                        return [4 /*yield*/, page.waitForSelector('.imgcount', { timeout: this.timeout })];
                     case 30:
                         _d.sent();
                         console.log('READY WITH: wating for imgcount');
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
-                        return [4 /*yield*/, page.waitForSelector('input[type=file]')];
+                        return [4 /*yield*/, page.waitForSelector('input[type=file]', { timeout: this.timeout })];
                     case 31:
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
@@ -373,7 +379,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     case 39:
                         _d.sent();
                         if (!this.immediatelyPost) return [3 /*break*/, 42];
-                        return [4 /*yield*/, page.waitForSelector("button[name='go']")];
+                        return [4 /*yield*/, page.waitForSelector("button[name='go']", { timeout: this.timeout })];
                     case 40:
                         _d.sent();
                         return [4 /*yield*/, page.click("button[name='go']")];

@@ -5,26 +5,34 @@ const {app} = require('electron');
 
 export abstract class ChannelBase {
 
-
+    protected browser:puppeteer.Browser|null;
+    
     async lunchBrowser(): Promise<puppeteer.Browser> {//override
-        let browser: puppeteer.Browser | null = null;
         try {
-            browser = await puppeteer.launch({
+            this.browser = await puppeteer.launch({
                 executablePath: ConfigHelper.getConfigValue('chrome_executable_path'),
                 headless: ConfigHelper.getConfigValue('headless', false),
                 defaultViewport: null,
                 args: ['--start-maximized', "--disable-notifications"]
             });
-            return browser;
+            return this.browser;
         } catch (e) {
             console.log('Failed to lunch browser, exception message: ' + e.toString());
-            if (browser) {
-                await browser.close()
+            if (this.browser) {
+                await this.browser.close()
             }
             return await this.lunchBrowser();
         }
+    }
 
-
+    public async kill(){
+        if(this.browser){
+            try{
+                await this.browser.close();
+                return true;
+            }catch(e){console.log('Failed to kill channel posting process, exception '+e.toString())}
+        }
+        return false;
     }
 
     protected async threeClickType(page: puppeteer.Page, selector: string, value: string) {

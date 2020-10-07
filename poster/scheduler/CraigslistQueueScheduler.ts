@@ -27,9 +27,10 @@ export class CraigslistQueueScheduler extends QueueScheduler{
         }
         let config = ConfigHelper.getConfig();
         var result = false;
+        var poster:CraigslistPoster = null;
         try {
           // let price = await PostsHelper.handlePostPrice(post,city.currency);
-          let poster = new CraigslistPoster(
+          poster = new CraigslistPoster(
             {
               username: config.craigslist_email,
               password: config.craigslist_password
@@ -52,6 +53,7 @@ export class CraigslistQueueScheduler extends QueueScheduler{
         
         } catch (e) {
           result = false;
+          await poster.kill()
           console.error(e);
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
         }

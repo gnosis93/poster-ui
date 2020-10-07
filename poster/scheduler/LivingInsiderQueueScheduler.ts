@@ -27,9 +27,10 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
         }
         let config = ConfigHelper.getConfig();
         var result = false;
+        var poster:LivinginsiderPoster|null = null;
         try {
           // let price = await PostsHelper.handlePostPrice(post,city.currency);
-          let poster = new LivinginsiderPoster(
+          poster = new LivinginsiderPoster(
             {
               username: config.livinginsider_email,
               password: config.livinginsider_password 
@@ -55,7 +56,9 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
         } catch (e) {
           result = false;
           console.error(e);
+          await poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
+          this
         }
     
         return result;

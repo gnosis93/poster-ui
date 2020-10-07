@@ -6,8 +6,8 @@ import { CraigslistPoster } from "../channels/craigslist/craigslist.group.poster
 import { BathsoldPoster } from "../channels/bathsold/bathsold.poster";
 
 export class BathSoldQueueScheduler extends QueueScheduler {
-    protected LOG_MESSAGE: any;
-    protected LOG_MESSAGE_FAIL: any;
+    protected readonly LOG_MESSAGE = 'BathSold Scheduler posted successfully';
+    protected readonly LOG_MESSAGE_FAIL = 'BathSold Scheduler posted failed';
     protected static singleton = null;
     
     protected ENABLE_SCHEDULER_KEY: string = 'bathsold_enable_scheduler';
@@ -29,9 +29,10 @@ export class BathSoldQueueScheduler extends QueueScheduler {
         }
         let config = ConfigHelper.getConfig();
         var result = false;
+        var poster:BathsoldPoster|null = null;
         try {
             // let price = await PostsHelper.handlePostPrice(post,city.currency);
-            let poster = new BathsoldPoster(
+            poster = new BathsoldPoster(
                 {
                     username: config.craigslist_email,
                     password: config.craigslist_password
@@ -57,6 +58,8 @@ export class BathSoldQueueScheduler extends QueueScheduler {
             result = false;
             console.error(e);
             LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e.toString(), post, LogChannel.scheduler);
+
+            await poster.kill();
         }
 
         return result;

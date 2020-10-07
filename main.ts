@@ -15,7 +15,7 @@ import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.
 import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.poster';
 import {QueueScheduler} from './poster/scheduler/QueueScheduler'
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
-import { LogChannel, LoggerHelper, LogEntry } from './poster/helpers/logger.helper';
+import { LogChannel, LoggerHelper, LogEntry, LogSeverity } from './poster/helpers/logger.helper';
 import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
 import { CraigslistQueueScheduler } from './poster/scheduler/CraigslistQueueScheduler';
 import { BathSoldQueueScheduler } from './poster/scheduler/BathSoldQueueScheduler';
@@ -361,7 +361,7 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
 })
 
 ipcMain.addListener('log', async (event, log: LogEntry, logChannel: LogChannel) => {
-  let logEntry = LoggerHelper.writeLog(log.message, log.additionalData, logChannel, log.logSeverity);
+  let logEntry = LoggerHelper.writeLog(log.message, log.additionalData, logChannel, log.logSeverity as LogSeverity);
   console.log('Log From Render Process', logEntry);
   return event.sender.send('log', logEntry);
 });

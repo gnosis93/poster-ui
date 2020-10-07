@@ -4,7 +4,7 @@ import * as path from 'path';
 export enum LogChannel { 'scheduler', 'general' };
 export enum LogSeverity { 'warn', 'err', 'info' }
 
-export interface LogEntry { logSeverity: LogSeverity, message: string, additionalData: any | Array<any> | null, date: number }
+export interface LogEntry { logSeverity: LogSeverity | string, message: string, additionalData: any | Array<any> | null, date: string }
 
 export class LoggerHelper extends BaseHelper {
 
@@ -20,13 +20,21 @@ export class LoggerHelper extends BaseHelper {
         this.writeLog(message,additionalData,logChannel,LogSeverity.info);
     }
 
+    private static prettifyAdditionalLogData(additionalData: any | Array<any> ): any | Array<any>{
+        if(typeof additionalData['name'] != 'undefined' && typeof additionalData['postText'] != 'undefined' ){
+            return {'PostName':additionalData.name};
+        }
+        return additionalData;
+    }
+
+
     public static writeLog(message: string, additionalData: any | Array<any> | null = null, logChannel: LogChannel = LogChannel.general, logSeverity: LogSeverity = LogSeverity.info) {
         let allLogs = this.getAllLogs(logChannel);
         let newLog = {
-            logSeverity: logSeverity,
+            logSeverity: LogSeverity[logSeverity],
             message: message,
-            additionalData: additionalData,
-            date: new Date().getTime()
+            additionalData: this.prettifyAdditionalLogData(additionalData),
+            date: new Date().toISOString()
         };
         console.log('logger event',newLog);
         allLogs.push(newLog);

@@ -9,6 +9,7 @@ import { PostImage } from '../../models/post.interface';
 export class FacebookPagePoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://facebook.com/';
     private readonly channelLoginUrl: string = 'https://en-gb.facebook.com/login/';
+    private timeout:number = 10000;//default timeout
 
     constructor(private postPages: string[], private credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
         super();
@@ -38,7 +39,7 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
 
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' });
+        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' ,  timeout: 3000 });
 
         //accept terms if required
         try {
@@ -61,6 +62,8 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
+        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
+
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         let postedPages = await this.postToPages(browser, onPageUploadedCallback);
@@ -79,7 +82,7 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
             const groupPage = await browser.newPage();
             await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
-            await groupPage.goto(group, { waitUntil: 'networkidle2' });
+            await groupPage.goto(group, { waitUntil: 'networkidle2', timeout: 3000  });
             // await groupPage.click('div[aria-label="Create Post"]');
 
             // await this.delay(2000);

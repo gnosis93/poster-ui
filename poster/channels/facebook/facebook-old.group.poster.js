@@ -93,6 +93,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
         _this.content = content;
         _this.channelUrl = 'https://facebook.com/';
         _this.channelLoginUrl = 'https://en-gb.facebook.com/login/';
+        _this.timeout = 10000; //default timeout
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookGroupPoster";
         }
@@ -122,7 +123,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 2:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' })];
+                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2', timeout: this.timeout })];
                     case 3:
                         _b.sent();
                         return [4 /*yield*/, loginPage.type('#email', username)];
@@ -134,7 +135,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.click('#loginbutton')];
                     case 6:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.waitForNavigation()];
+                        return [4 /*yield*/, loginPage.waitForNavigation({ timeout: this.timeout })];
                     case 7:
                         _b.sent();
                         return [2 /*return*/, loginPage];
@@ -145,24 +146,29 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
     FacebookOldGroupPoster.prototype.run = function (onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var browser, loginPage, postedPages;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.lunchBrowser()];
+            var _a, browser, loginPage, postedPages;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = this;
+                        return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', this.timeout)];
                     case 1:
-                        browser = _a.sent();
-                        return [4 /*yield*/, this.login(browser)];
+                        _a.timeout = _b.sent();
+                        return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        loginPage = _a.sent();
-                        return [4 /*yield*/, this.postToPages(browser, onPageUploadedCallback)];
+                        browser = _b.sent();
+                        return [4 /*yield*/, this.login(browser)];
                     case 3:
-                        postedPages = _a.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 5];
-                        return [4 /*yield*/, browser.close()];
+                        loginPage = _b.sent();
+                        return [4 /*yield*/, this.postToPages(browser, onPageUploadedCallback)];
                     case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: return [2 /*return*/, true];
+                        postedPages = _b.sent();
+                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 6];
+                        return [4 /*yield*/, browser.close()];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
+                    case 6: return [2 /*return*/, true];
                 }
             });
         });
@@ -190,7 +196,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                     case 3:
                         groupPage = _d.sent();
                         // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-                        return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2' })];
+                        return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2', timeout: this.timeout })];
                     case 4:
                         // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
                         _d.sent();

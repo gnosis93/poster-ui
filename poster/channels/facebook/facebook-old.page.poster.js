@@ -126,7 +126,8 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.type('#pass', password)];
                     case 10:
                         _b.sent();
-                        loginBtn = '#loginbutton';
+                        loginBtn = '._xktge' //'#loginbutton';
+                        ;
                         return [4 /*yield*/, loginPage.waitForSelector(loginBtn)];
                     case 11:
                         _b.sent();

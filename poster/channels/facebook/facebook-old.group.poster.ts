@@ -7,6 +7,7 @@ import { PostImage } from '../../models/post.interface';
 export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
     private readonly channelLoginUrl:string = 'https://en-gb.facebook.com/login/';
+    private timeout:number = 10000;//default timeout
 
     constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:PostImage[],private content:string){
         super();
@@ -35,21 +36,21 @@ export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
         let {username,password} = this.getCredentials();
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl , { waitUntil: 'networkidle2' });
+        await loginPage.goto(this.channelLoginUrl , { waitUntil: 'networkidle2' ,timeout:this.timeout });
         await loginPage.type('#email', username);
         await loginPage.type('#pass' , password);
         await loginPage.click('#loginbutton');
-        await loginPage.waitForNavigation();
+        await loginPage.waitForNavigation({timeout: this.timeout });
 
         return loginPage;
 
     }
 
     public async run(onPageUploadedCallback:Function|null=null):Promise<boolean>{
+        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
         let browser     = await this.lunchBrowser();
         let loginPage   = await this.login(browser);
         let postedPages = await this.postToPages(browser,onPageUploadedCallback);
-
         if((ConfigHelper.getConfigValue('headless',false) ) === true || ConfigHelper.getConfigValue('close_browser')){
            await browser.close();
         }
@@ -66,7 +67,7 @@ export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
             const groupPage = await browser.newPage();
             // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
-            await groupPage.goto(group,{ waitUntil: 'networkidle2' });
+            await groupPage.goto(group,{ waitUntil: 'networkidle2',timeout:this.timeout });
             await groupPage.keyboard.press('p');
             // await groupPage.click('textarea#js_1g');
 

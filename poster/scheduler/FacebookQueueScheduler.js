@@ -74,7 +74,7 @@ var FacebookPageQueueScheduler = /** @class */ (function (_super) {
     };
     FacebookPageQueueScheduler.prototype.handleQueueItem = function (post, city) {
         return __awaiter(this, void 0, void 0, function () {
-            var config, result, poster, poster, e_1;
+            var config, result, poster, e_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -83,6 +83,7 @@ var FacebookPageQueueScheduler = /** @class */ (function (_super) {
                         }
                         config = config_helper_1.ConfigHelper.getConfig();
                         result = false;
+                        poster = null;
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
@@ -111,6 +112,7 @@ var FacebookPageQueueScheduler = /** @class */ (function (_super) {
                         e_1 = _a.sent();
                         result = false;
                         console.error(e_1);
+                        poster.kill();
                         logger_helper_1.LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e_1.toString(), post, logger_helper_1.LogChannel.scheduler);
                         return [3 /*break*/, 7];
                     case 7: return [2 /*return*/, result];

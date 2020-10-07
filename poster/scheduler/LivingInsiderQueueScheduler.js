@@ -83,9 +83,11 @@ var LivinginsiderQueueScheduler = /** @class */ (function (_super) {
                         }
                         config = config_helper_1.ConfigHelper.getConfig();
                         result = false;
+                        poster = null;
                         _d.label = 1;
                     case 1:
-                        _d.trys.push([1, 3, , 4]);
+                        _d.trys.push([1, 3, , 5]);
+                        // let price = await PostsHelper.handlePostPrice(post,city.currency);
                         poster = new livinginsider_group_poster_1.LivinginsiderPoster({
                             username: config.livinginsider_email,
                             password: config.livinginsider_password
@@ -94,14 +96,18 @@ var LivinginsiderQueueScheduler = /** @class */ (function (_super) {
                     case 2:
                         result = _d.sent();
                         logger_helper_1.LoggerHelper.info(this.LOG_MESSAGE, post, logger_helper_1.LogChannel.scheduler);
-                        return [3 /*break*/, 4];
+                        return [3 /*break*/, 5];
                     case 3:
                         e_1 = _d.sent();
                         result = false;
                         console.error(e_1);
+                        return [4 /*yield*/, poster.kill()];
+                    case 4:
+                        _d.sent();
                         logger_helper_1.LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e_1.toString(), post, logger_helper_1.LogChannel.scheduler);
-                        return [3 /*break*/, 4];
-                    case 4: return [2 /*return*/, result];
+                        this;
+                        return [3 /*break*/, 5];
+                    case 5: return [2 /*return*/, result];
                 }
             });
         });

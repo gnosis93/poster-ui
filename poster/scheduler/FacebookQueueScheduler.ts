@@ -28,10 +28,11 @@ export class FacebookPageQueueScheduler extends QueueScheduler{
         }
         let config = ConfigHelper.getConfig();
         var result = false;
+        var poster:FacebookPagePoster|FacebookOldPagePoster|null = null;
         try {
           // let price = await PostsHelper.handlePostPrice(post,city.currency);
           if(config.facebook_old_style === true){
-            let poster = new FacebookPagePoster(
+            poster = new FacebookPagePoster(
               config.facebook_pages,
               {
                 username: config.facebook_email,
@@ -43,7 +44,7 @@ export class FacebookPageQueueScheduler extends QueueScheduler{
             
             result = await poster.run();
           }else{
-            let poster = new FacebookOldPagePoster(
+            poster = new FacebookOldPagePoster(
               config.facebook_pages,
               {
                 username: config.facebook_email,
@@ -62,6 +63,7 @@ export class FacebookPageQueueScheduler extends QueueScheduler{
         } catch (e) {
           result = false;
           console.error(e);
+          poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
         }
     

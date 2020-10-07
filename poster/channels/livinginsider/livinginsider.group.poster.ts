@@ -9,6 +9,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelCreatePostUrl: string = 'https://www.livinginsider.com/living_buysell.php';
     private readonly channelLogoutUrl: string = 'https://www.livinginsider.com/logout.php';
     private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
+    private timeout:number = 10000;//default timeout
 
     constructor(
         private credentials: { username: string, password: string },
@@ -53,7 +54,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';        
         try{
             await Promise.all([
-                loginPage.waitForSelector(closeAdModalSelector),
+                loginPage.waitForSelector(closeAdModalSelector,{timeout: this.timeout }),
                 await loginPage.click(closeAdModalSelector),
                 this.delay(1000)
             ]);
@@ -97,12 +98,13 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
+        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
         let browser = await this.lunchBrowser();
         let loginPage = await this.login(browser);
         await this.postToPages(loginPage, onPageUploadedCallback);
 
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
-            // await browser.close();
+            await browser.close();
         }
 
         return true;
@@ -148,18 +150,18 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         //enter project name (Unknown project)
         await page.click('#select2-web_project_id-container');
-        await page.waitForSelector('.select2-search__field');
+        await page.waitForSelector('.select2-search__field', { timeout: 3000 });
         await page.type('.select2-search__field', 'Unknown project');
-        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: 3000 });
         await page.click('li.select2-results__option.select2-results__option--highlighted');
         await this.delay(2000);
 
         //enter zone name (Pattaya)
-        await page.waitForSelector('#select2-web_zone_id-container');
+        await page.waitForSelector('#select2-web_zone_id-container', { timeout: 3000 });
         await page.click('#select2-web_zone_id-container');
-        await page.waitForSelector('.select2-search__field');
+        await page.waitForSelector('.select2-search__field', { timeout: 3000 });
         await page.type('.select2-search__field', 'Pattaya');
-        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: 3000 });
         await page.click('li.select2-results__option.select2-results__option--highlighted');
 
         //enter title (TH)
@@ -188,9 +190,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //click on next step
         let btnNextSelector = 'button[type=submit].btn.btn-default-out.circle.flo-right';
         await Promise.all([
-            await page.waitForSelector(btnNextSelector),
+            await page.waitForSelector(btnNextSelector, { timeout: 3000 }),
             await page.click(btnNextSelector),
-            page.waitForNavigation()
+            page.waitForNavigation( { timeout: 3000 })
         ]);
         
         /** 
@@ -220,7 +222,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.type('#web_price',this.price);
 
         let imagesInputSelector = 'input[type=file][multiple]';
-        await page.waitForSelector(imagesInputSelector);
+        await page.waitForSelector(imagesInputSelector, { timeout: 3000 });
 
         const inputUploadHandles = await page.$$(imagesInputSelector);
         const inputUploadHandle  = inputUploadHandles[0];
@@ -237,17 +239,17 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         let acceptCoAgentSelector = '#post_data>div.btn-area>button';
         await this.delay(500);
-        await page.waitForSelector(acceptCoAgentSelector);
+        await page.waitForSelector(acceptCoAgentSelector, { timeout: 3000 });
         await page.click(acceptCoAgentSelector);
-        await page.waitForNavigation();
+        await page.waitForNavigation( { timeout: 3000 });
 
         let savePublishSelector = '#save_publish'; 
-        await page.waitForSelector(savePublishSelector);
+        await page.waitForSelector(savePublishSelector, { timeout: 3000 });
         if(this.immediatelyPost){
             await page.click(savePublishSelector);
         }else{
             let saveDraftSelector = '#save_draft'; 
-            await page.waitForSelector(saveDraftSelector);
+            await page.waitForSelector(saveDraftSelector, { timeout: 3000 });
             await page.click(saveDraftSelector);
         }
 
