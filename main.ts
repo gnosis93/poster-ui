@@ -21,6 +21,7 @@ import { CraigslistQueueScheduler } from './poster/scheduler/CraigslistQueueSche
 import { BathSoldQueueScheduler } from './poster/scheduler/BathSoldQueueScheduler';
 import { LivinginsiderQueueScheduler } from './poster/scheduler/LivingInsiderQueueScheduler';
 import { FacebookPageQueueScheduler } from './poster/scheduler/FacebookQueueScheduler';
+import { ScreenshootHelper } from './poster/helpers/screenshot.helper';
 
 //importing necessary modules
 
@@ -167,8 +168,8 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   console.log(config);
 
   let result = true;
+  let poster:ChannelBase | null = null;
   try {
-    let poster: IChannel | null = null;
 
     if (ConfigHelper.getConfigValue<boolean>('facebook_old_style', true) === true) {
       poster = new FacebookOldPagePoster(
@@ -196,6 +197,8 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
+    await ScreenshootHelper.takeErrorScreenShot('facebook_pages_manual_'+post?.metaData?.title,poster.Browser);
+
     result = false;
     console.error(e);
   }
@@ -206,7 +209,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
 ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: ChannelCity) => {
   let config = ConfigHelper.getConfig();
-  let poster: IChannel | null = null;
+  let poster: ChannelBase | null = null;
   let result = true;
 
   try {
@@ -232,6 +235,8 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: Ch
     return event.sender.send('submitPostToCraigslist', result);
 
   } catch (e) {
+    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser);
+
     result = false;
     console.error(e);
   }
@@ -241,7 +246,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: Ch
 
 ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
   let config = ConfigHelper.getConfig();
-  let poster: IChannel | null = null;
+  let poster: ChannelBase | null = null;
   let result = true;
 
   try {
@@ -269,6 +274,8 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
     return event.sender.send('submitPostToLivinginsider', result);
 
   } catch (e) {
+    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser);
+
     result = false;
     console.error(e);
   }
@@ -282,9 +289,10 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
   console.log(config);
 
   let result = true;
+  let poster: ChannelBase | null = null;
+
   try {
 
-    let poster: IChannel | null = null;
 
     if (ConfigHelper.getConfigValue<boolean>('facebook_old_style', true) === true) {
       poster = new FacebookOldGroupPoster(
@@ -312,6 +320,8 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
+    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser);
+
     result = false;
     console.error(e);
   }
@@ -326,9 +336,9 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
   console.log(config);
 
   let result = true;
+  let poster: ChannelBase | null = null;
   try {
 
-    let poster: IChannel | null = null;
 
 
     poster = new BathsoldPoster(
@@ -354,6 +364,9 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
 
   } catch (e) {
     result = false;
+    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser);
+
+
     console.error(e);
   }
 

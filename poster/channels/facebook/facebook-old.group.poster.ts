@@ -8,7 +8,6 @@ import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
     private readonly channelUrl:string = 'https://facebook.com/';
     private readonly channelLoginUrl:string = 'https://en-gb.facebook.com/login/';
-    private timeout:number = 10000;//default timeout
 
     constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:PostImage[],private content:string){
         super();

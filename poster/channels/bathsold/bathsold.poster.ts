@@ -11,7 +11,6 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
     private readonly postADUrl: string = 'https://www.bahtsold.com/members/select_ad_category';
     private readonly maxLoginAttempts: number = 10;
     private loginAttemptsCount: number = 0;
-    private timeout: number = 10000;//default timeout
 
     constructor(
         private credentials: { username: string, password: string },
@@ -43,36 +42,36 @@ export class BathsoldPoster extends ChannelBase implements IChannel {
     }
 
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
-        let loginPage = await this.getActivePage(browser, 1200);
+        let loginPage = await this.getActivePage(browser, this.timeout);
         let { username, password } = this.getCredentials();
         await this.delay(500);
 
         // await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
         let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
-        await Promise.all([
-            await loginPage.goto(this.channelUrl, { waitUntil: 'load' }),
-            loginPage.waitForSelector(loginBTN, { timeout: this.timeout }),
-            await loginPage.click(loginBTN),
+        // await Promise.all([
+        await loginPage.goto(this.channelUrl, { waitUntil: 'load' }),
+        await loginPage.waitForSelector(loginBTN, { timeout: this.timeout }),
+        await loginPage.click(loginBTN),
 
-        ]);
+        // ]);
 
         await this.delay(500);
 
         let loginUsernameSelector = '#login-username';
-        await loginPage.waitForSelector(loginUsernameSelector, { timeout: this.timeout }),
-        await loginPage.type(loginUsernameSelector, username),
+        await loginPage.waitForSelector(loginUsernameSelector, { timeout: this.timeout });
+        // await loginPage.type(loginUsernameSelector, username);
+        await this.type(loginUsernameSelector,username,loginPage);
 
+        // await this.delay(10000),
+        await this.type('#login-password',password,loginPage);
 
-        await this.delay(200),
-        await loginPage.type('#login-password', password)
+        // await loginPage.type(, )
+        // await this.delay(10000);
 
         let loginBTNSelector = 'button.btn.btn-md.btn-blue.block-element';
 
-        await Promise.all([
-            await loginPage.waitForSelector(loginBTNSelector, { timeout: this.timeout }),
-            await loginPage.click(loginBTNSelector),
-            // this.clickTickboxByIndex(loginPage,0,loginBTNSelector)
-        ]);
+        await loginPage.waitForSelector(loginBTNSelector, { timeout: this.timeout }),
+        await loginPage.click(loginBTNSelector),
 
         await loginPage.waitForSelector('.app-logo', { timeout: this.timeout })
 

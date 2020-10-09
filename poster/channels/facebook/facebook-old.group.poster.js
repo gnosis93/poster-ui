@@ -94,7 +94,6 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
         _this.content = content;
         _this.channelUrl = 'https://facebook.com/';
         _this.channelLoginUrl = 'https://en-gb.facebook.com/login/';
-        _this.timeout = 10000; //default timeout
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookGroupPoster";
         }

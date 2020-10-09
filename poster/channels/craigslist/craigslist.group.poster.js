@@ -90,7 +90,6 @@ var CraigslistPoster = /** @class */ (function (_super) {
         _this.immediatelyPost = immediatelyPost;
         _this.channelUrl = 'https://craigslist.com/';
         _this.channelLoginUrl = 'https://accounts.craigslist.org/login';
-        _this.timeout = 10000; //default timeout
         _this.locationsPostUrls = [
             {
                 'city': "bangkok",
@@ -171,7 +170,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
                     case 2:
                         _b.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' })];
+                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2', timeout: this.timeout })];
                     case 3:
                         _b.sent();
                         return [4 /*yield*/, loginPage.type('#inputEmailHandle', username)];
@@ -233,7 +232,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         cityPostURL = this.getCityUrl();
                         return [4 /*yield*/, page.goto(cityPostURL, {
                                 waitUntil: "networkidle2",
-                                timeout: 0
+                                timeout: this.timeout
                             })];
                     case 1:
                         _d.sent();

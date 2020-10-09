@@ -10,7 +10,6 @@ import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 export class FacebookPagePoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://facebook.com/';
     private readonly channelLoginUrl: string = 'https://en-gb.facebook.com/login/';
-    private timeout:number = 10000;//default timeout
 
     constructor(private postPages: string[], private credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
         super();
@@ -40,12 +39,12 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
 
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' ,  timeout: 3000 });
+        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' ,  timeout: this.timeout });
 
         //accept terms if required
         try {
             let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, { timeout: 3000 });
+            await loginPage.waitForSelector(btnAcceptTerms, {timeout: this.timeout});
             await loginPage.click(btnAcceptTerms);
         } catch (e) {
             console.log('No accept terms key found');
@@ -84,7 +83,7 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
             const groupPage = await browser.newPage();
             await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
-            await groupPage.goto(group, { waitUntil: 'networkidle2', timeout: 3000  });
+            await groupPage.goto(group, { waitUntil: 'networkidle2',timeout: this.timeout  });
             // await groupPage.click('div[aria-label="Create Post"]');
 
             // await this.delay(2000);

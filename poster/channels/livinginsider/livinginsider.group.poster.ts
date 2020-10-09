@@ -10,7 +10,6 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
     private readonly channelCreatePostUrl: string = 'https://www.livinginsider.com/living_buysell.php';
     private readonly channelLogoutUrl: string = 'https://www.livinginsider.com/logout.php';
     private readonly chromeSessionPath = 'LivinginsiderSession';//this will not work on windows , will work fine on UNIX like OSes
-    private timeout:number = 10000;//default timeout
 
 
     
@@ -88,7 +87,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         let loginBtnSelector = '#btn-signin'
         await loginPage.waitForSelector(loginBtnSelector);
         await loginPage.click(loginBtnSelector);
-        await loginPage.waitForNavigation();
+        await loginPage.waitForNavigation({timeout:this.timeout});
         
         return loginPage;
     }
@@ -128,7 +127,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         
         try{
             await Promise.all([
-                page.waitForSelector(closePrivacyModalSelector),
+                page.waitForSelector(closePrivacyModalSelector,{timeout:this.timeout}),
                 await page.click(closePrivacyModalSelector),
                 this.delay(200)
             ]);
@@ -145,9 +144,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.click('#web_post_from2');
 
         //select Condo as property type
-        await page.waitForSelector('#select2-buildingList-container');
+        await page.waitForSelector('#select2-buildingList-container',{timeout:this.timeout});
         await page.click('#select2-buildingList-container');
-        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted');
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted',{timeout:this.timeout});
         await page.click('li.select2-results__option.select2-results__option--highlighted');
 
         //select For Sale as post type
@@ -155,18 +154,18 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         //enter project name (Unknown project)
         await page.click('#select2-web_project_id-container');
-        await page.waitForSelector('.select2-search__field', { timeout: 3000 });
+        await page.waitForSelector('.select2-search__field', { timeout: this.timeout });
         await page.type('.select2-search__field', 'Unknown project');
-        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: 3000 });
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: this.timeout });
         await page.click('li.select2-results__option.select2-results__option--highlighted');
         await this.delay(2000);
 
         //enter zone name (Pattaya)
-        await page.waitForSelector('#select2-web_zone_id-container', { timeout: 3000 });
+        await page.waitForSelector('#select2-web_zone_id-container', { timeout: this.timeout });
         await page.click('#select2-web_zone_id-container');
-        await page.waitForSelector('.select2-search__field', { timeout: 3000 });
+        await page.waitForSelector('.select2-search__field', { timeout: this.timeout });
         await page.type('.select2-search__field', 'Pattaya');
-        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: 3000 });
+        await page.waitForSelector('li.select2-results__option.select2-results__option--highlighted', { timeout: this.timeout });
         await page.click('li.select2-results__option.select2-results__option--highlighted');
 
         //enter title (TH)
@@ -195,9 +194,9 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         //click on next step
         let btnNextSelector = 'button[type=submit].btn.btn-default-out.circle.flo-right';
         await Promise.all([
-            await page.waitForSelector(btnNextSelector, { timeout: 3000 }),
+            await page.waitForSelector(btnNextSelector, { timeout: this.timeout }),
             await page.click(btnNextSelector),
-            page.waitForNavigation( { timeout: 3000 })
+            page.waitForNavigation( { timeout: this.timeout })
         ]);
         
         /** 
@@ -227,7 +226,7 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
         await page.type('#web_price',this.price);
 
         let imagesInputSelector = 'input[type=file][multiple]';
-        await page.waitForSelector(imagesInputSelector, { timeout: 3000 });
+        await page.waitForSelector(imagesInputSelector, { timeout: this.timeout });
 
         const inputUploadHandles = await page.$$(imagesInputSelector);
         const inputUploadHandle  = inputUploadHandles[0];
@@ -244,17 +243,17 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         let acceptCoAgentSelector = '#post_data>div.btn-area>button';
         await this.delay(500);
-        await page.waitForSelector(acceptCoAgentSelector, { timeout: 3000 });
+        await page.waitForSelector(acceptCoAgentSelector, { timeout: this.timeout });
         await page.click(acceptCoAgentSelector);
-        await page.waitForNavigation( { timeout: 3000 });
+        await page.waitForNavigation( { timeout: this.timeout });
 
         let savePublishSelector = '#save_publish'; 
-        await page.waitForSelector(savePublishSelector, { timeout: 3000 });
+        await page.waitForSelector(savePublishSelector, { timeout: this.timeout });
         if(this.immediatelyPost){
             await page.click(savePublishSelector);
         }else{
             let saveDraftSelector = '#save_draft'; 
-            await page.waitForSelector(saveDraftSelector, { timeout: 3000 });
+            await page.waitForSelector(saveDraftSelector, { timeout: this.timeout });
             await page.click(saveDraftSelector);
         }
 

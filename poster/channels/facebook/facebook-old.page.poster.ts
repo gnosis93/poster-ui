@@ -46,7 +46,7 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
         //accept terms if required
         try {
             let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, { timeout: 3000 });
+            await loginPage.waitForSelector(btnAcceptTerms, {timeout: this.timeout });
             await loginPage.click(btnAcceptTerms);
         } catch (e) {
             console.log('No accept terms key found');
@@ -65,7 +65,8 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
     }
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
-        
+        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
+
         this.browser = await this.lunchBrowser();
         let loginPage = await this.login(this.browser);
         let postedPages = await this.postToPages(this.browser, onPageUploadedCallback);

@@ -8,7 +8,6 @@ import { ScreenshootHelper } from '../../helpers/screenshot.helper';
 export class CraigslistPoster extends ChannelBase implements IChannel {
     private readonly channelUrl: string = 'https://craigslist.com/';
     private readonly channelLoginUrl: string = 'https://accounts.craigslist.org/login';
-    private timeout:number = 10000;//default timeout
 
     private readonly locationsPostUrls = [
         {
@@ -106,7 +105,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let { username, password } = this.getCredentials();
 
         await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' });
+        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' ,timeout:this.timeout});
         await loginPage.type('#inputEmailHandle', username);
         await loginPage.type('#inputPassword', password);
         await loginPage.click('#login');
@@ -139,7 +138,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         let cityPostURL = this.getCityUrl();
         await page.goto(cityPostURL, {
             waitUntil: "networkidle2",
-            timeout: 0
+            timeout: this.timeout
         });
 
         await page.setDefaultNavigationTimeout(this.timeout);

@@ -104,7 +104,6 @@ var BathsoldPoster = /** @class */ (function (_super) {
         _this.postADUrl = 'https://www.bahtsold.com/members/select_ad_category';
         _this.maxLoginAttempts = 10;
         _this.loginAttemptsCount = 0;
-        _this.timeout = 10000; //default timeout
         if (!credentials || !credentials.username || !credentials.password) {
             throw "Invalid Credentials Object given to CraigslistGroupPoster";
         }
@@ -118,65 +117,63 @@ var BathsoldPoster = /** @class */ (function (_super) {
     };
     BathsoldPoster.prototype.login = function (browser) {
         return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, loginBTN, _b, _c, _d, loginUsernameSelector, _e, _f, _g, loginBTNSelector, _h, _j, _k, loginBTNCount;
-            return __generator(this, function (_l) {
-                switch (_l.label) {
-                    case 0: return [4 /*yield*/, this.getActivePage(browser, 1200)];
+            var loginPage, _a, username, password, loginBTN, loginUsernameSelector, loginBTNSelector, loginBTNCount;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, this.getActivePage(browser, this.timeout)];
                     case 1:
-                        loginPage = _l.sent();
+                        loginPage = _b.sent();
                         _a = this.getCredentials(), username = _a.username, password = _a.password;
                         return [4 /*yield*/, this.delay(500)];
                     case 2:
-                        _l.sent();
+                        _b.sent();
                         loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
-                        _c = (_b = Promise).all;
+                        // await Promise.all([
                         return [4 /*yield*/, loginPage.goto(this.channelUrl, { waitUntil: 'load' })];
                     case 3:
-                        _d = [
-                            _l.sent(),
-                            loginPage.waitForSelector(loginBTN, { timeout: this.timeout })
-                        ];
+                        // await Promise.all([
+                        _b.sent();
+                        return [4 /*yield*/, loginPage.waitForSelector(loginBTN, { timeout: this.timeout })];
+                    case 4:
+                        _b.sent();
                         return [4 /*yield*/, loginPage.click(loginBTN)];
-                    case 4: return [4 /*yield*/, _c.apply(_b, [_d.concat([
-                                _l.sent()
-                            ])])];
                     case 5:
-                        _l.sent();
+                        _b.sent();
+                        // ]);
                         return [4 /*yield*/, this.delay(500)];
                     case 6:
-                        _l.sent();
+                        // await Promise.all([
+                        // ]);
+                        _b.sent();
                         loginUsernameSelector = '#login-username';
-                        _f = (_e = Promise).all;
-                        _g = [loginPage.waitForSelector(loginUsernameSelector, { timeout: this.timeout })];
-                        return [4 /*yield*/, loginPage.type(loginUsernameSelector, username)];
-                    case 7: return [4 /*yield*/, _f.apply(_e, [_g.concat([
-                                _l.sent()
-                            ])])];
+                        return [4 /*yield*/, loginPage.waitForSelector(loginUsernameSelector, { timeout: this.timeout })];
+                    case 7:
+                        _b.sent();
+                        // await loginPage.type(loginUsernameSelector, username);
+                        return [4 /*yield*/, this.type(loginUsernameSelector, username, loginPage)];
                     case 8:
-                        _l.sent();
-                        return [4 /*yield*/, Promise.all([
-                                this.delay(200),
-                                loginPage.type('#login-password', password)
-                            ])];
+                        // await loginPage.type(loginUsernameSelector, username);
+                        _b.sent();
+                        // await this.delay(10000),
+                        return [4 /*yield*/, this.type('#login-password', password, loginPage)];
                     case 9:
-                        _l.sent();
+                        // await this.delay(10000),
+                        _b.sent();
                         loginBTNSelector = 'button.btn.btn-md.btn-blue.block-element';
-                        _j = (_h = Promise).all;
-                        _k = [loginPage.waitForSelector(loginBTNSelector, { timeout: this.timeout })];
+                        return [4 /*yield*/, loginPage.waitForSelector(loginBTNSelector, { timeout: this.timeout })];
+                    case 10:
+                        _b.sent();
                         return [4 /*yield*/, loginPage.click(loginBTNSelector)];
-                    case 10: return [4 /*yield*/, _j.apply(_h, [_k.concat([
-                                _l.sent()
-                            ])])];
                     case 11:
-                        _l.sent();
+                        _b.sent();
                         return [4 /*yield*/, loginPage.waitForSelector('.app-logo', { timeout: this.timeout })
                             // let loginBTN = 'a[href="#signInModal"].btn-placead.modal-trigger';
                         ];
                     case 12:
-                        _l.sent();
+                        _b.sent();
                         return [4 /*yield*/, loginPage.$$(loginBTN)];
                     case 13:
-                        loginBTNCount = (_l.sent()).length;
+                        loginBTNCount = (_b.sent()).length;
                         if (!(loginBTNCount > 0)) return [3 /*break*/, 16];
                         this.loginAttemptsCount++;
                         if (!(this.loginAttemptsCount > this.maxLoginAttempts)) return [3 /*break*/, 14];
@@ -185,7 +182,7 @@ var BathsoldPoster = /** @class */ (function (_super) {
                     case 14:
                         console.log('Login Failed, reattempting login recursively. Count: ' + this.loginAttemptsCount);
                         return [4 /*yield*/, this.login(browser)];
-                    case 15: return [2 /*return*/, (_l.sent())];
+                    case 15: return [2 /*return*/, (_b.sent())];
                     case 16: return [2 /*return*/, loginPage];
                 }
             });

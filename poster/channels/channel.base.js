@@ -70,12 +70,39 @@ var config_helper_1 = require("../helpers/config.helper");
 var app = require('electron').app;
 var ChannelBase = /** @class */ (function () {
     function ChannelBase() {
+        this.timeout = 10000; //default timeout
     }
     Object.defineProperty(ChannelBase.prototype, "Browser", {
         get: function () { return this.browser; },
         enumerable: false,
         configurable: true
     });
+    ChannelBase.prototype.type = function (inputSelector, text, page) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    // await page.waitForSelector(querySelector,{timeout:this.timeout})
+                    // await page.evaluate((text) => { (document.querySelector(querySelector) as any).value = text; }, value)
+                    // return true;
+                    return [4 /*yield*/, page.evaluate(function (inputSelector, text) {
+                            // Refer to https://stackoverflow.com/a/46012210/440432 for the below solution/code
+                            var inputElement = document.querySelector(inputSelector);
+                            var nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+                            nativeInputValueSetter.call(inputElement, text);
+                            var ev2 = new Event('input', { bubbles: true });
+                            inputElement.dispatchEvent(ev2);
+                        }, inputSelector, text)];
+                    case 1:
+                        // await page.waitForSelector(querySelector,{timeout:this.timeout})
+                        // await page.evaluate((text) => { (document.querySelector(querySelector) as any).value = text; }, value)
+                        // return true;
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     ChannelBase.prototype.lunchBrowser = function () {
         return __awaiter(this, void 0, void 0, function () {
             var _a, e_1;

@@ -7,6 +7,25 @@ export abstract class ChannelBase {
 
     protected browser:puppeteer.Browser|null;
     public get Browser(){return this.browser}
+    protected timeout: number = 10000;//default timeout
+
+    abstract run();
+
+    async type(inputSelector:string,text:string,page:puppeteer.Page){
+        // await page.waitForSelector(querySelector,{timeout:this.timeout})
+        // await page.evaluate((text) => { (document.querySelector(querySelector) as any).value = text; }, value)
+        // return true;
+        await page.evaluate((inputSelector, text) => {
+            // Refer to https://stackoverflow.com/a/46012210/440432 for the below solution/code
+            const inputElement = document.querySelector(inputSelector);
+            const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+            nativeInputValueSetter.call(inputElement, text);
+        
+            const ev2 = new Event('input', {bubbles: true});
+            inputElement.dispatchEvent(ev2);
+        
+          }, inputSelector, text);
+    }
 
     async lunchBrowser(): Promise<puppeteer.Browser> {//override
         try {

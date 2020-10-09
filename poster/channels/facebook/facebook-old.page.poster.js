@@ -110,7 +110,7 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                     case 4:
                         _b.trys.push([4, 7, , 8]);
                         btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-                        return [4 /*yield*/, loginPage.waitForSelector(btnAcceptTerms, { timeout: 3000 })];
+                        return [4 /*yield*/, loginPage.waitForSelector(btnAcceptTerms, { timeout: this.timeout })];
                     case 5:
                         _b.sent();
                         return [4 /*yield*/, loginPage.click(btnAcceptTerms)];
@@ -146,29 +146,33 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     FacebookOldPagePoster.prototype.run = function (onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var _a, loginPage, postedPages;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var _a, _b, loginPage, postedPages;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         _a = this;
-                        return [4 /*yield*/, this.lunchBrowser()];
+                        return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', this.timeout)];
                     case 1:
-                        _a.browser = _b.sent();
-                        return [4 /*yield*/, this.login(this.browser)];
+                        _a.timeout = _c.sent();
+                        _b = this;
+                        return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        loginPage = _b.sent();
-                        return [4 /*yield*/, this.postToPages(this.browser, onPageUploadedCallback)];
+                        _b.browser = _c.sent();
+                        return [4 /*yield*/, this.login(this.browser)];
                     case 3:
-                        postedPages = _b.sent();
-                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeSuccessScreenShot('FB-OLD-PAGE-POST', this.Browser)];
+                        loginPage = _c.sent();
+                        return [4 /*yield*/, this.postToPages(this.browser, onPageUploadedCallback)];
                     case 4:
-                        _b.sent();
-                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 6];
-                        return [4 /*yield*/, this.browser.close()];
+                        postedPages = _c.sent();
+                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeSuccessScreenShot('FB-OLD-PAGE-POST', this.Browser)];
                     case 5:
-                        _b.sent();
-                        _b.label = 6;
-                    case 6: return [2 /*return*/, true];
+                        _c.sent();
+                        if (!((config_helper_1.ConfigHelper.getConfigValue('headless', false)) === true || config_helper_1.ConfigHelper.getConfigValue('close_browser'))) return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.browser.close()];
+                    case 6:
+                        _c.sent();
+                        _c.label = 7;
+                    case 7: return [2 /*return*/, true];
                 }
             });
         });

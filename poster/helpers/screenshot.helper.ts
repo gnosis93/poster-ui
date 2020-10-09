@@ -8,11 +8,11 @@ import * as moment from 'moment';
 export class ScreenshootHelper extends BaseHelper{
 
     public static  async takeErrorScreenShot(msg:string,browser:puppeteer.Browser){
-        return this.takeScreenShot(msg,browser,'error');
+        return await this.takeScreenShot(msg,browser,'error');
     }
 
     public static async takeSuccessScreenShot(msg:string,browser:puppeteer.Browser){
-        return this.takeScreenShot(msg,browser,'success');
+        return await  this.takeScreenShot(msg,browser,'success');
     }
 
     private static async takeScreenShot(msg:string,browser:puppeteer.Browser,type:'error'|'success'){
@@ -21,17 +21,22 @@ export class ScreenshootHelper extends BaseHelper{
             return;
         }
         let page = await this.getActivePage(browser);
-        let fileName =  moment().format('HH:MM')+'_'+msg+'.jpg';
-        let fullPath =    path.join(
+        let fileName:any =  moment().format('HH:MM')+'_'+msg+'.jpg';
+        fileName = fileName.replaceAll(':','-');
+        fileName = fileName.replaceAll(' ','-');
+
+        let fullPath:any = path.join(
             (await this.getScreenshotDir(type)),
             fileName
         );
-
+        
+        console.log(fileName,fullPath,moment().format('HH:MM'),msg)
         await page.screenshot({
             type: "jpeg",
             fullPage: true,
             path:fullPath
         });
+
         console.log('screenshot saved at:'+fullPath);
     }
 
