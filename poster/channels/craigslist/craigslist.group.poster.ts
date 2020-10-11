@@ -173,10 +173,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         if(fromEmailFieldExists !== null){
             await this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username);
         }
-
-
         // await page.type("input[name='surface_area']",'');
-
         let housingTypeSelectorExists = await page.$("select[name='housing_type']") !== null ? true: false;
         if(housingTypeSelectorExists === true){
             await page.select("select[name='housing_type']", '2');
@@ -186,7 +183,6 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // this.delay(500);
 
         await page.click('input.show_phone_ok');
-
         await page.type("input[name='contact_phone']", this.phoneNumber);
         await page.type("input[name='contact_phone_extension']", this.phoneExtension);
 
@@ -202,8 +198,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         await Promise.all([
             page.waitForNavigation({ waitUntil: 'load'}),
             await page.click('button[type=submit]'),
-
-        ])
+        ]);
       
         console.log('wating for imgcount');
         await page.waitForSelector('.imgcount',{timeout: this.timeout })
@@ -234,7 +229,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         while (imageCount < filesToUpload.length) {
             await this.delay(500);
             imageCount = (await this.getImageCount(page));
-            console.log('wating image count')
+            console.log('wating image count: '+imageCount+'/'+filesToUpload.length)
         }
 
         await page.click('button[type=submit].done');
@@ -267,7 +262,5 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
 
         return page;
     }
-
-
 
 }

@@ -119,7 +119,7 @@ var ScreenshootHelper = /** @class */ (function (_super) {
                             })];
                     case 3:
                         _c.sent();
-                        console.log('screenshot saved at:' + fullPath);
+                        console.log(type + ' screenshot saved at:' + fullPath);
                         return [2 /*return*/];
                 }
             });

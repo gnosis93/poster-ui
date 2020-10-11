@@ -376,7 +376,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getImageCount(page)];
                     case 37:
                         imageCount = (_d.sent());
-                        console.log('wating image count');
+                        console.log('wating image count: ' + imageCount + '/' + filesToUpload.length);
                         return [3 /*break*/, 35];
                     case 38: return [4 /*yield*/, page.click('button[type=submit].done')];
                     case 39:

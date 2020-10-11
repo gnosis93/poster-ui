@@ -29,7 +29,7 @@ export class ScreenshootHelper extends BaseHelper{
             (await this.getScreenshotDir(type)),
             fileName
         );
-        
+
         console.log(fileName,fullPath,moment().format('HH:MM'),msg)
         await page.screenshot({
             type: "jpeg",
@@ -37,7 +37,7 @@ export class ScreenshootHelper extends BaseHelper{
             path:fullPath
         });
 
-        console.log('screenshot saved at:'+fullPath);
+        console.log(type+' screenshot saved at:'+fullPath);
     }
 
     private static async getScreenshotDir(ssType:'error'|'success'){
@@ -62,7 +62,6 @@ export class ScreenshootHelper extends BaseHelper{
         }
         return false;
     }
-
 
     private static getSSDateFolder():string{
         return moment().format('YYYY-MM-DD')

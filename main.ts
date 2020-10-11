@@ -343,8 +343,8 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
 
     poster = new BathsoldPoster(
       {
-        username: config.craigslist_email,
-        password: config.craigslist_password
+        username: config.bathsold_email,
+        password: config.bathsold_password
       },
       post.images,
       ConfigHelper.parseTextTemplate(post, 'thai'),
