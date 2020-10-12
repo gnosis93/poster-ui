@@ -187,7 +187,7 @@ export interface Post{
   dirPath : string,
   images  : PostImage[] ,
   content : string,
-  metaData:PostMetaData|null
+  metaData:PostMetaData|null,
   selected?:boolean
   postText:PostText[]
 }
@@ -209,5 +209,7 @@ export interface PostMetaData{
   'baths'      : number,
   'size'       : string,
   'floorNumber': string
-  'price': string
+  'price'      : string,
+  'rentalPrice': string,
+
 }

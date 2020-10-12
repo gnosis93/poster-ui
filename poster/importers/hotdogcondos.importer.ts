@@ -5,21 +5,26 @@ import * as https from 'https';
 import { ConfigHelper } from '../helpers/config.helper';
 import { PostMetaData } from '../models/post.interface';
 import { PostsHelper } from '../helpers/posts.helper';
+import * as  jsdom  from 'jsdom' 
 const Stream = require('stream').Transform;                                
+
 
 
 export class HotDogCondosImporter{
 
-    private static readonly HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com'
+    private static readonly HOTDOGCONDOS_WEBSITE_SELL_URL = 'https://www.hotdogcondos.com';
+    private static readonly HOTDOGCONDOS_WEBSITE_RENT_URL = 'https://hotdogcondos.com/rent/?search-listings=true';
+
     private static TIMEOUT = 100000;//defualt
 
     public async run():Promise<boolean>{
         HotDogCondosImporter.TIMEOUT = await ConfigHelper.getConfigValue<number>('navigation_timeout', HotDogCondosImporter.TIMEOUT );
         let browser     = await this.lunchBrowser();
 
-        let mainPage = await browser.newPage();
+        let mainPage    = await browser.newPage();
 
-        let pagesUrls   = await this.scrapePagesUrls(mainPage);
+        let pagesUrls   = await this.scrapeRentPagesUrls(mainPage);
+        pagesUrls       = pagesUrls.concat( await this.scrapeSellPagesUrls(mainPage));
         
         let propertiesUrls:Array<string> = [];
       
@@ -58,17 +63,30 @@ export class HotDogCondosImporter{
         return urls;
     }
 
-    private async scrapePagesUrls(page:puppeteer.Page):Promise<Array<string>>{
+    private async scrapeSellPagesUrls(page:puppeteer.Page):Promise<Array<string>>{
         // let page      = await browser.newPage();
-        await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL,{ waitUntil: 'networkidle2' , timeout:HotDogCondosImporter.TIMEOUT});
+        await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL,{ waitUntil: 'networkidle2' , timeout:HotDogCondosImporter.TIMEOUT});
         const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.pagination li a'), element => element.getAttribute('href')));
         urls.pop();
-       
+        if(urls.length == 0){
+            return [HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL]
+        }
         return urls;
-        // 
     }
 
-   
+    private async scrapeRentPagesUrls(page:puppeteer.Page):Promise<Array<string>>{
+        // let page      = await browser.newPage();
+        await page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_RENT_URL,{ waitUntil: 'networkidle2' , timeout:HotDogCondosImporter.TIMEOUT});
+        const urls = await page.evaluate(() => Array.from(document.querySelectorAll('.pagination li a'), element => element.getAttribute('href')));
+        urls.pop();
+        
+        if(urls.length == 0){
+            return [HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_RENT_URL]
+        }
+        
+        return urls;
+    }
+
 
     private async processPropertyFeatures(propertyMetaData:PostMetaData){
         let text = `${propertyMetaData.title} is a new project that can be a great new investment opportunity or a place to call home . Located in Pattaya a highly touristic city with all the amenities you can imagine ! 
@@ -83,12 +101,23 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
         return text;
     }
 
+    private htmlDecode(input:string):string {
+        var tagsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;'
+        };
+        return input.replace(/[&<>]/g, function(tag) {
+            return tagsToReplace[tag] || tag;
+        });
+    }
+
     private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
         // let page    = await browser.newPage();
         await page.goto(pageUrl,{ waitUntil: 'networkidle2' ,timeout:HotDogCondosImporter.TIMEOUT});  
         
         let title = await page.evaluate(() =>  document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null); 
-        
+        title = this.htmlDecode(title);
         let images = await page.evaluate(() => Array.from( document.querySelectorAll(".listings-slider-image"), element => element.getAttribute('src')))  
         images = this.cleanImagesUrls(images);
 
@@ -108,15 +137,18 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
             return true;
         }
 
-        let beds = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null); 
-        let baths = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null); 
-        let size = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null); 
-        let floorNumber = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
-        let price = await page.evaluate(() =>  document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null); 
+        let beds            = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.beds>.right") != null ? document.querySelector("#single-listing-propinfo>.beds>.right").textContent : null); 
+        let baths           = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.baths>.right") != null ? document.querySelector("#single-listing-propinfo>.baths>.right").textContent : null); 
+        let size            = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.sqft>.right") != null ? document.querySelector("#single-listing-propinfo>.sqft>.right").textContent : null); 
+        let floorNumber     = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
+        let price           = await page.evaluate(() =>  document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null); 
+        let rentalPrice     = await page.evaluate(() =>  document.querySelector(".listing-price-postfix") != null ? document.querySelector(".listing-price-postfix").textContent : null);
         if(price){
             price = price.replace(/\D/g,'');
         }
-       
+        if(rentalPrice){
+            rentalPrice = rentalPrice.replace(/\D/g,'');
+        }
         
         let metadata:PostMetaData = {
             'title'      : title,
@@ -124,9 +156,11 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
             'beds'       : beds,
             'baths'      : baths,
             'size'       : size,
-            'floorNumber':floorNumber,
-            'price'      :price,
-            'features'   : propertyFeatures
+            'floorNumber': floorNumber,
+            'price'      : price,
+            'features'   : propertyFeatures,
+            'rentalPrice': rentalPrice,
+            'type'       : rentalPrice !== null ? 'rental' : 'sell'
         }
 
         console.log(metadata);
@@ -197,6 +231,5 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
             args: ['--start-maximized',"--disable-notifications"] 
         });
         return browser;
-        
     } 
 }

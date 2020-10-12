@@ -60,89 +60,93 @@ var HotDogCondosImporter = /** @class */ (function () {
     }
     HotDogCondosImporter.prototype.run = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, browser, mainPage, pagesUrls, propertiesUrls, pagesUrls_1, pagesUrls_1_1, pageUrl, pagePropertiesUrls, e_1_1, existingUrls, newUrls, newUrls_1, newUrls_1_1, propertyUrl, e_2_1;
-            var e_1, _b, e_2, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var _a, browser, mainPage, pagesUrls, _b, _c, propertiesUrls, pagesUrls_1, pagesUrls_1_1, pageUrl, pagePropertiesUrls, e_1_1, existingUrls, newUrls, newUrls_1, newUrls_1_1, propertyUrl, e_2_1;
+            var e_1, _d, e_2, _e;
+            return __generator(this, function (_f) {
+                switch (_f.label) {
                     case 0:
                         _a = HotDogCondosImporter;
                         return [4 /*yield*/, config_helper_1.ConfigHelper.getConfigValue('navigation_timeout', HotDogCondosImporter.TIMEOUT)];
                     case 1:
-                        _a.TIMEOUT = _d.sent();
+                        _a.TIMEOUT = _f.sent();
                         return [4 /*yield*/, this.lunchBrowser()];
                     case 2:
-                        browser = _d.sent();
+                        browser = _f.sent();
                         return [4 /*yield*/, browser.newPage()];
                     case 3:
-                        mainPage = _d.sent();
-                        return [4 /*yield*/, this.scrapePagesUrls(mainPage)];
+                        mainPage = _f.sent();
+                        return [4 /*yield*/, this.scrapeRentPagesUrls(mainPage)];
                     case 4:
-                        pagesUrls = _d.sent();
-                        propertiesUrls = [];
-                        _d.label = 5;
+                        pagesUrls = _f.sent();
+                        _c = (_b = pagesUrls).concat;
+                        return [4 /*yield*/, this.scrapeSellPagesUrls(mainPage)];
                     case 5:
-                        _d.trys.push([5, 10, 11, 12]);
-                        pagesUrls_1 = __values(pagesUrls), pagesUrls_1_1 = pagesUrls_1.next();
-                        _d.label = 6;
+                        pagesUrls = _c.apply(_b, [_f.sent()]);
+                        propertiesUrls = [];
+                        _f.label = 6;
                     case 6:
-                        if (!!pagesUrls_1_1.done) return [3 /*break*/, 9];
+                        _f.trys.push([6, 11, 12, 13]);
+                        pagesUrls_1 = __values(pagesUrls), pagesUrls_1_1 = pagesUrls_1.next();
+                        _f.label = 7;
+                    case 7:
+                        if (!!pagesUrls_1_1.done) return [3 /*break*/, 10];
                         pageUrl = pagesUrls_1_1.value;
                         return [4 /*yield*/, this.scrapeListingURLS(mainPage, pageUrl)];
-                    case 7:
-                        pagePropertiesUrls = _d.sent();
-                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
-                        _d.label = 8;
                     case 8:
+                        pagePropertiesUrls = _f.sent();
+                        propertiesUrls = propertiesUrls.concat(pagePropertiesUrls);
+                        _f.label = 9;
+                    case 9:
                         pagesUrls_1_1 = pagesUrls_1.next();
-                        return [3 /*break*/, 6];
-                    case 9: return [3 /*break*/, 12];
-                    case 10:
-                        e_1_1 = _d.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 12];
+                        return [3 /*break*/, 7];
+                    case 10: return [3 /*break*/, 13];
                     case 11:
+                        e_1_1 = _f.sent();
+                        e_1 = { error: e_1_1 };
+                        return [3 /*break*/, 13];
+                    case 12:
                         try {
-                            if (pagesUrls_1_1 && !pagesUrls_1_1.done && (_b = pagesUrls_1.return)) _b.call(pagesUrls_1);
+                            if (pagesUrls_1_1 && !pagesUrls_1_1.done && (_d = pagesUrls_1.return)) _d.call(pagesUrls_1);
                         }
                         finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
-                    case 12: return [4 /*yield*/, this.getExistingPostsUrls()];
-                    case 13:
-                        existingUrls = _d.sent();
+                    case 13: return [4 /*yield*/, this.getExistingPostsUrls()];
+                    case 14:
+                        existingUrls = _f.sent();
                         newUrls = propertiesUrls.filter(function (url) { return existingUrls.includes(url) === false; });
                         newUrls = newUrls.filter(function (v, i, a) { return a.indexOf(v) === i; }); //remove duplicates
-                        _d.label = 14;
-                    case 14:
-                        _d.trys.push([14, 19, 20, 21]);
-                        newUrls_1 = __values(newUrls), newUrls_1_1 = newUrls_1.next();
-                        _d.label = 15;
+                        _f.label = 15;
                     case 15:
-                        if (!!newUrls_1_1.done) return [3 /*break*/, 18];
+                        _f.trys.push([15, 20, 21, 22]);
+                        newUrls_1 = __values(newUrls), newUrls_1_1 = newUrls_1.next();
+                        _f.label = 16;
+                    case 16:
+                        if (!!newUrls_1_1.done) return [3 /*break*/, 19];
                         propertyUrl = newUrls_1_1.value;
                         return [4 /*yield*/, this.scrapeProperty(propertyUrl, mainPage)];
-                    case 16:
-                        _d.sent();
-                        _d.label = 17;
                     case 17:
+                        _f.sent();
+                        _f.label = 18;
+                    case 18:
                         newUrls_1_1 = newUrls_1.next();
-                        return [3 /*break*/, 15];
-                    case 18: return [3 /*break*/, 21];
-                    case 19:
-                        e_2_1 = _d.sent();
-                        e_2 = { error: e_2_1 };
-                        return [3 /*break*/, 21];
+                        return [3 /*break*/, 16];
+                    case 19: return [3 /*break*/, 22];
                     case 20:
+                        e_2_1 = _f.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 22];
+                    case 21:
                         try {
-                            if (newUrls_1_1 && !newUrls_1_1.done && (_c = newUrls_1.return)) _c.call(newUrls_1);
+                            if (newUrls_1_1 && !newUrls_1_1.done && (_e = newUrls_1.return)) _e.call(newUrls_1);
                         }
                         finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
-                    case 21: 
+                    case 22: 
                     // if((ConfigHelper.getConfigValue('headless',false) ) === true){
                     return [4 /*yield*/, browser.close()];
-                    case 22:
+                    case 23:
                         // if((ConfigHelper.getConfigValue('headless',false) ) === true){
-                        _d.sent();
+                        _f.sent();
                         // }
                         // this.scrapeListingURLS(browser,HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL);
                         return [2 /*return*/, true];
@@ -196,14 +200,14 @@ var HotDogCondosImporter = /** @class */ (function () {
             });
         });
     };
-    HotDogCondosImporter.prototype.scrapePagesUrls = function (page) {
+    HotDogCondosImporter.prototype.scrapeSellPagesUrls = function (page) {
         return __awaiter(this, void 0, void 0, function () {
             var urls;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: 
                     // let page      = await browser.newPage();
-                    return [4 /*yield*/, page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
+                    return [4 /*yield*/, page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
                     case 1:
                         // let page      = await browser.newPage();
                         _a.sent();
@@ -211,6 +215,32 @@ var HotDogCondosImporter = /** @class */ (function () {
                     case 2:
                         urls = _a.sent();
                         urls.pop();
+                        if (urls.length == 0) {
+                            return [2 /*return*/, [HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL]];
+                        }
+                        return [2 /*return*/, urls];
+                }
+            });
+        });
+    };
+    HotDogCondosImporter.prototype.scrapeRentPagesUrls = function (page) {
+        return __awaiter(this, void 0, void 0, function () {
+            var urls;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    // let page      = await browser.newPage();
+                    return [4 /*yield*/, page.goto(HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_RENT_URL, { waitUntil: 'networkidle2', timeout: HotDogCondosImporter.TIMEOUT })];
+                    case 1:
+                        // let page      = await browser.newPage();
+                        _a.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return Array.from(document.querySelectorAll('.pagination li a'), function (element) { return element.getAttribute('href'); }); })];
+                    case 2:
+                        urls = _a.sent();
+                        urls.pop();
+                        if (urls.length == 0) {
+                            return [2 /*return*/, [HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_RENT_URL]];
+                        }
                         return [2 /*return*/, urls];
                 }
             });
@@ -225,9 +255,19 @@ var HotDogCondosImporter = /** @class */ (function () {
             });
         });
     };
+    HotDogCondosImporter.prototype.htmlDecode = function (input) {
+        var tagsToReplace = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;'
+        };
+        return input.replace(/[&<>]/g, function (tag) {
+            return tagsToReplace[tag] || tag;
+        });
+    };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {
-            var title, images, propertyFeatures, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, metadata, textContent, images_1, images_1_1, imageUrl;
+            var title, images, propertyFeatures, postDirectoryPath, postDirectoryExists, beds, baths, size, floorNumber, price, rentalPrice, metadata, textContent, images_1, images_1_1, imageUrl;
             var e_4, _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -240,6 +280,7 @@ var HotDogCondosImporter = /** @class */ (function () {
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector("#listing-title") != null ? document.querySelector("#listing-title").innerHTML : null; })];
                     case 2:
                         title = _b.sent();
+                        title = this.htmlDecode(title);
                         return [4 /*yield*/, page.evaluate(function () { return Array.from(document.querySelectorAll(".listings-slider-image"), function (element) { return element.getAttribute('src'); }); })];
                     case 3:
                         images = _b.sent();
@@ -273,8 +314,14 @@ var HotDogCondosImporter = /** @class */ (function () {
                         return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null; })];
                     case 9:
                         price = _b.sent();
+                        return [4 /*yield*/, page.evaluate(function () { return document.querySelector(".listing-price-postfix") != null ? document.querySelector(".listing-price-postfix").textContent : null; })];
+                    case 10:
+                        rentalPrice = _b.sent();
                         if (price) {
                             price = price.replace(/\D/g, '');
+                        }
+                        if (rentalPrice) {
+                            rentalPrice = rentalPrice.replace(/\D/g, '');
                         }
                         metadata = {
                             'title': title,
@@ -284,13 +331,15 @@ var HotDogCondosImporter = /** @class */ (function () {
                             'size': size,
                             'floorNumber': floorNumber,
                             'price': price,
-                            'features': propertyFeatures
+                            'features': propertyFeatures,
+                            'rentalPrice': rentalPrice,
+                            'type': rentalPrice !== null ? 'rental' : 'sell'
                         };
                         console.log(metadata);
                         //save content
                         fs.mkdirSync(postDirectoryPath);
                         return [4 /*yield*/, this.processPropertyFeatures(metadata)];
-                    case 10:
+                    case 11:
                         textContent = _b.sent();
                         fs.writeFileSync(path.join(postDirectoryPath, 'text.txt'), textContent);
                         this.writeJSONToFile(postDirectoryPath, 'metadata.json', metadata);
@@ -383,7 +432,8 @@ var HotDogCondosImporter = /** @class */ (function () {
             });
         });
     };
-    HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_URL = 'https://www.hotdogcondos.com';
+    HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL = 'https://www.hotdogcondos.com';
+    HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_RENT_URL = 'https://hotdogcondos.com/rent/?search-listings=true';
     HotDogCondosImporter.TIMEOUT = 100000; //defualt
     return HotDogCondosImporter;
 }());

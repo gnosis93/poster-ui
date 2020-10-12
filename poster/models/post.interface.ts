@@ -16,14 +16,16 @@ export interface PostText{
   language:string;
 }
 export interface PostMetaData{
-  'title'      : string,
-  'url'        : string,
-  'beds'       : string,
-  'baths'      : string,
-  'size'       : string,
-  'floorNumber': string,
-  'price'       :string
-  'features'   : string
+  'title'        : string,
+  'url'          : string,
+  'beds'         : string,
+  'baths'        : string,
+  'size'         : string,
+  'floorNumber'  : string,
+  'price'        : string|null,
+  'rentalPrice'  : string|null,
+  'features'     : string,
+  'type'         : 'rental' | 'sell'
 }
 
 export interface ChannelCity{
