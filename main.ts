@@ -234,13 +234,8 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: Ch
         false
       );
 
-  } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser);
-
-      return event.sender.send('submitPostToCraigslist', result);
-
-    } catch (e) {
-      await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_' + post?.metaData?.title, sellingPoster.Browser);
+  }  catch (e) {
+      await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_' + post?.metaData?.title, sellingPoster.Browser,e.toString());
 
       result = false;
       console.error(e);
@@ -319,7 +314,7 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
     return event.sender.send('submitPostToLivinginsider', result);
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser,e.toString());
 
     result = false;
     console.error(e);
@@ -364,7 +359,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser,e.toString());
 
     result = false;
     console.error(e);
@@ -397,16 +392,11 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
       ConfigHelper.getConfigValue('post_immediately', false),
       Number(post?.metaData?.beds),
       Number(post?.metaData?.baths),
-
     );
-
     await poster.run();
-
   } catch (e) {
     result = false;
-    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser);
-
-
+    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser,e.toString());
     console.error(e);
   }
 
