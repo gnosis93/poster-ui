@@ -5,10 +5,7 @@ import * as https from 'https';
 import { ConfigHelper } from '../helpers/config.helper';
 import { PostMetaData } from '../models/post.interface';
 import { PostsHelper } from '../helpers/posts.helper';
-import * as  jsdom  from 'jsdom' 
 const Stream = require('stream').Transform;                                
-
-
 
 export class HotDogCondosImporter{
 
@@ -70,7 +67,7 @@ export class HotDogCondosImporter{
         urls.pop();
         if(urls.length == 0){
             return [HotDogCondosImporter.HOTDOGCONDOS_WEBSITE_SELL_URL]
-        }
+        }  
         return urls;
     }
 

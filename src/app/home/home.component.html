@@ -16,7 +16,7 @@
             d="M16 15.5a.5.5 0 0 1-.5.5h-5a.5.5 0 0 1 0-1h3.793L6.146 6.854a.5.5 0 1 1 .708-.708L15 14.293V10.5a.5.5 0 0 1 1 0v5z" />
         </svg>
         <span>&nbsp;</span>
-        
+
         <a routerLink="/" style="cursor: pointer;" (click)="onConfigClick()">Config</a>
 
         <span>&nbsp;&nbsp;</span>
@@ -47,7 +47,11 @@
           Random Select
         </button>
 
+        <input type="text" #filterPostName placeholder="Search Posts By Name" (keypress)="onFilterByNameChange(filterPostName)"/>
+
       </div>
+     
+
       <div class="float-right">
 
 

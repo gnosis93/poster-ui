@@ -22,6 +22,7 @@ export class HomeComponent implements OnInit {
   public posts:Post[];
   private loadingDialogRef:MatDialogRef<ProgressSpinnerDialogComponent, any>|null = null;
   private deleteSubscription:Subscription|null = null;
+  private unfilteredPosts:Post[];
   private config:any;
 
   constructor(
@@ -61,11 +62,22 @@ export class HomeComponent implements OnInit {
   getPosts(){
     this.showProgressSpinner();
     this.postsService.Posts.subscribe((posts)=>{
-      this.posts = posts;
+      this.posts           = Array.from(posts);
+      this.unfilteredPosts = Array.from(posts);
       this.hideSpinner();
     })
   }
   
+  onFilterByNameChange(filterTitleElementInput){
+    let value:string|null = filterTitleElementInput.value ?? null;
+    if(value == null || value.length <= 3){
+      this.posts = this.unfilteredPosts;
+      return;
+    }
+             
+    value = value.trim().toLowerCase();
+    this.posts = this.unfilteredPosts.filter(p => p.name.toLowerCase().trim().indexOf(value) >= 0 );
+  }
   
   onRandomSelectClick(numberOfRandomElemInput){
     if(!numberOfRandomElemInput){
