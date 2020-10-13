@@ -261,9 +261,11 @@ var HotDogCondosImporter = /** @class */ (function () {
             '<': '&lt;',
             '>': '&gt;'
         };
-        return input.replace(/[&<>]/g, function (tag) {
+        var processedInput = input.replace(/[&<>]/g, function (tag) {
             return tagsToReplace[tag] || tag;
         });
+        processedInput = processedInput.replace('amp;', '');
+        return processedInput;
     };
     HotDogCondosImporter.prototype.scrapeProperty = function (pageUrl, page) {
         return __awaiter(this, void 0, void 0, function () {

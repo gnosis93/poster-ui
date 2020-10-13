@@ -107,9 +107,11 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
             '<': '&lt;',
             '>': '&gt;'
         };
-        return input.replace(/[&<>]/g, function(tag) {
+        let processedInput = input.replace(/[&<>]/g, function(tag) {
             return tagsToReplace[tag] || tag;
         });
+        processedInput = processedInput.replace('amp;','');
+        return processedInput;
     }
 
     private async scrapeProperty(pageUrl:string, page:puppeteer.Page){
@@ -143,9 +145,11 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
         let floorNumber     = await page.evaluate(() =>  document.querySelector("#single-listing-propinfo>.community>.right") != null ? document.querySelector("#single-listing-propinfo>.community>.right").textContent : null); 
         let price           = await page.evaluate(() =>  document.querySelector(".listing-price") != null ? document.querySelector(".listing-price").textContent : null); 
         let rentalPrice     = await page.evaluate(() =>  document.querySelector(".listing-price-postfix") != null ? document.querySelector(".listing-price-postfix").textContent : null);
+        
         if(price){
             price = price.replace(/\D/g,'');
         }
+       
         if(rentalPrice){
             rentalPrice = rentalPrice.replace(/\D/g,'');
         }
@@ -174,7 +178,7 @@ Call for view:  ${ConfigHelper.getConfigValue('phone_extension') + ' ' + ConfigH
 
         //save images
         for(let imageUrl of images){
-            this.downloadImage(path.join(postDirectoryPath,((new Date()).getTime() +'.jpg')),imageUrl );
+            this.downloadImage( path.join( postDirectoryPath, ((new Date()).getTime() +'.jpg')), imageUrl );
         }
         return true;
     }

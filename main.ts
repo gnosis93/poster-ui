@@ -13,7 +13,7 @@ import { IChannel } from './poster/channels/channel.interface';
 import { FacebookOldPagePoster } from './poster/channels/facebook/facebook-old.page.poster';
 import { FacebookOldGroupPoster } from './poster/channels/facebook/facebook-old.group.poster';
 import { CraigslistPoster } from './poster/channels/craigslist/craigslist.group.poster';
-import {QueueScheduler} from './poster/scheduler/QueueScheduler'
+import { QueueScheduler } from './poster/scheduler/QueueScheduler'
 import { LivinginsiderPoster } from './poster/channels/livinginsider/livinginsider.group.poster';
 import { LogChannel, LoggerHelper, LogEntry, LogSeverity } from './poster/helpers/logger.helper';
 import { BathsoldPoster } from './poster/channels/bathsold/bathsold.poster';
@@ -138,10 +138,10 @@ ipcMain.addListener('triggerCronPost', async (event, args) => {
 
 
 // if (schedulerEnabled === true) {
-  CraigslistQueueScheduler.getInstance().registerScheduler();
-  BathSoldQueueScheduler.getInstance().registerScheduler();
-  LivinginsiderQueueScheduler.getInstance().registerScheduler();
-  FacebookPageQueueScheduler.getInstance().registerScheduler();
+CraigslistQueueScheduler.getInstance().registerScheduler();
+BathSoldQueueScheduler.getInstance().registerScheduler();
+LivinginsiderQueueScheduler.getInstance().registerScheduler();
+FacebookPageQueueScheduler.getInstance().registerScheduler();
 // }
 
 ipcMain.addListener('websiteImport', async (event, args) => {
@@ -167,7 +167,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   let config = ConfigHelper.getConfig();
 
   let result = true;
-  let poster:ChannelBase | null = null;
+  let poster: ChannelBase | null = null;
   try {
 
     if (ConfigHelper.getConfigValue<boolean>('facebook_old_style', true) === true) {
@@ -208,37 +208,83 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
 
 ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: ChannelCity) => {
   let config = ConfigHelper.getConfig();
-  let poster: ChannelBase | null = null;
-  let result = true;
+  let sellingPoster: ChannelBase | null = null;
+  let result = false;
 
-  try {
-    // let price = await PostsHelper.handlePostPrice(post,city.currency);
-    poster = new CraigslistPoster(
-      {
-        username: config.craigslist_email,
-        password: config.craigslist_password
-      },
-      post.images,
-      ConfigHelper.parseTextTemplate(post, city.lang),
-      post?.metaData?.title,
-      'Pattaya',
-      post.metaData?.price,
-      post?.metaData?.size,
-      ConfigHelper.getConfigValue('phone_number'),
-      ConfigHelper.getConfigValue('phone_extension'),
-      city.name,
-      ConfigHelper.getConfigValue('post_immediately', false)
-    );
+  if ((post?.metaData?.price ?? null) != null) {
 
-    result = await poster.run();
-    return event.sender.send('submitPostToCraigslist', result);
+    try {
+      // let price = await PostsHelper.handlePostPrice(post,city.currency);
+      sellingPoster = new CraigslistPoster(
+        {
+          username: config.craigslist_email,
+          password: config.craigslist_password
+        },
+        post.images,
+        ConfigHelper.parseTextTemplate(post, city.lang),
+        post?.metaData?.title,
+        'Pattaya',
+        post.metaData?.price,
+        post.metaData?.rentalPrice,
+        post?.metaData?.size,
+        ConfigHelper.getConfigValue('phone_number'),
+        ConfigHelper.getConfigValue('phone_extension'),
+        city.name,
+        ConfigHelper.getConfigValue('post_immediately', false),
+        false
+      );
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser,e.toString());
+    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser);
 
-    result = false;
-    console.error(e);
+      return event.sender.send('submitPostToCraigslist', result);
+
+    } catch (e) {
+      await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_' + post?.metaData?.title, sellingPoster.Browser);
+
+      result = false;
+      console.error(e);
+      LoggerHelper.err('failed to post manual rental post. ' + ' exception: ' + e.toString(), post, LogChannel.scheduler);
+
+    }
   }
+
+  if ((post?.metaData?.rentalPrice ?? null) != null) {
+    var rentalPoster: CraigslistPoster = null;
+    try {
+      // let price = await PostsHelper.handlePostPrice(post,city.currency);
+
+      rentalPoster = new CraigslistPoster(
+        {
+          username: config.craigslist_email,
+          password: config.craigslist_password
+        },
+        post.images,
+        ConfigHelper.parseTextTemplate(post, city.lang),
+        post?.metaData?.title,
+        'Pattaya',
+        post.metaData?.price,
+        post?.metaData?.rentalPrice,
+        post?.metaData?.size,
+        ConfigHelper.getConfigValue('phone_number'),
+        ConfigHelper.getConfigValue('phone_extension'),
+        city.name,
+        ConfigHelper.getConfigValue('post_immediately', false),
+        true
+      );
+
+      result = await rentalPoster.run();
+
+      LoggerHelper.info('post successful manual rental post', post, LogChannel.scheduler);
+
+    } catch (e) {
+      result = false;
+      await rentalPoster.kill()
+      console.error(e);
+      LoggerHelper.err('failed to post manual rental post. ' + ' exception: ' + e.toString(), post, LogChannel.scheduler);
+    }
+  }
+
 
   return event.sender.send('submitPostToCraigslist', result);
 });
@@ -273,7 +319,8 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
     return event.sender.send('submitPostToLivinginsider', result);
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser,e.toString());
+    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser);
+
     result = false;
     console.error(e);
   }
@@ -317,7 +364,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser,e.toError());
+    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser);
 
     result = false;
     console.error(e);
@@ -357,7 +404,7 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
 
   } catch (e) {
     result = false;
-    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser,e.toString());
+    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser);
 
 
     console.error(e);
