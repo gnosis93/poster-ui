@@ -71,11 +71,11 @@ var ScreenshootHelper = /** @class */ (function (_super) {
     function ScreenshootHelper() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    ScreenshootHelper.takeErrorScreenShot = function (msg, browser) {
+    ScreenshootHelper.takeErrorScreenShot = function (msg, browser, error) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.takeScreenShot(msg, browser, 'error')];
+                    case 0: return [4 /*yield*/, this.takeScreenShot(msg, browser, 'error', error)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -85,15 +85,16 @@ var ScreenshootHelper = /** @class */ (function (_super) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.takeScreenShot(msg, browser, 'success')];
+                    case 0: return [4 /*yield*/, this.takeScreenShot(msg, browser, 'success', null)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
         });
     };
-    ScreenshootHelper.takeScreenShot = function (msg, browser, type) {
+    ScreenshootHelper.takeScreenShot = function (msg, browser, type, error) {
+        if (error === void 0) { error = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var page, fileName, fullPath, _a, _b;
+            var page, fileName, fullPath, _a, _b, logMsg;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -111,7 +112,6 @@ var ScreenshootHelper = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getScreenshotDir(type)];
                     case 2:
                         fullPath = _b.apply(_a, [(_c.sent()), fileName]);
-                        console.log(fileName, fullPath, moment().format('HH:MM'), msg);
                         return [4 /*yield*/, page.screenshot({
                                 type: "jpeg",
                                 fullPage: true,
@@ -119,7 +119,11 @@ var ScreenshootHelper = /** @class */ (function (_super) {
                             })];
                     case 3:
                         _c.sent();
-                        console.log(type + ' screenshot saved at:' + fullPath);
+                        logMsg = String(type) + ' screenshot saved at:' + String(fullPath);
+                        if (error) {
+                            logMsg = logMsg + 'Exepction: ' + String(error);
+                        }
+                        console.log(logMsg);
                         return [2 /*return*/];
                 }
             });

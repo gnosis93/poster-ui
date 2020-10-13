@@ -165,7 +165,6 @@ ipcMain.addListener('restoreConfigToDefault', async (event, args) => {
 ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
   // console.log('detail clicked 2')
   let config = ConfigHelper.getConfig();
-  console.log(config);
 
   let result = true;
   let poster:ChannelBase | null = null;
@@ -197,7 +196,7 @@ ipcMain.addListener('submitPostToFacebookPages', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('facebook_pages_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('facebook_pages_manual_'+post?.metaData?.title,poster.Browser,e.toString());
 
     result = false;
     console.error(e);
@@ -235,7 +234,7 @@ ipcMain.addListener('submitPostToCraigslist', async (event, post: Post, city: Ch
     return event.sender.send('submitPostToCraigslist', result);
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('craigslist_manual_'+post?.metaData?.title,poster.Browser,e.toString());
 
     result = false;
     console.error(e);
@@ -274,8 +273,7 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
     return event.sender.send('submitPostToLivinginsider', result);
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser);
-
+    await ScreenshootHelper.takeErrorScreenShot('livinginisder_manual_'+post?.metaData?.title,poster.Browser,e.toString());
     result = false;
     console.error(e);
   }
@@ -286,7 +284,6 @@ ipcMain.addListener('submitPostToLivinginsider', async (event, post: Post) => {
 ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
   // console.log('detail clicked 2')
   let config = ConfigHelper.getConfig();
-  console.log(config);
 
   let result = true;
   let poster: ChannelBase | null = null;
@@ -320,7 +317,7 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
     await poster.run();
 
   } catch (e) {
-    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('facebookg_groups_manual_'+post?.metaData?.title,poster.Browser,e.toError());
 
     result = false;
     console.error(e);
@@ -333,14 +330,10 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
 ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
   // console.log('detail clicked 2')
   let config = ConfigHelper.getConfig();
-  console.log(config);
 
   let result = true;
   let poster: ChannelBase | null = null;
   try {
-
-
-
     poster = new BathsoldPoster(
       {
         username: config.bathsold_email,
@@ -364,7 +357,7 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
 
   } catch (e) {
     result = false;
-    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser);
+    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser,e.toString());
 
 
     console.error(e);

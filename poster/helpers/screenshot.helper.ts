@@ -7,15 +7,15 @@ import * as moment from 'moment';
 
 export class ScreenshootHelper extends BaseHelper{
 
-    public static  async takeErrorScreenShot(msg:string,browser:puppeteer.Browser){
-        return await this.takeScreenShot(msg,browser,'error');
+    public static  async takeErrorScreenShot(msg:string,browser:puppeteer.Browser,error:string){
+        return await this.takeScreenShot(msg,browser,'error',error);
     }
 
     public static async takeSuccessScreenShot(msg:string,browser:puppeteer.Browser){
-        return await  this.takeScreenShot(msg,browser,'success');
+        return await  this.takeScreenShot(msg,browser,'success',null);
     }
 
-    private static async takeScreenShot(msg:string,browser:puppeteer.Browser,type:'error'|'success'){
+    private static async takeScreenShot(msg:string,browser:puppeteer.Browser,type:'error'|'success',error=null){
         if(!browser || browser.isConnected() === false){
             console.warn('Failed to take '+type+' screenshot, browser is no longer connected');
             return;
@@ -30,14 +30,17 @@ export class ScreenshootHelper extends BaseHelper{
             fileName
         );
 
-        console.log(fileName,fullPath,moment().format('HH:MM'),msg)
         await page.screenshot({
             type: "jpeg",
             fullPage: true,
             path:fullPath
         });
 
-        console.log(type+' screenshot saved at:'+fullPath);
+        let logMsg = String(type)+' screenshot saved at:'+String(fullPath);
+        if(error){
+            logMsg = logMsg + 'Exepction: '+String(error); 
+        }
+        console.log(logMsg);
     }
 
     private static async getScreenshotDir(ssType:'error'|'success'){

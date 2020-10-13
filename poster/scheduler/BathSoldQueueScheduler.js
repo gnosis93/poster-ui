@@ -102,7 +102,7 @@ var BathSoldQueueScheduler = /** @class */ (function (_super) {
                         e_1 = _e.sent();
                         result = false;
                         console.error(e_1);
-                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('bathsold_' + ((_d = post === null || post === void 0 ? void 0 : post.metaData) === null || _d === void 0 ? void 0 : _d.title), poster.Browser)];
+                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('bathsold_' + ((_d = post === null || post === void 0 ? void 0 : post.metaData) === null || _d === void 0 ? void 0 : _d.title), poster.Browser, e_1.toString())];
                     case 4:
                         _e.sent();
                         logger_helper_1.LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e_1.toString(), post, logger_helper_1.LogChannel.scheduler);

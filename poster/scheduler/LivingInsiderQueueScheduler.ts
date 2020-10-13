@@ -60,7 +60,7 @@ export class LivinginsiderQueueScheduler extends QueueScheduler{
         } catch (e) {
           result = false;
           console.error(e);
-          await ScreenshootHelper.takeErrorScreenShot('livinginsider_'+post.name,poster.Browser);
+          await ScreenshootHelper.takeErrorScreenShot('livinginsider_'+post.name,poster.Browser,e.toString());
           await poster.kill();
           LoggerHelper.err(this.LOG_MESSAGE_FAIL+' exception: '+e.toString() ,post,LogChannel.scheduler);
           this

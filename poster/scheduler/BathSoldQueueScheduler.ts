@@ -57,7 +57,7 @@ export class BathSoldQueueScheduler extends QueueScheduler {
         } catch (e) {
             result = false;
             console.error(e);
-            await ScreenshootHelper.takeErrorScreenShot('bathsold_'+post?.metaData?.title,poster.Browser);
+            await ScreenshootHelper.takeErrorScreenShot('bathsold_'+post?.metaData?.title,poster.Browser,e.toString());
 
             LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e.toString(), post, LogChannel.scheduler);
 

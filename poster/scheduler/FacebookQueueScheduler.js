@@ -113,7 +113,7 @@ var FacebookPageQueueScheduler = /** @class */ (function (_super) {
                         e_1 = _a.sent();
                         result = false;
                         console.error(e_1);
-                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('facebookPages_' + post.name, poster.Browser)];
+                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('facebookPages_' + post.name, poster.Browser, e_1.toString())];
                     case 7:
                         _a.sent();
                         return [4 /*yield*/, poster.kill()];

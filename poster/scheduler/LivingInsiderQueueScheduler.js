@@ -105,7 +105,7 @@ var LivinginsiderQueueScheduler = /** @class */ (function (_super) {
                         e_1 = _d.sent();
                         result = false;
                         console.error(e_1);
-                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('livinginsider_' + post.name, poster.Browser)];
+                        return [4 /*yield*/, screenshot_helper_1.ScreenshootHelper.takeErrorScreenShot('livinginsider_' + post.name, poster.Browser, e_1.toString())];
                     case 5:
                         _d.sent();
                         return [4 /*yield*/, poster.kill()];
