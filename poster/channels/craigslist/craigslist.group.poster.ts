@@ -64,11 +64,13 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         private title: string,
         private location: string,
         private price: string,
+        private rentalPrice: string,
         private surfaceArea: string,
         private phoneNumber: string,
         private phoneExtension: string,
         private city: string,
-        private immediatelyPost
+        private immediatelyPost:boolean,
+        private postAsRental:boolean
     ) {
         super();
 
@@ -145,27 +147,36 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
         // page.click('.selection-list li')[6]
 
 
-
-        await this.clickTickboxByIndex(page, 3);
-        await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
-        await page.click('button[type=submit]');
+        if(this.postAsRental == false){
+            await this.clickTickboxByIndex(page, 3);
+            await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
+            await page.click('button[type=submit]');
+            await page.waitForSelector('.option-label',{timeout: this.timeout });
+            await this.clickTickboxByIndex(page, 3, '.option-label');
+            await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
+            await page.click('button[type=submit]');
+        }else{
+            await this.clickTickboxByIndex(page, 3);
+            await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
+            await page.click('button[type=submit]');
+            await page.waitForSelector('.option-label',{timeout: this.timeout });
+            await this.clickTickboxByIndex(page, 1, '.option-label');
+            await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
+            await page.click('button[type=submit]');
+        }
         // this.delay(2000);
-        await page.waitForSelector('.option-label',{timeout: this.timeout });
         
-        await this.clickTickboxByIndex(page, 3, '.option-label');
         // this.delay(2000);
 
         // await Promise.all([
-        await page.waitForSelector('button[type=submit]',{timeout: this.timeout });
 
-        await page.click('button[type=submit]');
           
         await page.waitForSelector("#PostingTitle",{timeout: this.timeout });
 
         await this.threeClickType(page,"#PostingTitle",this.title);
         await this.threeClickType(page,"#geographic_area",this.location);
         await this.threeClickType(page,"#PostingBody",this.content);
-        await this.threeClickType(page,"input[name='price']",this.price);
+        await this.threeClickType(page,"input[name='price']",this.postAsRental ? this.rentalPrice : this.price);
 
         await this.threeClickType(page, "input[name='surface_area']", this.surfaceArea);
 

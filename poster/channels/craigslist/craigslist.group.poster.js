@@ -75,7 +75,7 @@ var config_helper_1 = require("../../helpers/config.helper");
 var screenshot_helper_1 = require("../../helpers/screenshot.helper");
 var CraigslistPoster = /** @class */ (function (_super) {
     __extends(CraigslistPoster, _super);
-    function CraigslistPoster(credentials, imagesToPost, content, title, location, price, surfaceArea, phoneNumber, phoneExtension, city, immediatelyPost) {
+    function CraigslistPoster(credentials, imagesToPost, content, title, location, price, rentalPrice, surfaceArea, phoneNumber, phoneExtension, city, immediatelyPost, postAsRental) {
         var _this = _super.call(this) || this;
         _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
@@ -83,11 +83,13 @@ var CraigslistPoster = /** @class */ (function (_super) {
         _this.title = title;
         _this.location = location;
         _this.price = price;
+        _this.rentalPrice = rentalPrice;
         _this.surfaceArea = surfaceArea;
         _this.phoneNumber = phoneNumber;
         _this.phoneExtension = phoneExtension;
         _this.city = city;
         _this.immediatelyPost = immediatelyPost;
+        _this.postAsRental = postAsRental;
         _this.channelUrl = 'https://craigslist.com/';
         _this.channelLoginUrl = 'https://accounts.craigslist.org/login';
         _this.locationsPostUrls = [
@@ -239,10 +241,9 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, page.setDefaultNavigationTimeout(this.timeout)];
                     case 2:
                         _d.sent();
-                        // page.click('.selection-list li')[6]
+                        if (!(this.postAsRental == false)) return [3 /*break*/, 10];
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 3)];
                     case 3:
-                        // page.click('.selection-list li')[6]
                         _d.sent();
                         return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 4:
@@ -250,85 +251,109 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, page.click('button[type=submit]')];
                     case 5:
                         _d.sent();
-                        // this.delay(2000);
                         return [4 /*yield*/, page.waitForSelector('.option-label', { timeout: this.timeout })];
                     case 6:
-                        // this.delay(2000);
                         _d.sent();
                         return [4 /*yield*/, this.clickTickboxByIndex(page, 3, '.option-label')];
                     case 7:
                         _d.sent();
-                        // this.delay(2000);
-                        // await Promise.all([
                         return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 8:
-                        // this.delay(2000);
-                        // await Promise.all([
                         _d.sent();
                         return [4 /*yield*/, page.click('button[type=submit]')];
                     case 9:
                         _d.sent();
-                        return [4 /*yield*/, page.waitForSelector("#PostingTitle", { timeout: this.timeout })];
-                    case 10:
-                        _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#PostingTitle", this.title)];
+                        return [3 /*break*/, 18];
+                    case 10: return [4 /*yield*/, this.clickTickboxByIndex(page, 3)];
                     case 11:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#geographic_area", this.location)];
+                        return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 12:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "#PostingBody", this.content)];
+                        return [4 /*yield*/, page.click('button[type=submit]')];
                     case 13:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "input[name='price']", this.price)];
+                        return [4 /*yield*/, page.waitForSelector('.option-label', { timeout: this.timeout })];
                     case 14:
                         _d.sent();
-                        return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
+                        return [4 /*yield*/, this.clickTickboxByIndex(page, 1, '.option-label')];
                     case 15:
                         _d.sent();
-                        return [4 /*yield*/, page.$("input[name=FromEMail][type=text]")];
+                        return [4 /*yield*/, page.waitForSelector('button[type=submit]', { timeout: this.timeout })];
                     case 16:
-                        fromEmailFieldExists = _d.sent();
-                        if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 18];
-                        return [4 /*yield*/, this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username)];
+                        _d.sent();
+                        return [4 /*yield*/, page.click('button[type=submit]')];
                     case 17:
                         _d.sent();
                         _d.label = 18;
-                    case 18: return [4 /*yield*/, page.$("select[name='housing_type']")];
+                    case 18: 
+                    // this.delay(2000);
+                    // this.delay(2000);
+                    // await Promise.all([
+                    return [4 /*yield*/, page.waitForSelector("#PostingTitle", { timeout: this.timeout })];
                     case 19:
-                        housingTypeSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 21];
-                        return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
+                        // this.delay(2000);
+                        // this.delay(2000);
+                        // await Promise.all([
+                        _d.sent();
+                        return [4 /*yield*/, this.threeClickType(page, "#PostingTitle", this.title)];
                     case 20:
                         _d.sent();
-                        _d.label = 21;
-                    case 21: 
+                        return [4 /*yield*/, this.threeClickType(page, "#geographic_area", this.location)];
+                    case 21:
+                        _d.sent();
+                        return [4 /*yield*/, this.threeClickType(page, "#PostingBody", this.content)];
+                    case 22:
+                        _d.sent();
+                        return [4 /*yield*/, this.threeClickType(page, "input[name='price']", this.postAsRental ? this.rentalPrice : this.price)];
+                    case 23:
+                        _d.sent();
+                        return [4 /*yield*/, this.threeClickType(page, "input[name='surface_area']", this.surfaceArea)];
+                    case 24:
+                        _d.sent();
+                        return [4 /*yield*/, page.$("input[name=FromEMail][type=text]")];
+                    case 25:
+                        fromEmailFieldExists = _d.sent();
+                        if (!(fromEmailFieldExists !== null)) return [3 /*break*/, 27];
+                        return [4 /*yield*/, this.threeClickType(page, "input[name=FromEMail][type=text]", this.credentials.username)];
+                    case 26:
+                        _d.sent();
+                        _d.label = 27;
+                    case 27: return [4 /*yield*/, page.$("select[name='housing_type']")];
+                    case 28:
+                        housingTypeSelectorExists = (_d.sent()) !== null ? true : false;
+                        if (!(housingTypeSelectorExists === true)) return [3 /*break*/, 30];
+                        return [4 /*yield*/, page.select("select[name='housing_type']", '2')];
+                    case 29:
+                        _d.sent();
+                        _d.label = 30;
+                    case 30: 
                     // await this.clickTickbox(page,'show my phone number',false);
                     // this.delay(500);
                     return [4 /*yield*/, page.click('input.show_phone_ok')];
-                    case 22:
+                    case 31:
                         // await this.clickTickbox(page,'show my phone number',false);
                         // this.delay(500);
                         _d.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone']", this.phoneNumber)];
-                    case 23:
+                    case 32:
                         _d.sent();
                         return [4 /*yield*/, page.type("input[name='contact_phone_extension']", this.phoneExtension)];
-                    case 24:
+                    case 33:
                         _d.sent();
                         return [4 /*yield*/, page.$("input.is_furnished")];
-                    case 25:
+                    case 34:
                         isFurnishedSelectorExists = (_d.sent()) !== null ? true : false;
-                        if (!isFurnishedSelectorExists) return [3 /*break*/, 27];
+                        if (!isFurnishedSelectorExists) return [3 /*break*/, 36];
                         return [4 /*yield*/, page.click('input.is_furnished')];
-                    case 26:
+                    case 35:
                         _d.sent();
-                        _d.label = 27;
-                    case 27:
+                        _d.label = 36;
+                    case 36:
                         _b = (_a = Promise).all;
                         _c = [page.waitForNavigation({ waitUntil: 'load' })];
                         return [4 /*yield*/, page.click('button[type=submit]')];
-                    case 28: 
+                    case 37: 
                     // await this.clickTickbox(page,'furnished',false);
                     // await this.delay(500);
                     // await page.click('button[type=submit]');
@@ -336,7 +361,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
                     return [4 /*yield*/, _b.apply(_a, [_c.concat([
                                 _d.sent()
                             ])])];
-                    case 29:
+                    case 38:
                         // await this.clickTickbox(page,'furnished',false);
                         // await this.delay(500);
                         // await page.click('button[type=submit]');
@@ -344,52 +369,52 @@ var CraigslistPoster = /** @class */ (function (_super) {
                         _d.sent();
                         console.log('wating for imgcount');
                         return [4 /*yield*/, page.waitForSelector('.imgcount', { timeout: this.timeout })];
-                    case 30:
+                    case 39:
                         _d.sent();
                         console.log('READY WITH: wating for imgcount');
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         return [4 /*yield*/, page.waitForSelector('input[type=file]', { timeout: this.timeout })];
-                    case 31:
+                    case 40:
                         // await page.waitForNavigation();
                         // let clickUpload = await page.waitForSelector('a.newupl');
                         // await clickUpload.click();
                         _d.sent();
                         return [4 /*yield*/, page.$$('input[type=file]')];
-                    case 32:
+                    case 41:
                         inputUploadHandles = _d.sent();
                         inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 33:
+                    case 42:
                         _d.sent();
                         return [4 /*yield*/, this.getImageCount(page)];
-                    case 34:
+                    case 43:
                         imageCount = (_d.sent());
-                        _d.label = 35;
-                    case 35:
-                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 38];
+                        _d.label = 44;
+                    case 44:
+                        if (!(imageCount < filesToUpload.length)) return [3 /*break*/, 47];
                         return [4 /*yield*/, this.delay(500)];
-                    case 36:
+                    case 45:
                         _d.sent();
                         return [4 /*yield*/, this.getImageCount(page)];
-                    case 37:
+                    case 46:
                         imageCount = (_d.sent());
                         console.log('wating image count: ' + imageCount + '/' + filesToUpload.length);
-                        return [3 /*break*/, 35];
-                    case 38: return [4 /*yield*/, page.click('button[type=submit].done')];
-                    case 39:
+                        return [3 /*break*/, 44];
+                    case 47: return [4 /*yield*/, page.click('button[type=submit].done')];
+                    case 48:
                         _d.sent();
-                        if (!this.immediatelyPost) return [3 /*break*/, 42];
+                        if (!this.immediatelyPost) return [3 /*break*/, 51];
                         return [4 /*yield*/, page.waitForSelector("button[name='go']", { timeout: this.timeout })];
-                    case 40:
+                    case 49:
                         _d.sent();
                         return [4 /*yield*/, page.click("button[name='go']")];
-                    case 41:
+                    case 50:
                         _d.sent();
-                        _d.label = 42;
-                    case 42: return [2 /*return*/, page];
+                        _d.label = 51;
+                    case 51: return [2 /*return*/, page];
                 }
             });
         });
