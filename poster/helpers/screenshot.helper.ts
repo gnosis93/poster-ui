@@ -40,6 +40,7 @@ export class ScreenshootHelper extends BaseHelper{
         if(error){
             logMsg = logMsg + 'Exepction: '+String(error); 
         }
+        
         console.log(logMsg);
     }
 
