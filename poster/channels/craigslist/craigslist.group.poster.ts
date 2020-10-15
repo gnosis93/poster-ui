@@ -84,7 +84,7 @@ export class CraigslistPoster extends ChannelBase implements IChannel {
             throw 'City in Criagslist poster is a required param'
         }
 
-        let city = this.locationsPostUrls.find((c) => c.city == this.city);
+        let city = this.locationsPostUrls.find((c) => c.city == this.city.toLowerCase());
         if (!city) {
             throw 'Invalid City given to Criagslist poster, given INVALID city name: ' + this.city;
         }

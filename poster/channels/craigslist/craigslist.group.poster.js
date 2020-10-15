@@ -148,7 +148,7 @@ var CraigslistPoster = /** @class */ (function (_super) {
         if (!this.city || this.city.length === 0) {
             throw 'City in Criagslist poster is a required param';
         }
-        var city = this.locationsPostUrls.find(function (c) { return c.city == _this.city; });
+        var city = this.locationsPostUrls.find(function (c) { return c.city == _this.city.toLowerCase(); });
         if (!city) {
             throw 'Invalid City given to Criagslist poster, given INVALID city name: ' + this.city;
         }

@@ -17,7 +17,8 @@ type ConfigSection = "Facebook Credentials"      |
                      "Behavior"                  |
                      "Text Templates"            |
                      "Scheduler"                 |
-                     "Bathsold Credentials"
+                     "Bahtsold Credentials"      |
+                     "FarangMart Credentials"
 ;
 
 @Component({
@@ -92,6 +93,10 @@ export class ConfigDialogComponent implements OnInit {
 
   public enableBathSoldSchedulerValueChange(value:{checked:boolean}){
     this.config.bathsold_enable_scheduler = value.checked;
+  }
+
+  public enableFarangMartSchedulerValueChange(value:{checked:boolean}){
+    this.config.farangmart_enable_scheduler = value.checked;
   }
   
   public enableLivingInsiderSchedulerValueChange(value:{checked:boolean}){

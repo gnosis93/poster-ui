@@ -151,6 +151,21 @@ export class ConfigService {
     return true;
   }
 
+  async validateFarangmartCredentials(){
+    let bathsoldEmail    = await this.getConfigValue<string>('farangmart_email');
+    let bathsoldPassword = await this.getConfigValue<string>('farangmart_password');
+
+    if(!bathsoldEmail || bathsoldEmail.indexOf('@') == -1){
+      return false;
+    }
+
+    if(!bathsoldPassword || bathsoldPassword.length <= 1){
+      return false;
+    }
+
+    return true;
+  }
+
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
     let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')
