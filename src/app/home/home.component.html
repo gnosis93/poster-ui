@@ -47,7 +47,7 @@
           Random Select
         </button>
 
-        <input type="text" #filterPostName placeholder="Search Posts By Name" (keypress)="onFilterByNameChange(filterPostName)"/>
+        <input type="text" #filterPostName placeholder="Search Posts By Name" (change)="onFilterByNameChange(filterPostName)" (keyup)="onFilterByNameChange(filterPostName)"/>
 
       </div>
      

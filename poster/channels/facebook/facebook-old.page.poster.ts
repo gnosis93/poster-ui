@@ -32,6 +32,29 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
     public getPostPages(): Array<string> {//override
         return this.postPages;
     }
+    private async closeAcceptCookiesModal(loginPage: puppeteer.Page) {
+        let btnAcceptAllSelector = 'button[title="Accept All"]';
+        try {
+            await loginPage.waitForSelector(btnAcceptAllSelector, { timeout: this.timeout / 2 });
+        } catch (e) {
+            console.log('no "accept cookies" modal found')
+            return false;
+        }
+        loginPage.click(btnAcceptAllSelector);
+        return true;
+
+    }
+
+    private async closeAcceptTermsModal(loginPage: puppeteer.Page) {
+        //accept terms if required
+        try {
+            let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
+            await loginPage.waitForSelector(btnAcceptTerms, { timeout: this.timeout });
+            await loginPage.click(btnAcceptTerms);
+        } catch (e) {
+            console.log('No accept terms key found');
+        }
+    }
 
     private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
         // let loginPage =  await browser.newPage();
@@ -44,22 +67,21 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
 
 
         //accept terms if required
-        try {
-            let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, {timeout: this.timeout });
-            await loginPage.click(btnAcceptTerms);
-        } catch (e) {
-            console.log('No accept terms key found');
-        }
+        await this.closeAcceptCookiesModal(loginPage);
+        await this.closeAcceptTermsModal(loginPage);
+
+
 
         await loginPage.type('#email', username);
         await loginPage.type('#pass', password);
 
   
-        let loginBtn = '._xktge'//'#loginbutton';
-        await loginPage.waitForSelector(loginBtn);
+        let loginBtn = '#loginbutton'//'#loginbutton';
+        await loginPage.waitForSelector(loginBtn,{timeout:this.timeout});
         await loginPage.click(loginBtn);
+        await this.delay(500);
         await loginPage.waitForNavigation();
+        await this.delay(500);
 
         return loginPage;
     }
@@ -112,7 +134,7 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
             //wait for click button to become avaiable
             const inputUploadHandles = await groupPage.$$('input[type=file]');
 
-            const inputUploadHandle = inputUploadHandles[1];
+            const inputUploadHandle = inputUploadHandles[0];
             let filesToUpload = this.getImagesToPost();
 
             for (let image of filesToUpload) {
