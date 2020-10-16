@@ -58,3 +58,5 @@ poster/channels/livinginsider/
 poster/helpers/config.helper.js
 
 poster/**/*.js
+poster/channels/facebook/facebook-old.page.poster.js
+poster/channels/facebook/facebook-old.group.poster.js
