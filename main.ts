@@ -423,6 +423,7 @@ ipcMain.addListener('submitPostFarangMart', async (event, post: Post) => {
       post?.metaData?.title,
       'Pattaya',
       post.metaData?.price,
+      post.metaData?.rentalPrice,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
       ConfigHelper.getConfigValue('phone_extension'),

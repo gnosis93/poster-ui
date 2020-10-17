@@ -42,6 +42,7 @@ export class FarangMartQueueScheduler extends QueueScheduler {
                 post?.metaData?.title,
                 'Pattaya',
                 post.metaData?.price,
+                post?.metaData?.rentalPrice,
                 post?.metaData?.size,
                 ConfigHelper.getConfigValue('phone_number'),
                 ConfigHelper.getConfigValue('phone_extension'),
