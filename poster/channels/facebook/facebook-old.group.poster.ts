@@ -59,19 +59,13 @@ export class FacebookOldGroupPoster extends FacebookBase implements IChannel{
             await this.delay(500);
             
             // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
-<<<<<<< HEAD
-            let fileImageSelector = 'input[aria-label="Add Photo or Video"]';
-            await groupPage.waitForSelector(fileImageSelector);
-            const inputUploadHandles = await groupPage.$$(fileImageSelector);
-            console.log(inputUploadHandles); 
-=======
+
             const fileInputSelector = 'input[aria-label="Add Photo or Video"]';
             const inputUploadHandles = await groupPage.$$(fileInputSelector);
             if( inputUploadHandles.length == 0){
                 throw('Unable to find image upload input selector: '+fileInputSelector)
             }
 
->>>>>>> 231e5638b9112b8aaf41e750cf19a7f8e3696aec
             const inputUploadHandle  = inputUploadHandles[0];//5
 
             let filesToUpload        = this.getImagesToPost();
@@ -81,20 +75,11 @@ export class FacebookOldGroupPoster extends FacebookBase implements IChannel{
             // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
             // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
             // Sets the value of the file input to fileToUpload
-<<<<<<< HEAD
             // for(let fileToUpload of filesToUpload){
             //     await inputUploadHandle.uploadFile(fileToUpload);
             //     await this.delay(500);
             // }
             await inputUploadHandle.uploadFile(...filesToUpload);
-=======
-            for(let fileToUpload of filesToUpload){
-                await inputUploadHandle.uploadFile(fileToUpload);
-                await this.delay(500);
-            }
-            // await inputUploadHandle.uploadFile(...filesToUpload);
->>>>>>> 231e5638b9112b8aaf41e750cf19a7f8e3696aec
-
             // await this.delay(2000);
             
             let postButtonQuery ='button[type=submit]._1mf7';
