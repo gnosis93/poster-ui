@@ -152,6 +152,7 @@ Call for view:  {phone_extension} {phone_number}
         textParsed      = textParsed.replace('{phone_extension}',ConfigHelper.getConfigValue('phone_extension',''));
         textParsed      = textParsed.replace('{phone_number}',ConfigHelper.getConfigValue('phone_number',''));
         textParsed      = textParsed.replace('{rentalPrice}',ConfigHelper.getConfigValue('rentalPrice',''));
+        textParsed      = textParsed.replace('{price}',ConfigHelper.getConfigValue('price',''));
         textParsed      = textParsed.replace('null','');
 
         return textParsed;

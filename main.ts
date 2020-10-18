@@ -388,7 +388,7 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
       post.metaData?.price,
       post?.metaData?.size,
       ConfigHelper.getConfigValue('phone_number'),
-      ConfigHelper.getConfigValue('phone_extension'),
+      ConfigHelper.getConfigValue('phone_extension'), 
       ConfigHelper.getConfigValue('post_immediately', false),
       Number(post?.metaData?.beds),
       Number(post?.metaData?.baths),
@@ -396,7 +396,7 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
     await poster.run();
   } catch (e) {
     result = false;
-    await ScreenshootHelper.takeErrorScreenShot('bathsold_manual_'+post?.metaData?.title,poster.Browser,e.toString());
+    await ScreenshootHelper.takeErrorScreenShot( 'bathsold_manual_'+post?.metaData?.title,poster.Browser,e.toString());
     console.error(e);
   }
 

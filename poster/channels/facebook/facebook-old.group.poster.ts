@@ -73,13 +73,17 @@ export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
             // await groupPage.click('textarea#js_1g');
 
             await groupPage.keyboard.type(this.content);   // click submit
-            await groupPage.click('a[loggingname="media_tab_selector"]');
+            await this.delay(2000);
+
+            await groupPage.click('a[label="Photo/Video"]');
             await this.delay(500);
             
             // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
-            const inputUploadHandles = await groupPage.$$('input[type=file]');
-            console.log(inputUploadHandles);
-            const inputUploadHandle  = inputUploadHandles[1];//5
+            let fileImageSelector = 'input[aria-label="Add Photo or Video"]';
+            await groupPage.waitForSelector(fileImageSelector);
+            const inputUploadHandles = await groupPage.$$(fileImageSelector);
+            console.log(inputUploadHandles); 
+            const inputUploadHandle  = inputUploadHandles[0];//5
 
             let filesToUpload        = this.getImagesToPost();
             // console.log('Post Images',filesToUpload);
@@ -90,10 +94,11 @@ export class FacebookOldGroupPoster extends ChannelBase implements IChannel{
             // Sets the value of the file input to fileToUpload
             // for(let fileToUpload of filesToUpload){
             //     await inputUploadHandle.uploadFile(fileToUpload);
+            //     await this.delay(500);
             // }
             await inputUploadHandle.uploadFile(...filesToUpload);
 
-            await this.delay(2000);
+            // await this.delay(2000);
             
             let postButtonQuery ='button[type=submit]._1mf7';
             let postButton = await groupPage.$$(postButtonQuery);
