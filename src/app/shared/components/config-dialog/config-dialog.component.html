@@ -30,7 +30,8 @@
                 <li (click)="onSidebarClick('General Channels Settings')">General Settings</li>
                 <li (click)="onSidebarClick('Craigslist Credentials')">Craigslist Credentials</li>
                 <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
-                <li (click)="onSidebarClick('Bathsold Credentials')">Bathsold Credentials</li>
+                <li (click)="onSidebarClick('Bahtsold Credentials')">Bahtsold Credentials</li>
+                <li (click)="onSidebarClick('FarangMart Credentials')">FarangMart Credentials</li>
 
                 <!-- <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
                 <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li> -->
@@ -58,9 +59,9 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="pwd">Old Facebook template:</label>
                         <mat-checkbox [checked]="config.facebook_old_style" (change)="facebookStyleValueChange($event)">
                         </mat-checkbox>
+                        <label for="pwd">Old Facebook template</label>
                     </div>
 
 
@@ -102,9 +103,9 @@
                 </span>
 
 
-                <span *ngIf="selectedTemplate == 'Bathsold Credentials' ">
+                <span *ngIf="selectedTemplate == 'Bahtsold Credentials' ">
                     
-                    <h5>Bathsold Credentials</h5>
+                    <h5>Bahtsold Credentials</h5>
                     <br>
 
                     <div class="form-group">
@@ -116,6 +117,25 @@
                     <div class="form-group">
                         <label for="pwd">Password:</label>
                         <input type="password" [(ngModel)]="config.bathsold_password" name="facebook_password"
+                            class="form-control" id="pwd">
+                    </div>
+
+                </span>
+
+                <span *ngIf="selectedTemplate == 'FarangMart Credentials' ">
+                    
+                    <h5>FarangMart Credentials</h5>
+                    <br>
+
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" [(ngModel)]="config.farangmart_email" name="facebook_email"
+                            class="form-control" id="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" [(ngModel)]="config.farangmart_password" name="facebook_password"
                             class="form-control" id="pwd">
                     </div>
 
@@ -279,9 +299,9 @@
                     
                     <div class="row">
                         <div class="col-12">
-                            <label>Enable Craigslist Scheduler </label>
                             <mat-checkbox [checked]="config.criagslist_enable_scheduler"
                                 (change)="enableSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable Craigslist Scheduler </label>
                         </div>
                     </div>
 
@@ -313,20 +333,20 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <label>Enable BathSold Scheduler </label>
                             <mat-checkbox [checked]="config.bathsold_enable_scheduler"
                                 (change)="enableBathSoldSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable BahtSold Scheduler </label>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label for="bathsold_scheduler_cron">Bathsold Scheduler Cron</label>
+                        <label for="bathsold_scheduler_cron">Bahtsold Scheduler Cron</label>
                         <input type="text" [(ngModel)]="config.bathsold_scheduler_cron" name="bathsold_scheduler_cron"
                             id="bathsold_scheduler_cron" [disabled]="config?.bathsold_enable_scheduler == false">
                     </div>
                     
                     <div class="form-group" >
-                        <label for="bathsold_scheduler_cron">Bathsold Post Expiry Time (In DAYS)</label> 
+                        <label for="bathsold_scheduler_cron">Bahtsold Post Expiry Time (In DAYS)</label> 
                         <input type="number" min="1" max="30" [disabled]="config?.bathsold_enable_scheduler == false" [(ngModel)]="config.bathsold_post_expiry_time" name="bathsold_post_expiry_time" id="bathsold_post_expiry_time">
                     </div>
 
@@ -339,9 +359,35 @@
 
                     <div class="row">
                         <div class="col-12">
-                            <label>Enable LivingInsider Scheduler </label>
+                            <mat-checkbox [checked]="config.farangmart_enable_scheduler"
+                                (change)="enableFarangMartSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable FarangMart Scheduler </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="farangmart_scheduler_cron">FarangMart Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.farangmart_scheduler_cron" name="farangmart_scheduler_cron"
+                            id="farangmart_scheduler_cron" [disabled]="config?.farangmart_enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="farangmart_scheduler_cron">FarangMart Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.farangmart_enable_scheduler == false" [(ngModel)]="config.farangmart_post_expiry_time" name="farangmart_post_expiry_time" id="farangmart_post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="farangmart_postings_per_trigger"FarangMart >How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.farangmart_enable_scheduler == false" [(ngModel)]="config.farangmart_postings_per_trigger" name="farangmart_postings_per_trigger" id="farangmart_postings_per_trigger">
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-12">
                             <mat-checkbox [checked]="config.livinginsider_enable_scheduler"
                                 (change)="enableLivingInsiderSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable LivingInsider Scheduler </label>
                         </div>
                     </div>
 
@@ -366,9 +412,9 @@
                     <div class="row">
                     
                         <div class="col-12">
-                            <label>Enable FacebookPages Scheduler </label>
                             <mat-checkbox [checked]="config.facebookpages_enable_scheduler"
                                 (change)="enableFacebookPagesSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable FacebookPages Scheduler </label>
                         </div>
                     
                     </div>
@@ -410,33 +456,33 @@
 
                     <div class="row">
                         <div class="col-10">
-                            <label>Headless</label>
                             <mat-checkbox [checked]="config.headless" (change)="headlessValueChange($event)">
                             </mat-checkbox>
+                            <label>Headless</label>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-10">
-                            <label>Post Immediately</label>
                             <mat-checkbox [checked]="config.post_immediately"
                                 (change)="postImmediatelyValueChange($event)"></mat-checkbox>
+                                <label>Post Immediately</label>
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-10">
-                            <label>Close Browser</label>
                             <mat-checkbox [checked]="config.close_browser" (change)="closeBrowserValueChange($event)">
                             </mat-checkbox>
+                            <label>Close Browser</label>
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-10">
-                            <label>Post In Sequential Order (Chain avoids opening multiple browsers)</label>
+                        <div class="col-12">
                             <mat-checkbox [checked]="config.post_in_sequential_order"
                                 (change)="postInSequentialOrderValueChange($event)"></mat-checkbox>
+                                <label>Post In Sequential Order (Chain avoids opening multiple browsers)</label>
                         </div>
                     </div>
 

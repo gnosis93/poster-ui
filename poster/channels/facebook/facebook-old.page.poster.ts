@@ -6,13 +6,12 @@ import { ConfigHelper } from '../../helpers/config.helper';
 import { config } from 'process';
 import { PostImage } from '../../models/post.interface';
 import { ScreenshootHelper } from '../../helpers/screenshot.helper';
+import { FacebookBase } from './facebook.base';
 
-export class FacebookOldPagePoster extends ChannelBase implements IChannel {
-    private readonly channelUrl: string = 'https://facebook.com/';
-    private readonly channelLoginUrl: string = 'https://en-gb.facebook.com/login/';
+export class FacebookOldPagePoster extends FacebookBase implements IChannel {
 
-    constructor(private postPages: string[], private credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
-        super();
+    constructor(private postPages: string[],  credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
+        super(credentials);
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookPagePoster";
         }
@@ -25,52 +24,18 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
         return this.imagesToPost.filter((i) => i.selected == true).map((i) => i.imageURL);
     }
 
-    public getCredentials() {//override
-        return this.credentials;
-    }
-
     public getPostPages(): Array<string> {//override
         return this.postPages;
     }
-
-    private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
-        // let loginPage =  await browser.newPage();
-        let loginPage = await this.getActivePage(browser, 100);
-        let { username, password } = this.getCredentials();
-
-
-        await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' });
-
-
-        //accept terms if required
-        try {
-            let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, {timeout: this.timeout });
-            await loginPage.click(btnAcceptTerms);
-        } catch (e) {
-            console.log('No accept terms key found');
-        }
-
-        await loginPage.type('#email', username);
-        await loginPage.type('#pass', password);
-
-  
-        let loginBtn = '._xktge'//'#loginbutton';
-        await loginPage.waitForSelector(loginBtn);
-        await loginPage.click(loginBtn);
-        await loginPage.waitForNavigation();
-
-        return loginPage;
-    }
-
+   
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
-        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
+        this.timeout = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout);
 
-        this.browser = await this.lunchBrowser();
-        let loginPage = await this.login(this.browser);
+        this.browser    = await this.lunchBrowser();
+        let loginPage   = await this.login(this.browser);
         let postedPages = await this.postToPages(this.browser, onPageUploadedCallback);
-        await ScreenshootHelper.takeSuccessScreenShot('FB-OLD-PAGE-POST',this.Browser);
+
+        await ScreenshootHelper.takeSuccessScreenShot('FB-OLD-PAGE-POST', this.Browser);
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await this.browser.close();
         }
@@ -87,20 +52,6 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
             await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
             await groupPage.goto(group, { waitUntil: 'networkidle2' });
-            // await groupPage.click('div[aria-label="Create Post"]');
-
-            // await this.delay(2000);
-
-
-
-
-
-            // Sets the value of the file input to fileToUpload
-            // for(let fileToUpload of filesToUpload){
-            // }
-
-            // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
-
 
             await groupPage.click('textarea[title="Write a post..."]');
             await this.delay(100);
@@ -109,10 +60,13 @@ export class FacebookOldPagePoster extends ChannelBase implements IChannel {
 
             //click the post button
             let postButtonXPath = "//span[text()='Post']"
-            //wait for click button to become avaiable
-            const inputUploadHandles = await groupPage.$$('input[type=file]');
-
-            const inputUploadHandle = inputUploadHandles[1];
+            //wait for click button to become avaiable.
+            const fileInputSelector = 'input[type=file]';
+            const inputUploadHandles = await groupPage.$$(fileInputSelector);
+            if( inputUploadHandles.length == 0){
+                throw('Unable to find image upload input selector: '+fileInputSelector)
+            }
+            const inputUploadHandle = inputUploadHandles[0];
             let filesToUpload = this.getImagesToPost();
 
             for (let image of filesToUpload) {

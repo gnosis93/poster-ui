@@ -38,7 +38,7 @@ export class PostDialogComponent implements OnInit {
       "selected": true,
       'cities': [
         {
-          name: 'bangkok',
+          name: 'Bangkok',
           selected: true,
           lang:'thai',
           currency:'THB'
@@ -116,7 +116,11 @@ export class PostDialogComponent implements OnInit {
       "selected": true
     },
     {
-      "name": 'bahtsold',
+      "name": 'Bahtsold',
+      "selected": true
+    },
+    {
+      "name": 'FarangMart',
       "selected": true
     }
   ];
@@ -258,13 +262,25 @@ export class PostDialogComponent implements OnInit {
           alert('error as occurred')
         }
       break;
-      case 'bahtsold':
+      case 'Bahtsold':
         try{
           if(postInSequentialOrder === true){
             await this.postsService.submitPostBathSold(post);
             await this.handlePostSubmitted(channel.name);
           }else{
             this.postsService.submitPostBathSold(post).then(()=> this.handlePostSubmitted(channel.name))
+          }
+        }catch(e){
+          alert('error as occurred')
+        }
+      break;
+      case 'FarangMart':
+        try{
+          if(postInSequentialOrder === true){
+            await this.postsService.submitPostFarangMart(post);
+            await this.handlePostSubmitted(channel.name);
+          }else{
+            this.postsService.submitPostFarangMart(post).then(()=> this.handlePostSubmitted(channel.name))
           }
         }catch(e){
           alert('error as occurred')
@@ -348,9 +364,12 @@ export class PostDialogComponent implements OnInit {
         case 'Livinginsider':
           result = await this.validateLivinginsiderConfig()
           break;
-        case 'bathsold':
+        case 'Bahtsold':
             result = await this.validateBathsoldConfig()
             break;
+        case 'FarangMart':
+          result = await this.validateFarangmartConfig()
+          break;
       }
     }
     return result;
@@ -417,7 +436,15 @@ export class PostDialogComponent implements OnInit {
 
  private async validateBathsoldConfig() {
     if (await this.configService.validatBathsoldCredentials() === false) {
-      alert('Bathsold Email/Password are not set or incorrect');
+      alert('Bahtsold Email/Password are not set or incorrect');
+      return false;
+    }
+    return true;
+  }
+
+  private async validateFarangmartConfig() {
+    if (await this.configService.validateFarangmartCredentials() === false) {
+      alert('FarangMart Email/Password are not set or incorrect');
       return false;
     }
     return true;

@@ -4,13 +4,12 @@ import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
 import { ScreenshootHelper } from '../../helpers/screenshot.helper';
+import { FacebookBase } from './facebook.base';
 
-export class FacebookGroupPoster extends ChannelBase implements IChannel{
-    private readonly channelUrl:string = 'https://facebook.com/';
-    private readonly channelLoginUrl:string = 'https://en-gb.facebook.com/login/';
-
-    constructor(private postPages:string[],private credentials:{username:string,password:string},private imagesToPost:PostImage[],private content:string){
-        super();
+export class FacebookGroupPoster extends FacebookBase implements IChannel{
+   
+    constructor(private postPages:string[], credentials:{username:string,password:string},private imagesToPost:PostImage[],private content:string){
+        super(credentials);
         if(!postPages || postPages.length === 0){
             throw "Invalid Post pages given to FacebookGroupPoster";
         }
@@ -23,29 +22,12 @@ export class FacebookGroupPoster extends ChannelBase implements IChannel{
       return this.imagesToPost.filter((i)=> i.selected == true).map((i) => i.imageURL);
   }
 
-    public getCredentials(){//override
-        return this.credentials;
-    }
-
+ 
     public getPostPages():Array<string>{//override
         return this.postPages;
     }
 
-    private async login(browser:puppeteer.Browser):Promise<puppeteer.Page>{
-        let loginPage = await browser.newPage();
-        let {username,password} = this.getCredentials();
-
-        await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl , { waitUntil: 'networkidle2',timeout:this.timeout  });
-        await loginPage.type('#email', username);
-        await loginPage.type('#pass' , password);
-        await loginPage.click('#loginbutton');
-        await loginPage.waitForNavigation({timeout:this.timeout} );
-
-        return loginPage;
-
-    }
-
+ 
     public async run(onPageUploadedCallback:Function|null=null):Promise<boolean>{
         let browser     = await this.lunchBrowser();
         this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );

@@ -17,16 +17,16 @@
                 </div>
                 
                 <div class="col-12" *ngFor="let channel of channels">
-                    <label for="">{{channel.name}}</label>
-                    
                     <mat-checkbox [checked]="channel.selected" (change)="channel.selected = !channel.selected">
                     </mat-checkbox>
+                    <label for="">{{channel.name}}</label>
+                
                     
-                    <div class="row" *ngIf="channel.cities && channel.selected">
+                    <div class="row" *ngIf="channel.cities && channel.selected" style="margin-left: 6px;">
                         <div class="col-3" *ngFor="let city of channel.cities">
-                            <label for="">{{city.name}}</label>
                             <mat-checkbox [checked]="city.selected" (change)="city.selected = !city.selected">
                             </mat-checkbox>
+                            <label for="">{{city.name}}</label>
                         </div>
                     </div>
                     

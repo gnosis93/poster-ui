@@ -86,6 +86,8 @@ export class ConfigHelper extends BaseHelper{
             "craigslist_password":"Miami5151+-*!!",
             "bathsold_email":"hotdogcondos@gmail.com",
             "bathsold_password":"Miami5151+-*!!",
+            "farangmart_email":"mkmardel@gmail.com",
+            "farangmart_password":"33gh44",
             "livinginsider_email":"mkmardel@gmail.com",
             "livinginsider_password":"33gh44",
             "post_immediately":false,
@@ -112,6 +114,10 @@ Call for view:  {phone_extension} {phone_number}
             "bathsold_enable_scheduler":false,
             "bathsold_scheduler_cron":"0 * * * *",
             'bathsold_postings_per_trigger':1,
+
+            "farangmart_enable_scheduler":false,
+            "farangmart_scheduler_cron":"0 * * * *",
+            'farangmart_postings_per_trigger':1,
 
             "livinginsider_enable_scheduler":false,
             "livinginsider_scheduler_cron":"0 * * * *",

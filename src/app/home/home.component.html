@@ -43,11 +43,11 @@
 
         <input min=1 maxlength=30 minlength=1 max=30 type="number" #numberOfRandomInput value="5" />
 
-        <button class="btn btn-warning" (click)="onRandomSelectClick(numberOfRandomInput)">
+        <button class="btn btn-warning random-select" (click)="onRandomSelectClick(numberOfRandomInput)">
           Random Select
         </button>
 
-        <input type="text" #filterPostName placeholder="Search Posts By Name" (keypress)="onFilterByNameChange(filterPostName)"/>
+        <input type="text" #filterPostName placeholder="Search Posts By Name" (change)="onFilterByNameChange(filterPostName)" (keyup)="onFilterByNameChange(filterPostName)"/>
 
       </div>
      

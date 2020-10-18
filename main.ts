@@ -22,6 +22,8 @@ import { BathSoldQueueScheduler } from './poster/scheduler/BathSoldQueueSchedule
 import { LivinginsiderQueueScheduler } from './poster/scheduler/LivingInsiderQueueScheduler';
 import { FacebookPageQueueScheduler } from './poster/scheduler/FacebookQueueScheduler';
 import { ScreenshootHelper } from './poster/helpers/screenshot.helper';
+import { FarangMartQueueScheduler } from './poster/scheduler/FarangMartQueueScheduler';
+import { FarangmartPoster } from './poster/channels/farangmart/farangmart.poster';
 
 //importing necessary modules
 
@@ -140,6 +142,7 @@ ipcMain.addListener('triggerCronPost', async (event, args) => {
 // if (schedulerEnabled === true) {
 CraigslistQueueScheduler.getInstance().registerScheduler();
 BathSoldQueueScheduler.getInstance().registerScheduler();
+FarangMartQueueScheduler.getInstance().registerScheduler();
 LivinginsiderQueueScheduler.getInstance().registerScheduler();
 FacebookPageQueueScheduler.getInstance().registerScheduler();
 // }
@@ -401,6 +404,41 @@ ipcMain.addListener('submitPostBathSold', async (event, post: Post) => {
   }
 
   return event.sender.send('submitPostBathSold', result);
+})
+
+ipcMain.addListener('submitPostFarangMart', async (event, post: Post) => {
+  // console.log('detail clicked 2')
+  let config = ConfigHelper.getConfig();
+
+  let result = true;
+  let poster: ChannelBase | null = null;
+  try {
+    poster = new FarangmartPoster(
+      {
+        username: config.farangmart_email,
+        password: config.farangmart_password
+      },
+      post.images,
+      ConfigHelper.parseTextTemplate(post, 'thai'),
+      post?.metaData?.title,
+      'Pattaya',
+      post.metaData?.price,
+      post.metaData?.rentalPrice,
+      post?.metaData?.size,
+      ConfigHelper.getConfigValue('phone_number'),
+      ConfigHelper.getConfigValue('phone_extension'),
+      ConfigHelper.getConfigValue('post_immediately', false),
+      Number(post?.metaData?.beds),
+      Number(post?.metaData?.baths),
+    );
+    await poster.run();
+  } catch (e) {
+    result = false;
+    await ScreenshootHelper.takeErrorScreenShot('farangmart_manual_'+post?.metaData?.title,poster.Browser,e.toString());
+    console.error(e);
+  }
+
+  return event.sender.send('submitPostFarangMart', result);
 })
 
 ipcMain.addListener('log', async (event, log: LogEntry, logChannel: LogChannel) => {

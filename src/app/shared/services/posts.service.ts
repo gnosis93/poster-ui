@@ -116,6 +116,19 @@ export class PostsService {
 
   }
 
+  public async submitPostFarangMart(post:Post) {
+    let channelName = 'submitPostFarangMart';
+    return new Promise((resolutionFunc, rejectionFunc) => {
+      var handler = (sender, message) => {
+        this.electron.ipcRenderer.removeListener(channelName,handler);
+        resolutionFunc(message);
+      };
+      this.electron.ipcRenderer.addListener(channelName, handler);
+      this.electron.ipcRenderer.send(channelName,post);
+    });
+
+  }
+
 
   public get Posts(){
     this.electron.ipcRenderer.send('getPosts');

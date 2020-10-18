@@ -6,13 +6,12 @@ import { ConfigHelper } from '../../helpers/config.helper';
 import { config } from 'process';
 import { PostImage } from '../../models/post.interface';
 import { ScreenshootHelper } from '../../helpers/screenshot.helper';
+import { FacebookBase } from './facebook.base';
 
-export class FacebookPagePoster extends ChannelBase implements IChannel {
-    private readonly channelUrl: string = 'https://facebook.com/';
-    private readonly channelLoginUrl: string = 'https://en-gb.facebook.com/login/';
-
-    constructor(private postPages: string[], private credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
-        super();
+export class FacebookPagePoster extends FacebookBase implements IChannel {
+ 
+    constructor(private postPages: string[],  credentials: { username: string, password: string }, private imagesToPost: PostImage[], private content: string) {
+        super(credentials);
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookPagePoster";
         }
@@ -25,49 +24,21 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
         return this.imagesToPost.filter((i) => i.selected == true).map((i) => i.imageURL);
     }
 
-    public getCredentials() {//override
-        return this.credentials;
-    }
+   
 
     public getPostPages(): Array<string> {//override
         return this.postPages;
     }
 
-    private async login(browser: puppeteer.Browser): Promise<puppeteer.Page> {
-        let loginPage = await browser.newPage();
-        let { username, password } = this.getCredentials();
-
-
-        await loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
-        await loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' ,  timeout: this.timeout });
-
-        //accept terms if required
-        try {
-            let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, {timeout: this.timeout});
-            await loginPage.click(btnAcceptTerms);
-        } catch (e) {
-            console.log('No accept terms key found');
-        }
-
-        await loginPage.type('#email', username);
-        await loginPage.type('#pass', password);
-        
-        let loginBtn = '#loginbutton';
-        await loginPage.waitForSelector(loginBtn);
-        await loginPage.click(loginBtn);
-        await loginPage.waitForNavigation();
-
-        return loginPage;
-    }
+  
 
     public async run(onPageUploadedCallback: Function | null = null): Promise<boolean> {
-        this.timeout  = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout );
+        this.timeout = await ConfigHelper.getConfigValue<number>('navigation_timeout', this.timeout);
 
-        this.browser = await this.lunchBrowser();
-        let loginPage = await this.login(this.browser);
+        this.browser    = await this.lunchBrowser();
+        let loginPage   = await this.login(this.browser);
         let postedPages = await this.postToPages(this.browser, onPageUploadedCallback);
-        await ScreenshootHelper.takeSuccessScreenShot('FB-PAGE-POST',this.Browser);
+        await ScreenshootHelper.takeSuccessScreenShot('FB-PAGE-POST', this.Browser);
         if ((ConfigHelper.getConfigValue('headless', false)) === true || ConfigHelper.getConfigValue('close_browser')) {
             await this.browser.close();
         }
@@ -83,7 +54,7 @@ export class FacebookPagePoster extends ChannelBase implements IChannel {
             const groupPage = await browser.newPage();
             await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
 
-            await groupPage.goto(group, { waitUntil: 'networkidle2',timeout: this.timeout  });
+            await groupPage.goto(group, { waitUntil: 'networkidle2', timeout: this.timeout });
             // await groupPage.click('div[aria-label="Create Post"]');
 
             // await this.delay(2000);

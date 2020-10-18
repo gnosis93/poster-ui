@@ -61,19 +61,16 @@ var __values = (this && this.__values) || function(o) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FacebookOldPagePoster = void 0;
-var channel_base_1 = require("../channel.base");
 var config_helper_1 = require("../../helpers/config.helper");
 var screenshot_helper_1 = require("../../helpers/screenshot.helper");
+var facebook_base_1 = require("./facebook.base");
 var FacebookOldPagePoster = /** @class */ (function (_super) {
     __extends(FacebookOldPagePoster, _super);
     function FacebookOldPagePoster(postPages, credentials, imagesToPost, content) {
-        var _this = _super.call(this) || this;
+        var _this = _super.call(this, credentials) || this;
         _this.postPages = postPages;
-        _this.credentials = credentials;
         _this.imagesToPost = imagesToPost;
         _this.content = content;
-        _this.channelUrl = 'https://facebook.com/';
-        _this.channelLoginUrl = 'https://en-gb.facebook.com/login/';
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookPagePoster";
         }
@@ -85,63 +82,8 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     FacebookOldPagePoster.prototype.getImagesToPost = function () {
         return this.imagesToPost.filter(function (i) { return i.selected == true; }).map(function (i) { return i.imageURL; });
     };
-    FacebookOldPagePoster.prototype.getCredentials = function () {
-        return this.credentials;
-    };
     FacebookOldPagePoster.prototype.getPostPages = function () {
         return this.postPages;
-    };
-    FacebookOldPagePoster.prototype.login = function (browser) {
-        return __awaiter(this, void 0, void 0, function () {
-            var loginPage, _a, username, password, btnAcceptTerms, e_1, loginBtn;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, this.getActivePage(browser, 100)];
-                    case 1:
-                        loginPage = _b.sent();
-                        _a = this.getCredentials(), username = _a.username, password = _a.password;
-                        return [4 /*yield*/, loginPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36')];
-                    case 2:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.goto(this.channelLoginUrl, { waitUntil: 'networkidle2' })];
-                    case 3:
-                        _b.sent();
-                        _b.label = 4;
-                    case 4:
-                        _b.trys.push([4, 7, , 8]);
-                        btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-                        return [4 /*yield*/, loginPage.waitForSelector(btnAcceptTerms, { timeout: this.timeout })];
-                    case 5:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.click(btnAcceptTerms)];
-                    case 6:
-                        _b.sent();
-                        return [3 /*break*/, 8];
-                    case 7:
-                        e_1 = _b.sent();
-                        console.log('No accept terms key found');
-                        return [3 /*break*/, 8];
-                    case 8: return [4 /*yield*/, loginPage.type('#email', username)];
-                    case 9:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.type('#pass', password)];
-                    case 10:
-                        _b.sent();
-                        loginBtn = '._xktge' //'#loginbutton';
-                        ;
-                        return [4 /*yield*/, loginPage.waitForSelector(loginBtn)];
-                    case 11:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.click(loginBtn)];
-                    case 12:
-                        _b.sent();
-                        return [4 /*yield*/, loginPage.waitForNavigation()];
-                    case 13:
-                        _b.sent();
-                        return [2 /*return*/, loginPage];
-                }
-            });
-        });
     };
     FacebookOldPagePoster.prototype.run = function (onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
@@ -180,8 +122,8 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
     FacebookOldPagePoster.prototype.postToPages = function (browser, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var pages, count, _a, _b, group, groupPage, postButtonXPath, inputUploadHandles, inputUploadHandle, filesToUpload, filesToUpload_1, filesToUpload_1_1, image, e_2_1, postButton, e_3_1;
-            var e_3, _c, e_2, _d;
+            var pages, count, _a, _b, group, groupPage, postButtonXPath, fileInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, filesToUpload_1, filesToUpload_1_1, image, e_1_1, postButton, e_2_1;
+            var e_2, _c, e_1, _d;
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
@@ -205,20 +147,8 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, groupPage.goto(group, { waitUntil: 'networkidle2' })];
                     case 5:
                         _e.sent();
-                        // await groupPage.click('div[aria-label="Create Post"]');
-                        // await this.delay(2000);
-                        // Sets the value of the file input to fileToUpload
-                        // for(let fileToUpload of filesToUpload){
-                        // }
-                        // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         return [4 /*yield*/, groupPage.click('textarea[title="Write a post..."]')];
                     case 6:
-                        // await groupPage.click('div[aria-label="Create Post"]');
-                        // await this.delay(2000);
-                        // Sets the value of the file input to fileToUpload
-                        // for(let fileToUpload of filesToUpload){
-                        // }
-                        // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         _e.sent();
                         return [4 /*yield*/, this.delay(100)];
                     case 7:
@@ -227,15 +157,19 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                     case 8:
                         _e.sent(); // click submit
                         postButtonXPath = "//span[text()='Post']";
-                        return [4 /*yield*/, groupPage.$$('input[type=file]')];
+                        fileInputSelector = 'input[type=file]';
+                        return [4 /*yield*/, groupPage.$$(fileInputSelector)];
                     case 9:
                         inputUploadHandles = _e.sent();
-                        inputUploadHandle = inputUploadHandles[1];
+                        if (inputUploadHandles.length == 0) {
+                            throw ('Unable to find image upload input selector: ' + fileInputSelector);
+                        }
+                        inputUploadHandle = inputUploadHandles[0];
                         filesToUpload = this.getImagesToPost();
                         _e.label = 10;
                     case 10:
                         _e.trys.push([10, 16, 17, 18]);
-                        filesToUpload_1 = (e_2 = void 0, __values(filesToUpload)), filesToUpload_1_1 = filesToUpload_1.next();
+                        filesToUpload_1 = (e_1 = void 0, __values(filesToUpload)), filesToUpload_1_1 = filesToUpload_1.next();
                         _e.label = 11;
                     case 11:
                         if (!!filesToUpload_1_1.done) return [3 /*break*/, 15];
@@ -252,14 +186,14 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [3 /*break*/, 11];
                     case 15: return [3 /*break*/, 18];
                     case 16:
-                        e_2_1 = _e.sent();
-                        e_2 = { error: e_2_1 };
+                        e_1_1 = _e.sent();
+                        e_1 = { error: e_1_1 };
                         return [3 /*break*/, 18];
                     case 17:
                         try {
                             if (filesToUpload_1_1 && !filesToUpload_1_1.done && (_d = filesToUpload_1.return)) _d.call(filesToUpload_1);
                         }
-                        finally { if (e_2) throw e_2.error; }
+                        finally { if (e_1) throw e_1.error; }
                         return [7 /*endfinally*/];
                     case 18: return [4 /*yield*/, this.delay(2000)];
                     case 19:
@@ -291,14 +225,14 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [3 /*break*/, 2];
                     case 22: return [3 /*break*/, 25];
                     case 23:
-                        e_3_1 = _e.sent();
-                        e_3 = { error: e_3_1 };
+                        e_2_1 = _e.sent();
+                        e_2 = { error: e_2_1 };
                         return [3 /*break*/, 25];
                     case 24:
                         try {
                             if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
                         }
-                        finally { if (e_3) throw e_3.error; }
+                        finally { if (e_2) throw e_2.error; }
                         return [7 /*endfinally*/];
                     case 25: return [2 /*return*/, pages];
                 }
@@ -306,6 +240,6 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
         });
     };
     return FacebookOldPagePoster;
-}(channel_base_1.ChannelBase));
+}(facebook_base_1.FacebookBase));
 exports.FacebookOldPagePoster = FacebookOldPagePoster;
 //# sourceMappingURL=facebook-old.page.poster.js.map
