@@ -53,14 +53,16 @@ export class FacebookOldGroupPoster extends FacebookBase implements IChannel{
             // await groupPage.click('textarea#js_1g');
 
             await groupPage.keyboard.type(this.content);   // click submit
-            await this.delay(2000);
+            await this.delay(10000);
 
             await groupPage.click('a[label="Photo/Video"]');
-            await this.delay(500);
+            await this.delay(2000);
             
             // var elementHandle = await groupPage.click('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
 
             const fileInputSelector = 'input[aria-label="Add Photo or Video"]';
+            await groupPage.waitForSelector(fileInputSelector);
+
             const inputUploadHandles = await groupPage.$$(fileInputSelector);
             if( inputUploadHandles.length == 0){
                 throw('Unable to find image upload input selector: '+fileInputSelector)
@@ -70,7 +72,7 @@ export class FacebookOldGroupPoster extends FacebookBase implements IChannel{
 
             let filesToUpload        = this.getImagesToPost();
             // console.log('Post Images',filesToUpload);
-            await this.delay(100);
+            await this.delay(500);
 
             // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
             // console.log('File Upload Handles (File Inputs)',inputUploadHandles);

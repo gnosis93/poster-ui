@@ -20,7 +20,7 @@ export abstract class FacebookBase extends ChannelBase  {
     protected async closeAcceptCookiesModal(loginPage: puppeteer.Page) {
         let btnAcceptAllSelector = 'button[title="Accept All"]';
         try {
-            await loginPage.waitForSelector(btnAcceptAllSelector, { timeout: this.timeout / 2 });
+            await loginPage.waitForSelector(btnAcceptAllSelector, { timeout: 500});
         } catch (e) {
             console.log('no "accept cookies" modal found')
             return false;
@@ -34,7 +34,7 @@ export abstract class FacebookBase extends ChannelBase  {
         //accept terms if required
         try {
             let btnAcceptTerms = 'button[data-testid="cookie-policy-banner-accept"]';
-            await loginPage.waitForSelector(btnAcceptTerms, { timeout: this.timeout });
+            await loginPage.waitForSelector(btnAcceptTerms, { timeout:500});
             await loginPage.click(btnAcceptTerms);
         } catch (e) {
             console.log('No accept terms key found');

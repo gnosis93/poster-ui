@@ -54,14 +54,14 @@ export class FacebookOldPagePoster extends FacebookBase implements IChannel {
             await groupPage.goto(group, { waitUntil: 'networkidle2' });
 
             await groupPage.click('textarea[title="Write a post..."]');
-            await this.delay(100);
+            await this.delay(3000);
 
             await groupPage.keyboard.type(this.content);   // click submit
 
             //click the post button
             let postButtonXPath = "//span[text()='Post']"
             //wait for click button to become avaiable.
-            const fileInputSelector = 'input[type=file]';
+            const fileInputSelector = 'input[aria-label="Add Photo or Video"]';
             const inputUploadHandles = await groupPage.$$(fileInputSelector);
             if( inputUploadHandles.length == 0){
                 throw('Unable to find image upload input selector: '+fileInputSelector)

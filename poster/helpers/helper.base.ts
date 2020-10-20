@@ -15,4 +15,14 @@ export class BaseHelper{
         const userData = app.getPath('userData');
         return userData;
     }
+
+        /**
+     * Helper function to delay the process , used to await loading of elements/html 
+     * @param time time in miliseconds 
+     */
+    protected static async delay(time:number) : Promise<void>{//inherited
+        return new Promise(function(resolve) { 
+            setTimeout(resolve, time)
+        });
+    }
 }

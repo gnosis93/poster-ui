@@ -112,12 +112,15 @@ var ScreenshootHelper = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getScreenshotDir(type)];
                     case 2:
                         fullPath = _b.apply(_a, [(_c.sent()), fileName]);
+                        return [4 /*yield*/, this.delay(5000)];
+                    case 3:
+                        _c.sent();
                         return [4 /*yield*/, page.screenshot({
                                 type: "jpeg",
                                 fullPage: true,
                                 path: fullPath
                             })];
-                    case 3:
+                    case 4:
                         _c.sent();
                         logMsg = String(type) + ' screenshot saved at:' + String(fullPath);
                         if (error) {

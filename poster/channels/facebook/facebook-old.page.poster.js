@@ -150,14 +150,14 @@ var FacebookOldPagePoster = /** @class */ (function (_super) {
                         return [4 /*yield*/, groupPage.click('textarea[title="Write a post..."]')];
                     case 6:
                         _e.sent();
-                        return [4 /*yield*/, this.delay(100)];
+                        return [4 /*yield*/, this.delay(3000)];
                     case 7:
                         _e.sent();
                         return [4 /*yield*/, groupPage.keyboard.type(this.content)];
                     case 8:
                         _e.sent(); // click submit
                         postButtonXPath = "//span[text()='Post']";
-                        fileInputSelector = 'input[type=file]';
+                        fileInputSelector = 'input[aria-label="Add Photo or Video"]';
                         return [4 /*yield*/, groupPage.$$(fileInputSelector)];
                     case 9:
                         inputUploadHandles = _e.sent();

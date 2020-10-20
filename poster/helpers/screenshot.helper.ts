@@ -30,6 +30,8 @@ export class ScreenshootHelper extends BaseHelper{
             fileName
         );
 
+        await this.delay(5000);
+
         await page.screenshot({
             type: "jpeg",
             fullPage: true,
@@ -43,6 +45,7 @@ export class ScreenshootHelper extends BaseHelper{
         
         console.log(logMsg);
     }
+
 
     private static async getScreenshotDir(ssType:'error'|'success'){
         let mainDataFolderPath = ScreenshootHelper.getMainContentPath();
