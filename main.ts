@@ -344,7 +344,9 @@ ipcMain.addListener('submitPostToFacebookGroups', async (event, post: Post) => {
           password: config.facebook_password
         },
         post.images,
-        post.content
+        post.content,
+        post.name,
+        post.metaData.price
       );
     } else {
       poster = new FacebookGroupPoster(

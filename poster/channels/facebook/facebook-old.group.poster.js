@@ -86,11 +86,13 @@ var screenshot_helper_1 = require("../../helpers/screenshot.helper");
 var facebook_base_1 = require("./facebook.base");
 var FacebookOldGroupPoster = /** @class */ (function (_super) {
     __extends(FacebookOldGroupPoster, _super);
-    function FacebookOldGroupPoster(postPages, credentials, imagesToPost, content) {
+    function FacebookOldGroupPoster(postPages, credentials, imagesToPost, content, title, price) {
         var _this = _super.call(this, credentials) || this;
         _this.postPages = postPages;
         _this.imagesToPost = imagesToPost;
         _this.content = content;
+        _this.title = title;
+        _this.price = price;
         if (!postPages || postPages.length === 0) {
             throw "Invalid Post pages given to FacebookGroupPoster";
         }
@@ -141,8 +143,8 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
     FacebookOldGroupPoster.prototype.postToPages = function (browser, onPageUploadedCallback) {
         if (onPageUploadedCallback === void 0) { onPageUploadedCallback = null; }
         return __awaiter(this, void 0, void 0, function () {
-            var pages, count, _a, _b, group, groupPage, fileInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, postButtonQuery, postButton, disabledJSHandle, disabledValue, e_1_1;
-            var e_1, _c;
+            var pages, count, _a, _b, group, groupPage, sellSomethingButtonSelector, e_1, e_2_1;
+            var e_2, _c;
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
@@ -150,11 +152,11 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         count = 0;
                         _d.label = 1;
                     case 1:
-                        _d.trys.push([1, 23, 24, 25]);
+                        _d.trys.push([1, 13, 14, 15]);
                         _a = __values(this.getPostPages()), _b = _a.next();
                         _d.label = 2;
                     case 2:
-                        if (!!_b.done) return [3 /*break*/, 22];
+                        if (!!_b.done) return [3 /*break*/, 12];
                         group = _b.value;
                         count++;
                         return [4 /*yield*/, browser.newPage()];
@@ -165,30 +167,168 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                     case 4:
                         // await groupPage.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3419.0 Safari/537.36');
                         _d.sent();
-                        return [4 /*yield*/, groupPage.keyboard.press('p')];
+                        sellSomethingButtonSelector = '.fbReactComposerAttachmentSelector_SELL';
+                        _d.label = 5;
                     case 5:
-                        _d.sent();
-                        // await groupPage.click('textarea#js_1g');
-                        return [4 /*yield*/, groupPage.keyboard.type(this.content)];
+                        _d.trys.push([5, 7, , 9]);
+                        return [4 /*yield*/, groupPage.waitForSelector(sellSomethingButtonSelector, { timeout: 2000 })];
                     case 6:
-                        // await groupPage.click('textarea#js_1g');
-                        _d.sent(); // click submit
-                        return [4 /*yield*/, this.delay(3000)];
-                    case 7:
                         _d.sent();
-                        return [4 /*yield*/, groupPage.click('a[label="Photo/Video"]')];
+                        return [3 /*break*/, 9];
+                    case 7:
+                        e_1 = _d.sent();
+                        return [4 /*yield*/, this.postToNormalGroup(groupPage)];
                     case 8:
                         _d.sent();
-                        return [4 /*yield*/, this.delay(2000)];
-                    case 9:
-                        _d.sent();
-                        fileInputSelector = 'input[aria-label="Add Photo or Video"]';
-                        return [4 /*yield*/, groupPage.waitForSelector(fileInputSelector)];
+                        pages.push(groupPage);
+                        if (onPageUploadedCallback !== null) {
+                            onPageUploadedCallback(groupPage, count);
+                        }
+                        return [3 /*break*/, 11];
+                    case 9: return [4 /*yield*/, this.postToSellingGroup(groupPage, sellSomethingButtonSelector)];
                     case 10:
                         _d.sent();
-                        return [4 /*yield*/, groupPage.$$(fileInputSelector)];
+                        if (onPageUploadedCallback !== null) {
+                            onPageUploadedCallback(groupPage, count);
+                        }
+                        pages.push(groupPage);
+                        _d.label = 11;
                     case 11:
-                        inputUploadHandles = _d.sent();
+                        _b = _a.next();
+                        return [3 /*break*/, 2];
+                    case 12: return [3 /*break*/, 15];
+                    case 13:
+                        e_2_1 = _d.sent();
+                        e_2 = { error: e_2_1 };
+                        return [3 /*break*/, 15];
+                    case 14:
+                        try {
+                            if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
+                        }
+                        finally { if (e_2) throw e_2.error; }
+                        return [7 /*endfinally*/];
+                    case 15: return [2 /*return*/, pages];
+                }
+            });
+        });
+    };
+    FacebookOldGroupPoster.prototype.postToSellingGroup = function (groupPage, sellSomethingButtonSelector) {
+        return __awaiter(this, void 0, void 0, function () {
+            var whatRUSellingInputSelector, sellingPriceInputSelector, locationInputSelector, descriptionInputSelector, inputImagesSelector, inputUploadHandles, inputUploadHandle, filesToUpload, postButtonQuery, postButton, disabledJSHandle, disabledValue;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, groupPage.click(sellSomethingButtonSelector)];
+                    case 1:
+                        _a.sent();
+                        whatRUSellingInputSelector = 'input[placeholder="What are you selling?"]';
+                        return [4 /*yield*/, groupPage.waitForSelector(whatRUSellingInputSelector)];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.click(whatRUSellingInputSelector)];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.type(whatRUSellingInputSelector, this.title)];
+                    case 4:
+                        _a.sent();
+                        sellingPriceInputSelector = 'input[placeholder="Price"]';
+                        return [4 /*yield*/, groupPage.waitForSelector(sellingPriceInputSelector)];
+                    case 5:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.type(sellingPriceInputSelector, this.price)];
+                    case 6:
+                        _a.sent();
+                        locationInputSelector = 'input[placeholder="Add location (optional)"]';
+                        return [4 /*yield*/, groupPage.waitForSelector(locationInputSelector)];
+                    case 7:
+                        _a.sent();
+                        return [4 /*yield*/, this.threeClickType(groupPage, locationInputSelector, 'Pattaya', true)];
+                    case 8:
+                        _a.sent();
+                        descriptionInputSelector = '._5yk2';
+                        return [4 /*yield*/, groupPage.waitForSelector(locationInputSelector)];
+                    case 9:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.type(descriptionInputSelector, this.content)];
+                    case 10:
+                        _a.sent();
+                        inputImagesSelector = 'input[name="composer_photo"]';
+                        return [4 /*yield*/, groupPage.waitForSelector(inputImagesSelector)];
+                    case 11:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.$$(inputImagesSelector)];
+                    case 12:
+                        inputUploadHandles = _a.sent();
+                        if (inputUploadHandles.length == 0) {
+                            throw ('Unable to find image upload input selector: ' + inputImagesSelector);
+                        }
+                        inputUploadHandle = inputUploadHandles[0];
+                        filesToUpload = this.getImagesToPost();
+                        return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
+                    case 13:
+                        _a.sent();
+                        return [4 /*yield*/, this.delay(200000)];
+                    case 14:
+                        _a.sent();
+                        postButtonQuery = 'button[type=submit]._1mf7';
+                        return [4 /*yield*/, groupPage.$$(postButtonQuery)];
+                    case 15:
+                        postButton = _a.sent();
+                        _a.label = 16;
+                    case 16:
+                        if (!true) return [3 /*break*/, 20];
+                        return [4 /*yield*/, postButton[0].getProperty('attributes')];
+                    case 17:
+                        disabledJSHandle = _a.sent();
+                        return [4 /*yield*/, disabledJSHandle.jsonValue()];
+                    case 18:
+                        disabledValue = _a.sent();
+                        console.log('disabled attributes', disabledValue);
+                        // postButton[0].
+                        // console.log(disabledValue);
+                        if (typeof disabledValue['3'] === 'undefined') {
+                            return [3 /*break*/, 20];
+                        }
+                        return [4 /*yield*/, this.delay(100)];
+                    case 19:
+                        _a.sent();
+                        return [3 /*break*/, 16];
+                    case 20: return [4 /*yield*/, groupPage.click(postButtonQuery)];
+                    case 21:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    FacebookOldGroupPoster.prototype.postToNormalGroup = function (groupPage) {
+        return __awaiter(this, void 0, void 0, function () {
+            var fileInputSelector, inputUploadHandles, inputUploadHandle, filesToUpload, postButtonQuery, postButton, disabledJSHandle, disabledValue;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, groupPage.keyboard.press('p')];
+                    case 1:
+                        _a.sent();
+                        // await groupPage.click('textarea#js_1g');
+                        return [4 /*yield*/, groupPage.keyboard.type(this.content)];
+                    case 2:
+                        // await groupPage.click('textarea#js_1g');
+                        _a.sent(); // click submit
+                        return [4 /*yield*/, this.delay(10000)];
+                    case 3:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.click('a[label="Photo/Video"]')];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, this.delay(2000)];
+                    case 5:
+                        _a.sent();
+                        fileInputSelector = 'input[aria-label="Add Photo or Video"]';
+                        return [4 /*yield*/, groupPage.waitForSelector(fileInputSelector)];
+                    case 6:
+                        _a.sent();
+                        return [4 /*yield*/, groupPage.$$(fileInputSelector)];
+                    case 7:
+                        inputUploadHandles = _a.sent();
                         if (inputUploadHandles.length == 0) {
                             throw ('Unable to find image upload input selector: ' + fileInputSelector);
                         }
@@ -196,9 +336,9 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         filesToUpload = this.getImagesToPost();
                         // console.log('Post Images',filesToUpload);
                         return [4 /*yield*/, this.delay(500)];
-                    case 12:
+                    case 8:
                         // console.log('Post Images',filesToUpload);
-                        _d.sent();
+                        _a.sent();
                         // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
                         // Sets the value of the file input to fileToUpload
@@ -207,7 +347,7 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         //     await this.delay(500);
                         // }
                         return [4 /*yield*/, inputUploadHandle.uploadFile.apply(inputUploadHandle, __spread(filesToUpload))];
-                    case 13:
+                    case 9:
                         // await groupPage.waitForSelector('.bp9cbjyn .j83agx80.datstx6m.taijpn5t.l9j0dhe7.k4urcfbm');
                         // console.log('File Upload Handles (File Inputs)',inputUploadHandles);
                         // Sets the value of the file input to fileToUpload
@@ -215,53 +355,34 @@ var FacebookOldGroupPoster = /** @class */ (function (_super) {
                         //     await inputUploadHandle.uploadFile(fileToUpload);
                         //     await this.delay(500);
                         // }
-                        _d.sent();
+                        _a.sent();
                         postButtonQuery = 'button[type=submit]._1mf7';
                         return [4 /*yield*/, groupPage.$$(postButtonQuery)];
-                    case 14:
-                        postButton = _d.sent();
-                        _d.label = 15;
-                    case 15:
-                        if (!true) return [3 /*break*/, 19];
+                    case 10:
+                        postButton = _a.sent();
+                        _a.label = 11;
+                    case 11:
+                        if (!true) return [3 /*break*/, 15];
                         return [4 /*yield*/, postButton[0].getProperty('attributes')];
-                    case 16:
-                        disabledJSHandle = _d.sent();
+                    case 12:
+                        disabledJSHandle = _a.sent();
                         return [4 /*yield*/, disabledJSHandle.jsonValue()];
-                    case 17:
-                        disabledValue = _d.sent();
+                    case 13:
+                        disabledValue = _a.sent();
                         // console.log('disabled attributes' , disabledValue);
                         // postButton[0].
                         // console.log(disabledValue);
                         if (typeof disabledValue['3'] === 'undefined') {
-                            return [3 /*break*/, 19];
+                            return [3 /*break*/, 15];
                         }
                         return [4 /*yield*/, this.delay(100)];
-                    case 18:
-                        _d.sent();
-                        return [3 /*break*/, 15];
-                    case 19: return [4 /*yield*/, groupPage.click(postButtonQuery)];
-                    case 20:
-                        _d.sent();
-                        if (onPageUploadedCallback !== null) {
-                            onPageUploadedCallback(groupPage, count);
-                        }
-                        pages.push(groupPage);
-                        _d.label = 21;
-                    case 21:
-                        _b = _a.next();
-                        return [3 /*break*/, 2];
-                    case 22: return [3 /*break*/, 25];
-                    case 23:
-                        e_1_1 = _d.sent();
-                        e_1 = { error: e_1_1 };
-                        return [3 /*break*/, 25];
-                    case 24:
-                        try {
-                            if (_b && !_b.done && (_c = _a.return)) _c.call(_a);
-                        }
-                        finally { if (e_1) throw e_1.error; }
-                        return [7 /*endfinally*/];
-                    case 25: return [2 /*return*/, pages];
+                    case 14:
+                        _a.sent();
+                        return [3 /*break*/, 11];
+                    case 15: return [4 /*yield*/, groupPage.click(postButtonQuery)];
+                    case 16:
+                        _a.sent();
+                        return [2 /*return*/];
                 }
             });
         });

@@ -55,11 +55,10 @@ export class LivinginsiderPoster extends ChannelBase implements IChannel {
 
         let closeAdModalSelector = '.modal-dialog>.modal-content>.modal-body>a.hideBanner[data-dismiss="modal"][onclick="ActiveBanner.closeActiveBanner();"]';        
         try{
-            await Promise.all([
-                loginPage.waitForSelector(closeAdModalSelector,{timeout: this.timeout }),
-                await loginPage.click(closeAdModalSelector),
-                this.delay(1000)
-            ]);
+            loginPage.waitForSelector(closeAdModalSelector,{timeout: this.timeout });
+            let items = await loginPage.$$(closeAdModalSelector);
+            await items[0].click();
+            this.delay(1000)
         }catch(e){
             console.log('Exception raised, no ad modal popup to close found')
         }

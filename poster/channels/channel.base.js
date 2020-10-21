@@ -158,7 +158,8 @@ var ChannelBase = /** @class */ (function () {
             });
         });
     };
-    ChannelBase.prototype.threeClickType = function (page, selector, value) {
+    ChannelBase.prototype.threeClickType = function (page, selector, value, pressEnter) {
+        if (pressEnter === void 0) { pressEnter = false; }
         return __awaiter(this, void 0, void 0, function () {
             var input;
             return __generator(this, function (_a) {
@@ -175,7 +176,15 @@ var ChannelBase = /** @class */ (function () {
                         return [4 /*yield*/, input.type(value)];
                     case 3:
                         _a.sent();
-                        return [2 /*return*/];
+                        if (!pressEnter) return [3 /*break*/, 6];
+                        return [4 /*yield*/, this.delay(2000)];
+                    case 4:
+                        _a.sent();
+                        return [4 /*yield*/, page.keyboard.press('Enter')];
+                    case 5:
+                        _a.sent();
+                        _a.label = 6;
+                    case 6: return [2 /*return*/];
                 }
             });
         });

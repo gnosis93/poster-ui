@@ -55,13 +55,18 @@ export abstract class ChannelBase {
         return false;
     }
 
-    protected async threeClickType(page: puppeteer.Page, selector: string, value: string) {
+    protected async threeClickType(page: puppeteer.Page, selector: string, value: string,pressEnter:boolean=false) {
         const input = await page.$(selector);
         if(input === null){
             throw 'ThreeClickType Exception: unable to find specfied selector: '+selector
         }
         await input.click({ clickCount: 3 });//selects all text in input thus causing it to be deleted
         await input.type(value);
+
+        if(pressEnter){
+            await this.delay(2000);
+            await page.keyboard.press('Enter');
+        }
     }
 
     protected getPathInUserData(pathToFile:string){
