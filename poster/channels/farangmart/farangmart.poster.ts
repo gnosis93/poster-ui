@@ -185,19 +185,41 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.type('#mainform #cp_zipcode', 'Pattaya');
 
         //image upload (10 max)
-        await page.waitForSelector('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
-        await page.click('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
 
+        //for browser uploader
+        // await page.waitForSelector('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
+        // await page.click('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
+
+        // let images = this.getImagesToPost();
+        // let imgCount = images.length > 10 ? 10 : images.length;
+        // let imageInputSelector = 'input[name="image[]"]';
+        // await page.waitForSelector(imageInputSelector, { timeout: this.timeout });
+        // const inputUploadHandles = await page.$$(imageInputSelector);
+        // for(let i = 0; i < imgCount; i++){
+        //     const inputUploadHandle  = inputUploadHandles[i];
+        //     await inputUploadHandle.uploadFile(images[i])
+        //     await this.delay(500)
+        // }
+
+        //for flash uploader
         let images = this.getImagesToPost();
         let imgCount = images.length > 10 ? 10 : images.length;
-        let imageInputSelector = 'input[name="image[]"]';
+        let imageInputSelector = 'input[type="file"]';
         await page.waitForSelector(imageInputSelector, { timeout: this.timeout });
         const inputUploadHandles = await page.$$(imageInputSelector);
+        const inputUploadHandle  = inputUploadHandles[10];
         for(let i = 0; i < imgCount; i++){
-            const inputUploadHandle  = inputUploadHandles[i];
             await inputUploadHandle.uploadFile(images[i])
-            await this.delay(500)
+            
+            await page.$$('')[i]
         }
+        let imageCount = (await this.getImageCount(page));
+        while (imageCount < images.length) {
+            await this.delay(500);
+            imageCount = (await this.getImageCount(page));
+            console.log('waiting image count')
+        }
+
 
         //preview
         await page.waitForSelector('#step1 > #mainform #step1')
@@ -209,5 +231,10 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.click('#step2 > #mainform #step2')
   
         return page;
+    }
+
+    private async getImageCount(page: puppeteer.Page) {
+        let elements = await page.$$('#app-attachment-upload-filelist > .app-attachment-list > .app-attachment > .attachment-actions > .attachment-delete')
+        return elements.length;
     }
 }
