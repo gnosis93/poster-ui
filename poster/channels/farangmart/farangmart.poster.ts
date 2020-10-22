@@ -4,6 +4,7 @@ import { IChannel } from '../channel.interface';
 import { ConfigHelper } from '../../helpers/config.helper';
 import { PostImage } from '../../models/post.interface';
 import { ScreenshootHelper } from '../../helpers/screenshot.helper';
+import { throws } from 'assert';
 
 export class FarangmartPoster extends ChannelBase implements IChannel {
 
@@ -152,13 +153,14 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
             await page.click('.form-fields > #list_cp_rental_term #cp_rental_term_9')
         }
 
-        if(!this.numberOfBeds || this.numberOfBeds < 1){
-            this.numberOfBeds = 1;
-        }
         await page.waitForSelector('ol > .form-fields > #list_cp_bedrooms > .selectBox > .selectBox-label')
         await page.click('ol > .form-fields > #list_cp_bedrooms > .selectBox > .selectBox-label')
         await this.delay(500)
-        await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child('+(this.numberOfBeds + 2)+') > a')
+        if(!this.numberOfBeds || this.numberOfBeds < 1){
+            await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child(2) > a')
+        }else{
+            await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child('+(this.numberOfBeds + 2)+') > a')
+        }
         
         await page.waitForSelector('ol > .form-fields > #list_cp_furnishings > .selectBox > .selectBox-label')
         await page.click('ol > .form-fields > #list_cp_furnishings > .selectBox > .selectBox-label')
@@ -178,28 +180,19 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.click('#mainform #cp_zipcode')
         await page.type('#mainform #cp_zipcode', 'Pattaya');
 
-        //image upload (2x5)
-        let images        = this.getImagesToPost();
-        let filesToUpload1 = images.length > 5 ? images.slice(0, 5) : images;
-        let filesToUpload2 = images.length > 5 ? images.slice(5, 5) : null;
-        await page.waitForSelector('.form-fields #app-attachment-upload-pickfiles')
-        await page.click('.form-fields #app-attachment-upload-pickfiles')
-        let imagesInputSelector = 'input[type=file][multiple]';
-        const inputUploadHandles = await page.$$(imagesInputSelector);
-        const inputUploadHandle  = inputUploadHandles[0];
-        for(let file of filesToUpload1){
-            await inputUploadHandle.uploadFile(file)
+        //image upload (10 max)
+        await page.waitForSelector('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
+        await page.click('li > #app-attachment-upload-container > .app-attachment-info > .upload-flash-bypass > a')
+
+        let images = this.getImagesToPost();
+        let imgCount = images.length > 10 ? 10 : images.length;
+        let imageInputSelector = 'input[name="image[]"]';
+        await page.waitForSelector(imageInputSelector, { timeout: this.timeout });
+        const inputUploadHandles = await page.$$(imageInputSelector);
+        for(let i = 0; i < imgCount; i++){
+            const inputUploadHandle  = inputUploadHandles[i];
+            await inputUploadHandle.uploadFile(images[i])
             await this.delay(500)
-        }
-        if(filesToUpload2 != null){
-            await this.delay(1000)
-            await page.waitForSelector('.form-fields #app-attachment-upload-pickfiles')
-            await page.click('.form-fields #app-attachment-upload-pickfiles')
-            imagesInputSelector = 'input[type=file][multiple]';
-            for(let file of filesToUpload2){
-                await inputUploadHandle.uploadFile(file)
-                await this.delay(500)
-            }
         }
 
         //preview
