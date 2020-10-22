@@ -138,6 +138,7 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.click('ol > .form-fields > #list_cp_private_seller > .selectBox > .selectBox-label')
         await this.delay(500)
         await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child(3) > a')
+        await this.delay(1000) //keep this here
         
         await page.waitForSelector('#mainform #cp_unit_size')
         await page.click('#mainform #cp_unit_size')
@@ -157,15 +158,17 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.click('ol > .form-fields > #list_cp_bedrooms > .selectBox > .selectBox-label')
         await this.delay(500)
         if(!this.numberOfBeds || this.numberOfBeds < 1){
-            await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child(2) > a')
+            await page.click('.page-template > ul:nth-of-type(4) > li:nth-child(2) > a')
         }else{
-            await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child('+(this.numberOfBeds + 2)+') > a')
+            await page.click('.page-template > ul:nth-of-type(4) > li:nth-child('+(this.numberOfBeds + 2)+') > a')
         }
+        await this.delay(1000) //keep this here
         
         await page.waitForSelector('ol > .form-fields > #list_cp_furnishings > .selectBox > .selectBox-label')
         await page.click('ol > .form-fields > #list_cp_furnishings > .selectBox > .selectBox-label')
         await this.delay(500)
-        await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child(8) > a')
+        await page.click('.page-template > ul:nth-of-type(6) > li:nth-child(8) > a')
+        await this.delay(1000) //keep this here
         
         await page.waitForSelector('#mainform #post_content')
         await page.click('#mainform #post_content')
@@ -174,7 +177,8 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         await page.waitForSelector('ol > .form-fields > #list_cp_state > .selectBox > .selectBox-label')
         await page.click('ol > .form-fields > #list_cp_state > .selectBox > .selectBox-label')
         await this.delay(500)
-        await page.click('.page-template > .selectBox-dropdown-menu > li:nth-child(2) > a')
+        await page.click('.page-template > ul:nth-of-type(7)  > li:nth-child(2) > a')
+        await this.delay(1000) //keep this here
         
         await page.waitForSelector('#mainform #cp_zipcode')
         await page.click('#mainform #cp_zipcode')
@@ -196,14 +200,14 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
         }
 
         //preview
-        // await page.waitForSelector('#step1 > #mainform #step1')
-        // await page.click('#step1 > #mainform #step1')
-        // await this.delay(5000)
+        await page.waitForSelector('#step1 > #mainform #step1')
+        await page.click('#step1 > #mainform #step1')
+        await page.waitForNavigation({waitUntil: 'load'})
 
         //options/pay (finish submitting)
-        // await page.waitForSelector('#step2 > #mainform #step2')
-        // await page.click('#step2 > #mainform #step2')
+        await page.waitForSelector('#step2 > #mainform #step2')
+        await page.click('#step2 > #mainform #step2')
   
-        //return page;
+        return page;
     }
 }
