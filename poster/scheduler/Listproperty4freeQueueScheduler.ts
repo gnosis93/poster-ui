@@ -3,23 +3,23 @@ import { Post, ChannelCity } from "../models/post.interface";
 import { LoggerHelper, LogChannel } from "../helpers/logger.helper";
 import { ConfigHelper } from "../helpers/config.helper";
 import { ScreenshootHelper } from "../helpers/screenshot.helper";
-import { FarangmartPoster } from "../channels/farangmart/farangmart.poster";
+import { Listproperty4freePoster } from "../channels/listproperty4free/listproperty4free.poster";
 
-export class FarangMartQueueScheduler extends QueueScheduler {
-    protected readonly LOG_MESSAGE = 'FarangMart Scheduler posted successfully';
-    protected readonly LOG_MESSAGE_FAIL = 'FarangMart Scheduler posted failed';
+export class Listproperty4freeQueueScheduler extends QueueScheduler {
+    protected readonly LOG_MESSAGE = 'Listproperty4free Scheduler posted successfully';
+    protected readonly LOG_MESSAGE_FAIL = 'Listproperty4free Scheduler posted failed';
     protected static singleton = null;
     
-    protected ENABLE_SCHEDULER_KEY: string = 'farangmart_enable_scheduler';
-    protected readonly cronValueConfigKey = 'farangmart_scheduler_cron'
-    protected POST_EXPIRY_TIME_CONFIG_KEY: string = 'farangmart_post_expiry_time';
+    protected ENABLE_SCHEDULER_KEY: string = 'listproperty4free_enable_scheduler';
+    protected readonly cronValueConfigKey = 'listproperty4free_scheduler_cron'
+    protected POST_EXPIRY_TIME_CONFIG_KEY: string = 'listproperty4free_post_expiry_time';
 
 
-    public static getInstance(): FarangMartQueueScheduler {
-        if (FarangMartQueueScheduler.singleton == null) {
-            FarangMartQueueScheduler.singleton = new FarangMartQueueScheduler();
+    public static getInstance(): Listproperty4freeQueueScheduler {
+        if (Listproperty4freeQueueScheduler.singleton == null) {
+            Listproperty4freeQueueScheduler.singleton = new Listproperty4freeQueueScheduler();
         }
-        return FarangMartQueueScheduler.singleton
+        return Listproperty4freeQueueScheduler.singleton
     }
 
 
@@ -29,13 +29,13 @@ export class FarangMartQueueScheduler extends QueueScheduler {
         }
         let config = ConfigHelper.getConfig();
         var result = false;
-        var poster:FarangmartPoster|null = null;
+        var poster:Listproperty4freePoster|null = null;
         try {
             // let price = await PostsHelper.handlePostPrice(post,city.currency);
-            poster = new FarangmartPoster(
+            poster = new Listproperty4freePoster(
                 {
-                    username: config.farangmart_email,
-                    password: config.farangmart_password
+                    username: config.listproperty4free_email,
+                    password: config.listproperty4free_password
                 },
                 post.images,
                 ConfigHelper.parseTextTemplate(post, city.lang),
@@ -57,7 +57,7 @@ export class FarangMartQueueScheduler extends QueueScheduler {
         } catch (e) {
             result = false;
             console.error(e);
-            await ScreenshootHelper.takeErrorScreenShot('farangmart_'+post?.metaData?.title,poster.Browser,e.toString());
+            await ScreenshootHelper.takeErrorScreenShot('listproperty4free_'+post?.metaData?.title,poster.Browser,e.toString());
 
             LoggerHelper.err(this.LOG_MESSAGE_FAIL + ' exception: ' + e.toString(), post, LogChannel.scheduler);
 

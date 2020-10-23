@@ -122,6 +122,10 @@ export class PostDialogComponent implements OnInit {
     {
       "name": 'FarangMart',
       "selected": true
+    },
+    {
+      "name": 'Listproperty4free',
+      "selected": true
     }
   ];
 
@@ -286,6 +290,18 @@ export class PostDialogComponent implements OnInit {
           alert('error as occurred')
         }
       break;
+      case 'Listproperty4free':
+        try{
+          if(postInSequentialOrder === true){
+            await this.postsService.submitPostListproperty4free(post);
+            await this.handlePostSubmitted(channel.name);
+          }else{
+            this.postsService.submitPostListproperty4free(post).then(()=> this.handlePostSubmitted(channel.name))
+          }
+        }catch(e){
+          alert('error as occurred')
+        }
+      break;
       default:
         alert('Invalid channel selected')
         break;
@@ -370,6 +386,9 @@ export class PostDialogComponent implements OnInit {
         case 'FarangMart':
           result = await this.validateFarangmartConfig()
           break;
+        case 'Listproperty4free':
+          result = await this.validateListproperty4freeConfig()
+          break;
       }
     }
     return result;
@@ -445,6 +464,14 @@ export class PostDialogComponent implements OnInit {
   private async validateFarangmartConfig() {
     if (await this.configService.validateFarangmartCredentials() === false) {
       alert('FarangMart Email/Password are not set or incorrect');
+      return false;
+    }
+    return true;
+  }
+
+  private async validateListproperty4freeConfig() {
+    if (await this.configService.validateListproperty4freeCredentials() === false) {
+      alert('Listproperty4free Email/Password are not set or incorrect');
       return false;
     }
     return true;

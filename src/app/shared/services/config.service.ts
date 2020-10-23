@@ -166,6 +166,21 @@ export class ConfigService {
     return true;
   }
 
+  async validateListproperty4freeCredentials(){
+    let bathsoldEmail    = await this.getConfigValue<string>('listproperty4free_email');
+    let bathsoldPassword = await this.getConfigValue<string>('listproperty4free_password');
+
+    if(!bathsoldEmail || bathsoldEmail.indexOf('@') == -1){
+      return false;
+    }
+
+    if(!bathsoldPassword || bathsoldPassword.length <= 1){
+      return false;
+    }
+
+    return true;
+  }
+
   async validateConfigExecutablePath(){
     console.log('start validation check for chrome_executable_path')
     let excPathInConfig = await this.getConfigValue<string>('chrome_executable_path')

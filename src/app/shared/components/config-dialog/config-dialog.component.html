@@ -15,7 +15,7 @@
 
 <mat-dialog-content>
     <div class="row">
-        <div class="col-3 content-left" style="min-width: 250px;">
+        <div class="col-3 content-left" style="min-width: 260px;">
 
             <h5>General Settings</h5>
             <ul class="sideBarList">
@@ -32,6 +32,7 @@
                 <li (click)="onSidebarClick('Livinginsider Credentials')">Livinginsider Credentials</li>
                 <li (click)="onSidebarClick('Bahtsold Credentials')">Bahtsold Credentials</li>
                 <li (click)="onSidebarClick('FarangMart Credentials')">FarangMart Credentials</li>
+                <li (click)="onSidebarClick('Listproperty4free Credentials')">Listproperty4free Credentials</li>
 
                 <!-- <li (click)="onSidebarClick('Facebook Pages Channel')">Facebook Pages</li>
                 <li (click)="onSidebarClick('Facebook Groups Channel')">Facebook Groups</li> -->
@@ -136,6 +137,25 @@
                     <div class="form-group">
                         <label for="pwd">Password:</label>
                         <input type="password" [(ngModel)]="config.farangmart_password" name="facebook_password"
+                            class="form-control" id="pwd">
+                    </div>
+
+                </span>
+
+                <span *ngIf="selectedTemplate == 'Listproperty4free Credentials' ">
+                    
+                    <h5>Listproperty4free Credentials</h5>
+                    <br>
+
+                    <div class="form-group">
+                        <label for="email">Email address:</label>
+                        <input type="email" [(ngModel)]="config.listproperty4free_email" name="facebook_email"
+                            class="form-control" id="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="pwd">Password:</label>
+                        <input type="password" [(ngModel)]="config.listproperty4free_password" name="facebook_password"
                             class="form-control" id="pwd">
                     </div>
 
@@ -379,6 +399,32 @@
                     <div class="form-group" >
                         <label for="farangmart_postings_per_trigger"FarangMart >How much posts to post on each cron tiger ? </label> 
                         <input type="number" min="1" max="356" [disabled]="config?.farangmart_enable_scheduler == false" [(ngModel)]="config.farangmart_postings_per_trigger" name="farangmart_postings_per_trigger" id="farangmart_postings_per_trigger">
+                    </div>
+
+                    <hr>
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <mat-checkbox [checked]="config.listproperty4free_enable_scheduler"
+                                (change)="enableListproperty4freeSchedulerValueChange($event)"></mat-checkbox>
+                                <label>Enable Listproperty4free Scheduler </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="listproperty4free_scheduler_cron">Listproperty4free Scheduler Cron</label>
+                        <input type="text" [(ngModel)]="config.listproperty4free_scheduler_cron" name="listproperty4free_scheduler_cron"
+                            id="listproperty4free_scheduler_cron" [disabled]="config?.listproperty4free_enable_scheduler == false">
+                    </div>
+                    
+                    <div class="form-group" >
+                        <label for="listproperty4free_scheduler_cron">Listproperty4free Post Expiry Time (In DAYS)</label> 
+                        <input type="number" min="1" max="30" [disabled]="config?.listproperty4free_enable_scheduler == false" [(ngModel)]="config.listproperty4free_post_expiry_time" name="listproperty4free_post_expiry_time" id="listproperty4free_post_expiry_time">
+                    </div>
+
+                    <div class="form-group" >
+                        <label for="listproperty4free_postings_per_trigger"Listproperty4free >How much posts to post on each cron tiger ? </label> 
+                        <input type="number" min="1" max="356" [disabled]="config?.listproperty4free_enable_scheduler == false" [(ngModel)]="config.listproperty4free_postings_per_trigger" name="listproperty4free_postings_per_trigger" id="listproperty4free_postings_per_trigger">
                     </div>
 
                     <hr>

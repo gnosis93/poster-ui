@@ -129,6 +129,18 @@ export class PostsService {
 
   }
 
+  public async submitPostListproperty4free(post:Post) {
+    let channelName = 'submitPostListproperty4free';
+    return new Promise((resolutionFunc, rejectionFunc) => {
+      var handler = (sender, message) => {
+        this.electron.ipcRenderer.removeListener(channelName,handler);
+        resolutionFunc(message);
+      };
+      this.electron.ipcRenderer.addListener(channelName, handler);
+      this.electron.ipcRenderer.send(channelName,post);
+    });
+
+  }
 
   public get Posts(){
     this.electron.ipcRenderer.send('getPosts');

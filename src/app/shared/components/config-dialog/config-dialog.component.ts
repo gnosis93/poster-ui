@@ -7,18 +7,19 @@ import { CommonConstants } from 'app/shared/common-const';
 import { PostsService } from 'app/shared/services/posts.service';
 
 
-type ConfigSection = "Facebook Credentials"      | 
-                     "Craigslist Credentials"    | 
-                     "Craigslist Channel"        |
-                     "Livinginsider Credentials" |
-                     "Facebook Pages Channel"    |
-                     "Facebook Groups Channel"   |
-                     "General Channels Settings" |
-                     "Behavior"                  |
-                     "Text Templates"            |
-                     "Scheduler"                 |
-                     "Bahtsold Credentials"      |
-                     "FarangMart Credentials"
+type ConfigSection = "Facebook Credentials"           | 
+                     "Craigslist Credentials"         | 
+                     "Craigslist Channel"             |
+                     "Livinginsider Credentials"      |
+                     "Facebook Pages Channel"         |
+                     "Facebook Groups Channel"        |
+                     "General Channels Settings"      |
+                     "Behavior"                       |
+                     "Text Templates"                 |
+                     "Scheduler"                      |
+                     "Bahtsold Credentials"           |
+                     "FarangMart Credentials"         |
+                     "Listproperty4free Credentials"
 ;
 
 @Component({
@@ -97,6 +98,10 @@ export class ConfigDialogComponent implements OnInit {
 
   public enableFarangMartSchedulerValueChange(value:{checked:boolean}){
     this.config.farangmart_enable_scheduler = value.checked;
+  }
+
+  public enableListproperty4freeSchedulerValueChange(value:{checked:boolean}){
+    this.config.listproperty4free_enable_scheduler = value.checked;
   }
   
   public enableLivingInsiderSchedulerValueChange(value:{checked:boolean}){

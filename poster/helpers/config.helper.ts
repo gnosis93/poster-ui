@@ -88,6 +88,8 @@ export class ConfigHelper extends BaseHelper{
             "bathsold_password":"Miami5151+-*!!",
             "farangmart_email":"mkmardel@gmail.com",
             "farangmart_password":"33gh44",
+            "listproperty4free_email":"mkmardel@gmail.com",
+            "listproperty4free_password":"33gh44",
             "livinginsider_email":"mkmardel@gmail.com",
             "livinginsider_password":"33gh44",
             "post_immediately":false,
@@ -118,6 +120,10 @@ Call for view:  {phone_extension} {phone_number}
             "farangmart_enable_scheduler":false,
             "farangmart_scheduler_cron":"0 * * * *",
             'farangmart_postings_per_trigger':1,
+
+            "listproperty4free_enable_scheduler":false,
+            "listproperty4free_scheduler_cron":"0 * * * *",
+            'listproperty4free_postings_per_trigger':1,
 
             "livinginsider_enable_scheduler":false,
             "livinginsider_scheduler_cron":"0 * * * *",
