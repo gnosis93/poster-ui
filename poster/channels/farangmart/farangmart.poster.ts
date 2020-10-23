@@ -203,15 +203,13 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
 
         //for flash uploader
         let images = this.getImagesToPost();
-        let imgCount = images.length > 10 ? 10 : images.length;
+        let numOfImages = images.length > 10 ? 10 : images.length;
         let imageInputSelector = 'input[type="file"]';
         await page.waitForSelector(imageInputSelector, { timeout: this.timeout });
         const inputUploadHandles = await page.$$(imageInputSelector);
         const inputUploadHandle  = inputUploadHandles[10];
-        for(let i = 0; i < imgCount; i++){
+        for(let i = 0; i < numOfImages; i++){
             await inputUploadHandle.uploadFile(images[i])
-            
-            await page.$$('')[i]
         }
         let imageCount = (await this.getImageCount(page));
         while (imageCount < images.length) {
@@ -219,7 +217,6 @@ export class FarangmartPoster extends ChannelBase implements IChannel {
             imageCount = (await this.getImageCount(page));
             console.log('waiting image count')
         }
-
 
         //preview
         await page.waitForSelector('#step1 > #mainform #step1')
