@@ -34,7 +34,7 @@ export class Listproperty4freeQueueScheduler extends QueueScheduler {
             // let price = await PostsHelper.handlePostPrice(post,city.currency);
             poster = new Listproperty4freePoster(
                 {
-                    username: config.listproperty4free_email,
+                    username: config.listproperty4free_username,
                     password: config.listproperty4free_password
                 },
                 post.images,

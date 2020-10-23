@@ -167,12 +167,12 @@ export class ConfigService {
   }
 
   async validateListproperty4freeCredentials(){
-    let bathsoldEmail    = await this.getConfigValue<string>('listproperty4free_email');
+    let bathsoldEmail    = await this.getConfigValue<string>('listproperty4free_username');
     let bathsoldPassword = await this.getConfigValue<string>('listproperty4free_password');
 
-    if(!bathsoldEmail || bathsoldEmail.indexOf('@') == -1){
-      return false;
-    }
+    // if(!bathsoldEmail || bathsoldEmail.indexOf('@') == -1){
+    //   return false;
+    // }
 
     if(!bathsoldPassword || bathsoldPassword.length <= 1){
       return false;

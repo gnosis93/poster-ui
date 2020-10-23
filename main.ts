@@ -455,7 +455,7 @@ ipcMain.addListener('submitPostListproperty4free', async (event, post: Post) => 
   try {
     poster = new Listproperty4freePoster(
       {
-        username: config.listproperty4free_email,
+        username: config.listproperty4free_username,
         password: config.listproperty4free_password
       },
       post.images,
