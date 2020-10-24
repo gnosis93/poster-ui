@@ -9,12 +9,14 @@
 
 .content-left {
     border-right: 1px solid #969292;
+    min-width: 260px !important;
 }
 
 .sideBarList > li{
     cursor: pointer;
     color: rgb(45, 155, 245);
     margin-bottom: 5px;
+    margin-left: -15px !important;
 }
 
 ul{
